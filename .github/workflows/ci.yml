@@ -1,0 +1,187 @@
+# Integração contínua do MediFlow (Python 3.11, mesma versão do Dockerfile).
+# Documentação do fluxo, das fases de adoção e das regras de proteção:
+# docs/fluxo-de-trabalho-git.md
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.11"
+  RUFF_VERSION: "0.15.8"
+
+jobs:
+  integridade:
+    name: Integridade
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detectar marcadores de conflito de merge
+        run: |
+          if git grep -nE '^(<<<<<<<|>>>>>>>)( |$)|^=======$' -- ':!*.lock'; then
+            echo "::error::Marcadores de conflito encontrados. Resolva o merge antes de integrar."
+            exit 1
+          fi
+          echo "Nenhum marcador de conflito encontrado."
+
+      - name: Verificar espaços e finais de linha nas mudanças
+        # Verifica apenas as linhas alteradas, para não bloquear por débito anterior.
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            echo "Sem commit base para comparar; verificação de diff ignorada."
+            exit 0
+          fi
+          git diff --check "$BASE_SHA" "$HEAD_SHA"
+
+      - name: Validar pyproject.toml
+        run: python3 -c "import tomllib; tomllib.load(open('pyproject.toml', 'rb'))"
+
+  qualidade:
+    name: Qualidade (Python)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Instalar Ruff
+        run: python -m pip install "ruff==${RUFF_VERSION}"
+
+      - name: Verificar sintaxe Python
+        run: python -m compileall -q application domain infrastructure presentation config scripts tests
+
+      - name: Ruff - erros críticos (obrigatório)
+        # Erros de sintaxe, comparações inválidas e nomes indefinidos.
+        run: ruff check --select E9,F63,F7,F82 --output-format github .
+
+      - name: Ruff - estilo completo (informativo, fase 1)
+        # Débito existente: aparece como anotações, sem bloquear o PR.
+        continue-on-error: true
+        run: |
+          ruff check --output-format github .
+          ruff format --check .
+
+  seguranca:
+    name: Segurança
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bloquear arquivos de credenciais versionados
+        run: |
+          proibidos=$(git ls-files | grep -E '(^|/)\.env($|\.)|\.pem$|\.key$|(^|/)\.oci/|(^|/)secrets\.toml$' | grep -vE '\.example(\.|$)' || true)
+          if [ -n "$proibidos" ]; then
+            echo "::error::Arquivos sensíveis versionados:"
+            echo "$proibidos"
+            exit 1
+          fi
+          echo "Nenhum arquivo sensível versionado."
+
+      - name: Escanear segredos nos commits novos (gitleaks)
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            RANGE="-1 $HEAD_SHA"
+          else
+            RANGE="$BASE_SHA..$HEAD_SHA"
+          fi
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.21.2 \
+            git /repo --redact --no-banner --log-opts="$RANGE"
+
+  testes:
+    name: Testes unitários
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Instalar dependências
+        run: python -m pip install -r requirements.txt
+
+      - name: Executar testes unitários
+        # Não usam Gemini, webhooks nem OCI real.
+        run: python -m pytest tests/unit -q
+
+  integracao:
+    name: Integração (Compose + emulador OCI)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: testes
+    env:
+      COMPOSE: docker compose -p mediflow-ci -f docker-compose.yml -f docker-compose.oci-local.yml -f docker-compose.test.yml
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Instalar dependências
+        run: python -m pip install -r requirements.txt
+
+      - name: Subir emulador OCI e API de testes (LLM simulado)
+        run: |
+          # docker-compose.yml referencia .env; no CI não há credenciais reais.
+          touch .env
+          $COMPOSE up --build -d oci-emulator mediflow-test-api
+
+      - name: Aguardar API de testes
+        run: |
+          for _ in $(seq 1 30); do
+            if curl -fsS http://localhost:8001/health > /dev/null; then
+              echo "API disponível."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::A API de testes não respondeu em 150 s."
+          exit 1
+
+      - name: Executar testes de integração
+        env:
+          RUN_COMPOSE_TESTS: "1"
+          OCI_SERVICE_ENDPOINT: http://localhost:4599
+          COMPOSE_TEST_API_URL: http://localhost:8001/triagem
+        run: python -m pytest tests/integration/test_compose_cenarios.py -q
+
+      - name: Logs dos containers em caso de falha
+        if: failure()
+        run: $COMPOSE logs --no-color --tail 200
+
+      - name: Encerrar containers
+        if: always()
+        run: $COMPOSE down -v
