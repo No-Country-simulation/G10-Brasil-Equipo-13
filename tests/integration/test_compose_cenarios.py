@@ -18,6 +18,7 @@ pytestmark = pytest.mark.skipif(os.getenv("RUN_COMPOSE_TESTS") != "1", reason="R
     ("rotina", "Farmacia_Hospitalar", "processados/rotina/", "encaminhados"),
     ("urgencia", "Fila_Emergencia_Medica", "processados/urgentes/", "encaminhados"),
     ("revisao", "Fila_Revisao_Humana", "auditoria_humana/", "revisao_humana"),
+    ("urgencia_sem_crm", "Fila_Emergencia_Medica", "auditoria_humana/", "revisao_humana"),
 ])
 def test_cenario_http_compose_oci(cenario, destino, prefixo, etapa):
     api = os.getenv("COMPOSE_TEST_API_URL", "http://localhost:8001/triagem")
@@ -36,19 +37,22 @@ def test_cenario_http_compose_oci(cenario, destino, prefixo, etapa):
         assert doc["armazenamento_oci"]["caminho_objeto"] == path
         decisao = doc["decisao_roteamento"]
         assert decisao["destino_principal"] == destino
-        assert decisao["requer_auditoria_humana"] is (cenario == "revisao")
+        assert decisao["requer_auditoria_humana"] is (cenario in ("revisao", "urgencia_sem_crm"))
         assert storage.obter_arquivo(bucket, f"recebidos/{doc_id}.txt") == bruto
         assert storage.obter_json(bucket, path)["decisao_roteamento"] == decisao
-        fila = "auditoria" if cenario == "revisao" else "urgencias" if cenario == "urgencia" else None
-        if fila:
+        filas = {"revisao": ["auditoria"], "urgencia": ["urgencias"],
+                 "urgencia_sem_crm": ["urgencias", "auditoria"]}.get(cenario, [])
+        for fila in filas:
             r = requests.get(api + "/filas/" + fila, timeout=10)
             r.raise_for_status()
             assert any(d["documento_id"] == doc_id for d in r.json())
         r = requests.get(api + "/filas/processamento", timeout=10)
         r.raise_for_status()
         assert next(d for d in r.json() if d["documento_id"] == doc_id)["etapa"] == etapa
-        if cenario == "urgencia":
+        if cenario.startswith("urgencia"):
             assert decisao["notificacao_gerada"]["canal"] == "Alerta_Plantao_Medico"
+        adicionais = [n["canal"] for n in decisao["notificacoes_adicionais"]]
+        assert adicionais == (["Email_Auditoria"] if cenario == "urgencia_sem_crm" else [])
     finally:
         for chave in (f"recebidos/{doc_id}.txt", path, chave_fluxo(doc_id)):
             try:

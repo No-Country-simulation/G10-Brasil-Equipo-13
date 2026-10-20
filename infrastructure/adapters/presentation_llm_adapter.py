@@ -25,7 +25,8 @@ class PresentationLLMAdapter(LLMPort):
                     candidatos.append(normalizar(base64.b64decode(conteudo, validate=True)))
                 except (ValueError, UnicodeError):
                     pass
-            for nome in ("rotina", "urgencia", "revisao"):
+            # urgencia_sem_crm não aparece na interface; existe para os testes do Compose.
+            for nome in ("rotina", "urgencia", "revisao", "urgencia_sem_crm"):
                 esperado = sha256(normalizar((EXEMPLOS / f"{nome}.txt").read_bytes()).encode()).digest()
                 if any(sha256(c.encode()).digest() == esperado for c in candidatos):
                     return deepcopy(resultado_exemplo(nome))
@@ -35,6 +36,11 @@ class PresentationLLMAdapter(LLMPort):
 
 
 def resultado_exemplo(nome):
+    if nome == "urgencia_sem_crm":
+        resultado = resultado_exemplo("urgencia")
+        resultado["paciente"] = {"nome": "Pessoa Ficticia Urgencia Sem CRM", "idade": 71}
+        resultado["medico_solicitante"]["crm"] = None
+        return resultado
     revisao, urgente = nome == "revisao", nome == "urgencia"
     return {
         "tipo_documento": "Laudo de Exame de Imagem" if urgente else "Receituário Médico",

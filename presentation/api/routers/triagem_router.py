@@ -65,7 +65,8 @@ def processar_documento_json(
         return use_case.executar(request)
     except ValueError as ve:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            # Literal: a constante mudou de nome entre versões do Starlette.
+            status_code=422,
             detail=f"Inconsistência cadastral ou clínica: {str(ve)}"
         )
     except Exception as exc:

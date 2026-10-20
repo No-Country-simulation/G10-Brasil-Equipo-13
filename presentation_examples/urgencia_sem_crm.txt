@@ -1,0 +1,6 @@
+MEDIFLOW - DOCUMENTO FICTICIO PARA TESTES
+Cenario: urgencia com CRM ausente. Sem validade clinica.
+Paciente: Pessoa Ficticia Urgencia Sem CRM. Idade: 71 anos.
+Profissional: Dr. Exemplo. CRM: [nao informado].
+Laudo de imagem (tomografia): achados compativeis com tromboembolismo pulmonar agudo.
+Conclusao ficticia: achado critico que exige avaliacao profissional imediata.

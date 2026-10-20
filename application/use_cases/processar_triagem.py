@@ -90,6 +90,16 @@ class ProcessarTriagemUseCase:
             )
             return None
 
+    def _notificar(self, alerta: Dict[str, str]) -> NotificacaoGeradaDTO:
+        """Envia uma notificação; a falha é registrada sem interromper a triagem."""
+        canal = alerta.get("canal", "Alerta_Plantao_Medico")
+        mensagem = alerta.get("mensagem", "")
+        try:
+            self.notifier.enviar_alerta_urgencia(canal=canal, mensagem=mensagem)
+        except Exception as exc:
+            logger.warning("Falha ao enviar notificação para %s: %s", canal, exc)
+        return NotificacaoGeradaDTO(canal=canal, mensagem=mensagem)
+
     def executar(self, request: TriagemRequestDTO) -> TriagemResponseDTO:
         registro = novo_registro(request.documento_id)
         registro["canal_origem"] = request.canal_origem
@@ -139,18 +149,11 @@ class ProcessarTriagemUseCase:
 
         dados_llm = resultado.get("dados_llm") or {}
 
-        # 4. Disparo de alertas se houver notificação gerada
+        # 4. Disparo de alertas: principal primeiro, depois os complementares.
         notificacao_dto: Optional[NotificacaoGeradaDTO] = None
         if resultado.get("notificacao_gerada"):
-            alerta = resultado["notificacao_gerada"]
-            canal = alerta.get("canal", "Alerta_Plantao_Medico")
-            mensagem = alerta.get("mensagem", "")
-            try:
-                self.notifier.enviar_alerta_urgencia(canal=canal, mensagem=mensagem)
-            except Exception as exc:
-                logger.warning("Falha ao enviar alerta urgente para %s: %s", canal, exc)
-
-            notificacao_dto = NotificacaoGeradaDTO(canal=canal, mensagem=mensagem)
+            notificacao_dto = self._notificar(resultado["notificacao_gerada"])
+        adicionais_dto = [self._notificar(n) for n in resultado.get("notificacoes_adicionais") or []]
 
         # 5. Mapeamento das estruturas clínicas
         prioridade_str = dados_llm.get("nivel_prioridade", "Rotina")
@@ -192,6 +195,7 @@ class ProcessarTriagemUseCase:
                 "Roteamento efetuado pelo grafo de decisão condicional."
             ),
             notificacao_gerada=notificacao_dto,
+            notificacoes_adicionais=adicionais_dto,
         )
 
         caminho_decisao_oci = resultado.get(

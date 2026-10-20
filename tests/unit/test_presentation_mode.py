@@ -36,6 +36,16 @@ def test_simulacao_fluxo_real_sem_gemini_ou_webhook():
         storage_factory.get_storage_adapter.cache_clear()
 
 
+def test_exemplo_urgencia_sem_crm_reconhecido():
+    bruto = (EXEMPLOS / "urgencia_sem_crm.txt").read_bytes()
+    resultado = PresentationLLMAdapter().processar_documento(base64.b64encode(bruto).decode(), "TEXTO")
+    assert resultado["achado_critico"] is True
+    assert resultado["nivel_prioridade"] == "Urgente"
+    assert resultado["medico_solicitante"]["crm"] is None
+    assert resultado["paciente"]["nome"]
+    assert resultado["score_confianca"] >= 0.85
+
+
 def test_desconhecido_nao_recebe_resultado_ficticio():
     from domain.exceptions import FalhaExtracaoIA
     with pytest.raises(FalhaExtracaoIA, match="use um dos três arquivos"):

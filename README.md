@@ -567,7 +567,10 @@ Achados críticos geram alerta ao plantão mesmo com pendências de CRM, pacient
 confiança ou consistência. Quando há pendência, o documento permanece como registro
 único em `auditoria_humana/`, com destino clínico de emergência e revisão obrigatória.
 A consulta `/triagem/filas/urgencias` também inclui esses registros; a consulta de
-auditoria mantém a pendência até a homologação. A presença de notificação no relatório
+auditoria mantém a pendência até a homologação. Nesses casos, além do alerta ao
+plantão (`notificacao_gerada`), o caso de uso envia o aviso `Email_Auditoria`,
+registrado em `decisao_roteamento.notificacoes_adicionais`; a falha de um envio não
+impede o outro. A presença de notificação no relatório
 registra sua geração, sem comprovar entrega externa. As regras clínicas existentes
 não foram ampliadas e precisam de validação clínica antes do uso real.
 
@@ -583,8 +586,8 @@ Os testes locais de regressão não exigem Gemini:
 .\.venv\Scripts\python.exe -m pytest tests/unit/test_regressoes_triagem.py tests/unit/test_gemini_resilience.py
 ```
 
-Para validar os três cenários por HTTP contra uma API Compose separada na porta
-8001, usando SDK OCI e emulador:
+Para validar por HTTP os cenários rotina, urgência, revisão e urgência com CRM
+ausente contra uma API Compose separada na porta 8001, usando SDK OCI e emulador:
 
 ```powershell
 docker compose -f docker-compose.yml -f docker-compose.oci-local.yml -f docker-compose.test.yml up --build -d oci-emulator mediflow-test-api
