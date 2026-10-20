@@ -126,6 +126,13 @@ mediflow/
 
 ---
 
+## 🔀 Fluxo de contribuição
+
+Branches (Git Flow), modelo de Pull Request, verificações de CI e regras de
+proteção estão em [`docs/fluxo-de-trabalho-git.md`](docs/fluxo-de-trabalho-git.md).
+
+---
+
 ## ⚙️ Pré-requisitos e Configuração
 
 ### 1. Clonar o Repositório e Configurar Variáveis
