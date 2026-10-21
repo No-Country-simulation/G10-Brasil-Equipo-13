@@ -43,6 +43,8 @@ class TriagemNodes:
                 "canal": "Alerta_Plantao_Medico",
                 "mensagem": f"ALERTA URGENTE: Diagnóstico crítico de {diagnostico} para paciente {paciente_nome}."
             },
+            # A pendência também avisa a auditoria, sem substituir o alerta ao plantão.
+            "notificacoes_adicionais": [pendencia["notificacao_gerada"]] if pendencia and pendencia.get("notificacao_gerada") else [],
             "caminho_oci_sugerido": pendencia["caminho_oci_sugerido"] if pendencia else f"processados/urgentes/{state['documento_id']}.json"
         }
 
