@@ -73,6 +73,10 @@ class DecisaoRoteamentoDTO(BaseModel):
     )
     justificativa_roteamento: str = Field(..., description="Motivo clínico ou administrativo da decisão")
     notificacao_gerada: Optional[NotificacaoGeradaDTO] = None
+    notificacoes_adicionais: list[NotificacaoGeradaDTO] = Field(
+        default_factory=list,
+        description="Notificações complementares, como o e-mail de auditoria de um caso urgente com pendências",
+    )
 
 
 class ArmazenamentoOciDTO(BaseModel):

@@ -1,4 +1,4 @@
-from typing import TypedDict, Optional, Dict, Any
+from typing import TypedDict, Optional, Dict, Any, List
 
 
 class WorkflowTriagemState(TypedDict, total=False):
@@ -19,4 +19,5 @@ class WorkflowTriagemState(TypedDict, total=False):
     destino_principal: str
     justificativa_roteamento: str
     notificacao_gerada: Optional[Dict[str, str]]
+    notificacoes_adicionais: List[Dict[str, str]]
     caminho_oci_sugerido: str

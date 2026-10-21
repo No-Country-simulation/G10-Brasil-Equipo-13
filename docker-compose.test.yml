@@ -18,6 +18,7 @@ services:
       - ./application:/app/application:ro
       - ./infrastructure:/app/infrastructure:ro
       - ./presentation:/app/presentation:ro
+      - ./presentation_examples:/app/presentation_examples:ro
       - ./tests:/app/tests:ro
     depends_on:
       - oci-emulator
