@@ -112,12 +112,17 @@ não equivale à inspeção completa de assinatura e conteúdo de todos os forma
 
 ### 3.2 DTO de Saída Padronizado (`TriagemResponseDTO`)
 
+O campo `canal_origem` preserva o valor informado no recebimento, tanto na
+resposta quanto no relatório persistido. É opcional, com padrão `null`, para
+permitir a leitura de registros antigos sem origem registrada.
+
 Exemplo de resposta de urgência sem pendências (contrato em `application/dtos/output_response.py`):
 
 ```json
 {
   "status": "processado",
   "documento_id": "DOC-CLIN-2026-8942",
+  "canal_origem": "Pronto_Socorro",
   "execucao_id": "execucao-sintetica",
   "acompanhamento_fluxo_confirmado": true,
   "erro_extracao": null,
