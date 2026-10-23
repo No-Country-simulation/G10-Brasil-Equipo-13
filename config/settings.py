@@ -18,12 +18,16 @@ class Settings(BaseSettings):
     GEMINI_MAX_ATTEMPTS: int = Field(default=3, ge=1, le=3)
     OCI_CONFIG_FILE: str = os.getenv("OCI_CONFIG_FILE", "~/.oci/config")
     OCI_CONFIG_PROFILE: str = os.getenv("OCI_CONFIG_PROFILE", "DEFAULT")
+    # Aceita no .env os caminhos usados apenas pelo Compose; o SDK usa OCI_CONFIG_FILE.
+    OCI_CONFIG_HOST_FILE: str = ""
+    OCI_KEY_HOST_FILE: str = ""
     STORAGE_MODE: Literal["memory", "emulator", "oci"] = "memory"
     OCI_SERVICE_ENDPOINT: str = "http://localhost:4599"
     OCI_NAMESPACE: str = os.getenv("OCI_NAMESPACE", "mi-tenancy-namespace")
     OCI_BUCKET_NAME: str = os.getenv("OCI_BUCKET_NAME", "mediflow-documentos-clinicos")
 
     WEBHOOK_URL: str = os.getenv("WEBHOOK_URL", "")
+    WEBHOOK_TOKEN: SecretStr = SecretStr("")
 
     model_config = SettingsConfigDict(env_file=".env")
 

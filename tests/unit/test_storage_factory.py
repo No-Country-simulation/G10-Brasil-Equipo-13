@@ -17,6 +17,18 @@ def limpar_cache():
     storage_factory.get_storage_adapter.cache_clear()
 
 
+def test_env_aceita_caminhos_host_do_compose(tmp_path):
+    arquivo = tmp_path / ".env"
+    arquivo.write_text(
+        'OCI_CONFIG_HOST_FILE="C:/privado/config.docker"\n'
+        'OCI_KEY_HOST_FILE="C:/privado/chave.pem"\n',
+        encoding="utf-8",
+    )
+    cfg = Settings(_env_file=arquivo)
+    assert cfg.OCI_CONFIG_HOST_FILE == "C:/privado/config.docker"
+    assert cfg.OCI_KEY_HOST_FILE == "C:/privado/chave.pem"
+
+
 def test_memoria_isola_buckets():
     storage = MemoryStorageAdapter()
     storage.salvar_json("a", "doc.json", {"id": "a"})
