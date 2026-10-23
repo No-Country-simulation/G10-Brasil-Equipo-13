@@ -138,11 +138,9 @@ proteção estão em [`docs/fluxo-de-trabalho-git.md`](docs/fluxo-de-trabalho-gi
 ### 1. Clonar o Repositório e Configurar Variáveis
 
 ```bash
-git clone https://github.com/HilarioGouveia/mediflow.git
-cd mediflow
+git clone https://github.com/No-Country-simulation/G10-Brasil-Equipo-13.git
+cd G10-Brasil-Equipo-13
 cp .env.example .env
-
-
 ```
 
 Edite o arquivo `.env` com as configurações necessárias. Se ele já existe,
