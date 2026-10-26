@@ -1,0 +1,12 @@
+# Complemento opcional: acrescente -f docker-compose.email.yml ao comando atual.
+services:
+  notificador:
+    image: mediflow:local
+    build: .
+    command: uvicorn infrastructure.notifications.email_webhook:app --host 0.0.0.0 --port 8080
+    env_file:
+      - .env.notificador.local
+    volumes:
+      - ./infrastructure/notifications:/app/infrastructure/notifications:ro
+    restart: unless-stopped
+    # Sem porta publicada: somente serviços da rede Docker acessam o webhook.
