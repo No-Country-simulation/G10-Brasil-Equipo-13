@@ -207,6 +207,7 @@ class ProcessarTriagemUseCase:
         resposta_final = TriagemResponseDTO(
             status=StatusProcessamentoEnum.ERRO if resultado.get("erro_extracao") else StatusProcessamentoEnum.PROCESSADO,
             documento_id=request.documento_id,
+            canal_origem=request.canal_origem,
             execucao_id=registro["execucao_id"],
             erro_extracao=resultado.get("erro_extracao"),
             classificacao=classificacao,
