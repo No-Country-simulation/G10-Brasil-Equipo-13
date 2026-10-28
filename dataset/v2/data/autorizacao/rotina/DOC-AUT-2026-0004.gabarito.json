@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-AUT-2026-0004",
+  "cenario": "rotina",
+  "tipo_documento": "Autorização Administrativa",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Auditoria_Autorizacoes",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Miguel Ramos Macedo",
+      "idade": 89,
+      "cpf": "215.063.748-08"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Miguel Monteiro",
+      "crm": "511608-DF"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hiperlipidemia não especificada",
+    "cid_sugerido": "E78.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Perfil Lipídico"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-651002",
+    "convenio": "Convênio Horizonte",
+    "status_autorizacao": "negada",
+    "pendencias": [
+      "Documentação incompleta"
+    ]
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

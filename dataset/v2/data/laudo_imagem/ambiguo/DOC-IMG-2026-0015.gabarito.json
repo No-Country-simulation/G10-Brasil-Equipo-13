@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-IMG-2026-0015",
+  "cenario": "ambiguo",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 40,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Letícia Rodrigues",
+      "crm": "840117-DF"
+    },
+    "exame_realizado": "Radiografia de Tórax",
+    "diagnostico_principal": "Pneumonia não especificada",
+    "cid_sugerido": "J18.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Opacidade alveolar em lobo inferior direito, compatível com processo pneumônico.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

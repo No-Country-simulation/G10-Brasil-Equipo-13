@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-CLIN-2026-0011",
+  "cenario": "ambiguo",
+  "tipo_documento": "Receituário Médico",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Murilo Vieira Carvalho",
+      "idade": 14,
+      "cpf": "370.245.618-07"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Aurora Azevedo",
+      "crm": "36240-PE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Fratura da Extremidade Distal do Rádio",
+    "cid_sugerido": "S52.5",
+    "medicamentos": [
+      {
+        "nome": "Nitrofurantoína",
+        "dosagem": "100 mg",
+        "via": "VO",
+        "frequencia": "6/6h",
+        "duracao": "7 dias"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CID incompatível com o medicamento prescrito",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

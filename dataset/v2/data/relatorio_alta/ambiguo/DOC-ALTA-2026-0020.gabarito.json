@@ -1,0 +1,51 @@
+{
+  "documento_id": "DOC-ALTA-2026-0020",
+  "cenario": "ambiguo",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Luiz Fernando Campos Albuquerque",
+      "idade": 38,
+      "cpf": "209.374.581-04"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Davi Lucas Souza",
+      "crm": "527-BA"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infarto Agudo do Miocárdio",
+    "cid_sugerido": "I21.9",
+    "medicamentos": [
+      {
+        "nome": "Clopidogrel",
+        "dosagem": "300 mg",
+        "via": "VO",
+        "frequencia": "dose de ataque",
+        "duracao": "1 dia"
+      },
+      {
+        "nome": "AAS",
+        "dosagem": "300 mg",
+        "via": "VO",
+        "frequencia": "dose única",
+        "duracao": "1 dia"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "alta",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "evento_critico_historico"
+  ]
+}

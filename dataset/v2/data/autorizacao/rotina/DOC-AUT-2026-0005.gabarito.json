@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-AUT-2026-0005",
+  "cenario": "rotina",
+  "tipo_documento": "Autorização Administrativa",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Auditoria_Autorizacoes",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Letícia Cavalcanti Fogaça",
+      "idade": 70,
+      "cpf": "324.891.065-89"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Juan Monteiro",
+      "crm": "684558-DF"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infecção do Trato Urinário",
+    "cid_sugerido": "N39.0",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Urocultura"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-942690",
+    "convenio": "Prime Saúde",
+    "status_autorizacao": "pendente",
+    "pendencias": [
+      "Laudo médico anexo"
+    ]
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

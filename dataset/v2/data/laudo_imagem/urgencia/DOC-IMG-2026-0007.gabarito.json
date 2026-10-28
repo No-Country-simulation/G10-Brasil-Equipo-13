@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-IMG-2026-0007",
+  "cenario": "urgencia",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Manuella Freitas Borges",
+      "idade": 25,
+      "cpf": "830.294.756-38"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Henrique Mendes",
+      "crm": "335486-RJ"
+    },
+    "exame_realizado": "Tomografia de Crânio sem contraste",
+    "diagnostico_principal": "Acidente Vascular Cerebral Isquêmico",
+    "cid_sugerido": "I63.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Área hipodensa em território da artéria cerebral média esquerda, sugestiva de isquemia aguda.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

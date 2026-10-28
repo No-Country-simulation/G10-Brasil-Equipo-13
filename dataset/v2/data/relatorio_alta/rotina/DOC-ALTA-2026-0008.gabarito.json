@@ -1,0 +1,44 @@
+{
+  "documento_id": "DOC-ALTA-2026-0008",
+  "cenario": "rotina",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Alice Fernandes Novaes",
+      "idade": 26,
+      "cpf": "927.680.431-50"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Allana Campos",
+      "crm": "944629-PR"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Acidente Vascular Cerebral Isquêmico",
+    "cid_sugerido": "I63.9",
+    "medicamentos": [
+      {
+        "nome": "AAS",
+        "dosagem": "300 mg",
+        "via": "VO",
+        "frequencia": "dose única",
+        "duracao": "1 dia"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "alta",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "evento_critico_historico"
+  ]
+}

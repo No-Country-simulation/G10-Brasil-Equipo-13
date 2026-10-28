@@ -1,0 +1,39 @@
+{
+  "documento_id": "DOC-GUIA-2026-0018",
+  "cenario": "urgencia_ambigua",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 54,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Matheus Lima",
+      "crm": "917855-SP"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infarto Agudo do Miocárdio",
+    "cid_sugerido": "I21.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Dosagem de Troponina"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-787584",
+    "convenio": "Prime Saúde",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica",
+    "revisao_humana_paralela"
+  ]
+}

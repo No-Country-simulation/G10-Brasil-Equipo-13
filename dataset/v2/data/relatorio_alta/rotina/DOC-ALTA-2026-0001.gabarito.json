@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-ALTA-2026-0001",
+  "cenario": "rotina",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Bento Vieira Teixeira",
+      "idade": 59,
+      "cpf": "340.218.675-62"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Sabrina Novaes",
+      "crm": "477576-PR"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hipertensão Essencial",
+    "cid_sugerido": "I10",
+    "medicamentos": [
+      {
+        "nome": "Losartana",
+        "dosagem": "50 mg",
+        "via": "VO",
+        "frequencia": "1x ao dia",
+        "duracao": "uso contínuo"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "evolucao",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

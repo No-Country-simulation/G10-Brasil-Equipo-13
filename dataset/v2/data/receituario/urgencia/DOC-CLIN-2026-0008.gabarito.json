@@ -1,0 +1,44 @@
+{
+  "documento_id": "DOC-CLIN-2026-0008",
+  "cenario": "urgencia",
+  "tipo_documento": "Receituário Médico",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Eduardo Oliveira Carvalho",
+      "idade": 22,
+      "cpf": "856.297.104-94"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Francisco Monteiro",
+      "crm": "855664-PE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Sepse não especificada",
+    "cid_sugerido": "A41.9",
+    "medicamentos": [
+      {
+        "nome": "Ceftriaxona",
+        "dosagem": "2 g",
+        "via": "EV",
+        "frequencia": "1x ao dia",
+        "duracao": "10 dias"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}
