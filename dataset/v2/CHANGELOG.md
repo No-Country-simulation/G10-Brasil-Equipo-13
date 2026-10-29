@@ -37,3 +37,14 @@
 # v2 congelada - 23/10/2026 09:25
 
 - PDFs e imagens conferidos com os textos dos documentos. Versão de referência para os testes.
+
+# PR #35 — dataset v2 no Git
+
+- Incluídos no repositório os 115 documentos de entrada, seus 115 gabaritos, os schemas e o `manifest.csv` da versão v2.
+- Documentação do dataset atualizada para explicar a estrutura e o uso dos arquivos versionados.
+- As decisões descritas em `DECISOES.md` permanecem provisórias e devem ser consideradas no contexto dos testes.
+- PDFs e imagens permanecem no Drive; esta entrega não inclui um script automatizado para baixá-los.
+- Pendente de alinhamento com a equipe: confirmar a estrutura definitiva das pastas.
+- Pendente de validação: reunir evidências dos testes de regressão relacionados às issues #23 (CRM ausente) e #24 (processamento de TXT e codificações).
+- A alteração dos schemas para incluir `notificacoes_adicionais` fica para uma PR separada, após alinhamento com o backend.
+- A substituição e o arquivamento do gerador antigo ficam para uma etapa posterior.
