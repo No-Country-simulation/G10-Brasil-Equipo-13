@@ -123,5 +123,5 @@ def test_falha_ia_persiste_erro_em_auditoria_sem_alerta_clinico():
     assert resposta.erro_extracao.codigo == "modelo_indisponivel"
     assert resposta.decisao_roteamento.requer_auditoria_humana
     assert "Extração não realizada" in resposta.decisao_roteamento.justificativa_roteamento
-    assert storage.obter_json("teste", "auditoria_humana/FALHA.json")["status"] == "erro"
+    assert storage.obter_json("teste", resposta.armazenamento_oci.caminho_objeto)["status"] == "erro"
     notifier.enviar_alerta_urgencia.assert_not_called()

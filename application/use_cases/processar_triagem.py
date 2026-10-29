@@ -30,6 +30,7 @@ from application.dtos.output_response import (
 )
 from application.workflows.graph import criar_grafo_triagem
 from application.use_cases.acompanhar_fluxo import novo_registro, registrar_etapa
+from application.use_cases.identidade_documento import reservar_cadastro, caminho_execucao
 
 logger = logging.getLogger("MediFlowUseCase")
 
@@ -52,13 +53,13 @@ class ProcessarTriagemUseCase:
         self.notifier = notifier
         self.bucket_name = bucket_name
 
-    def _salvar_documento_original(self, request: TriagemRequestDTO) -> Optional[str]:
+    def _salvar_documento_original(self, request: TriagemRequestDTO, execucao_id: str) -> Optional[str]:
         """
         Salva o arquivo bruto original (PDF, Imagem ou Texto) no prefixo 'recebidos/' da OCI.
         """
         tipo = request.tipo_arquivo.value.upper()
         extensao = "pdf" if tipo == "PDF" else ("jpg" if tipo == "IMAGEM" else "txt")
-        caminho_bruto = f"recebidos/{request.documento_id}.{extensao}"
+        caminho_bruto = f"recebidos/{caminho_execucao(request.documento_id, execucao_id)}.{extensao}"
 
         content_type = "application/pdf" if tipo == "PDF" else ("image/jpeg" if tipo == "IMAGEM" else "text/plain; charset=utf-8")
 
@@ -100,11 +101,18 @@ class ProcessarTriagemUseCase:
             logger.warning("Falha ao enviar notificação para %s: %s", canal, exc)
         return NotificacaoGeradaDTO(canal=canal, mensagem=mensagem)
 
-    def executar(self, request: TriagemRequestDTO) -> TriagemResponseDTO:
+    def executar(self, request: TriagemRequestDTO, *, reprocessamento_de=None, execucao_anterior_id=None) -> TriagemResponseDTO:
+        request.conteudo_para_extracao()
         registro = novo_registro(request.documento_id)
+        if reprocessamento_de is None:
+            reservar_cadastro(self.storage, self.bucket_name, registro)
+        else:
+            registro["reprocessamento_de"] = reprocessamento_de
+            registro["execucao_anterior_id"] = execucao_anterior_id
         registro["canal_origem"] = request.canal_origem
-        registrar_etapa(self.storage, self.bucket_name, registro, "recebidos")
+        registro["tipo_arquivo"] = request.tipo_arquivo.value
         try:
+            registrar_etapa(self.storage, self.bucket_name, registro, "recebidos")
             return self._executar(request, registro)
         except Exception:
             try:
@@ -121,7 +129,9 @@ class ProcessarTriagemUseCase:
         conteudo = request.conteudo_para_extracao()
 
         # 1. Persistência mandatória do documento original em /recebidos/
-        caminho_doc_original = self._salvar_documento_original(request)
+        caminho_doc_original = self._salvar_documento_original(request, registro["execucao_id"])
+        if not caminho_doc_original:
+            raise RuntimeError("Não foi possível preservar o documento original. A triagem não foi iniciada.")
         registro["caminho_documento_bruto"] = caminho_doc_original
         registrar_etapa(self.storage, self.bucket_name, registro, "em_analise")
 
@@ -202,12 +212,19 @@ class ProcessarTriagemUseCase:
             "caminho_oci_sugerido",
             f"auditoria_humana/{request.documento_id}.json"
         )
+        pasta = caminho_decisao_oci.rsplit("/", 1)[0]
+        caminho_decisao_oci = f"{pasta}/{caminho_execucao(request.documento_id, registro['execucao_id'])}.json"
 
         # 6. Instanciação do DTO de resposta já assumindo 'sucesso' para a persistência
         resposta_final = TriagemResponseDTO(
             status=StatusProcessamentoEnum.ERRO if resultado.get("erro_extracao") else StatusProcessamentoEnum.PROCESSADO,
             documento_id=request.documento_id,
+            canal_origem=request.canal_origem,
             execucao_id=registro["execucao_id"],
+            tipo_arquivo=request.tipo_arquivo.value,
+            criado_em=registro["criado_em"],
+            reprocessamento_de=registro.get("reprocessamento_de"),
+            execucao_anterior_id=registro.get("execucao_anterior_id"),
             erro_extracao=resultado.get("erro_extracao"),
             classificacao=classificacao,
             dados_extraidos=dados_extraidos,

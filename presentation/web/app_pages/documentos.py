@@ -1,10 +1,10 @@
 """Catálogo documental com filtros e conferência dos registros persistidos."""
 import requests
 import streamlit as st
-from presentation.web.api_client import consultar
+from presentation.web.api_client import consultar, enviar
 from presentation.web.components.resultado import exibir_resultado
 from presentation.web.components.historico import exibir_historico
-from presentation.web.components.documentos import linhas_documentos, estado_documento
+from presentation.web.components.documentos import linhas_documentos, estado_documento, chave_documento, rotulo_documento
 from presentation.web.components.layout import cabecalho, indicadores, estado_vazio, nome_destino
 
 cabecalho("Documentos clínicos", "Organize e acompanhe os documentos, suas prioridades e os destinos de encaminhamento.")
@@ -66,14 +66,35 @@ else:
     with st.container(border=True):
         st.subheader("Conferência do documento", icon=":material/visibility:")
         preferido = st.session_state.pop("documento_em_consulta", None)
-        ids = [doc["documento_id"] for doc in filtrados]
+        registros = {chave_documento(doc): doc for doc in filtrados}
+        rotulos = {chave: rotulo_documento(doc) for chave, doc in registros.items()}
+        ids = list(registros)
+        preferido = next((chave_documento(d) for d in filtrados if chave_documento(d) == preferido or d["documento_id"] == preferido), preferido)
         if preferido in ids:
             st.session_state.consulta_documento_id = preferido
         elif preferido:
             st.info("O documento selecionado não está nestes resultados. Ajuste os filtros.")
         if st.session_state.get("consulta_documento_id") not in ids:
             st.session_state.consulta_documento_id = ids[0]
-        selecionado = st.selectbox("Abrir detalhes do documento", ids, key="consulta_documento_id")
-        documento = next(doc for doc in filtrados if doc["documento_id"] == selecionado)
+        selecionado = st.selectbox("Abrir detalhes do documento", ids, key="consulta_documento_id", format_func=rotulos.get)
+        documento = registros[selecionado]
         exibir_resultado(documento)
         exibir_historico(documento)
+        st.caption(rotulo_documento(documento))
+        with st.form("reprocessar_" + selecionado):
+            st.write("Reprocessar o original desta execução preservando os registros anteriores.")
+            canal = st.selectbox("Origem do reprocessamento", ["Pronto_Socorro", "Ambulatorio", "Recepcao"])
+            reprocessar = st.form_submit_button("Reprocessar documento", icon=":material/refresh:")
+        if reprocessar:
+            try:
+                with st.spinner("Reprocessando o documento…"):
+                    resultado = enviar("reprocessar", {"documento_id": documento["documento_id"], "origem_oci_path": selecionado, "canal_origem": canal})
+                st.session_state.resultado_triagem = resultado
+                st.session_state.documento_em_consulta = resultado["armazenamento_oci"]["caminho_objeto"]
+                st.rerun()
+            except requests.RequestException as exc:
+                try:
+                    detalhe = exc.response.json().get("detail") if exc.response is not None else None
+                except ValueError:
+                    detalhe = None
+                st.error(detalhe or "Não foi possível confirmar o reprocessamento. Consulte o histórico antes de tentar novamente.")

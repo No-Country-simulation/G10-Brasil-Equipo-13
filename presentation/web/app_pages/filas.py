@@ -3,6 +3,7 @@ from datetime import datetime
 import requests
 import streamlit as st
 from presentation.web import api_client
+from presentation.web.components.documentos import chave_documento
 from presentation.web.components.layout import cabecalho, indicadores, estado_vazio, nome_destino
 
 ETAPAS = {
@@ -43,14 +44,25 @@ def cartao(item):
             st.caption("Estado confirmado pelo resultado salvo; horário da etapa não registrado.")
         if item.get("mensagem"):
             st.warning(item["mensagem"])
-        chave = item["documento_id"] + "_" + str(item.get("execucao_id"))
+        chave = item.get("registro_id") or item["documento_id"] + "_" + str(item.get("execucao_id"))
         if item["etapa"] == "revisao_humana":
             if st.button("Abrir revisão", key="revisar_" + chave, icon=":material/fact_check:", width="stretch"):
-                st.session_state.documento_em_revisao = item["documento_id"]
+                st.session_state.documento_em_revisao = chave_documento(doc)
                 st.switch_page("app_pages/auditoria.py")
+        elif item["etapa"] == "falha" and item.get("caminho_documento_bruto") and item.get("registro_id"):
+            with st.form("reprocessar_falha_" + chave):
+                canal = st.selectbox("Origem do reprocessamento", ["Pronto_Socorro", "Ambulatorio", "Recepcao"])
+                reprocessar = st.form_submit_button("Reprocessar original")
+            if reprocessar:
+                try:
+                    resultado = api_client.enviar("reprocessar", {"documento_id": item["documento_id"], "origem_oci_path": item["registro_id"], "canal_origem": canal})
+                    st.session_state.documento_em_consulta = resultado["armazenamento_oci"]["caminho_objeto"]
+                    st.switch_page("app_pages/documentos.py")
+                except (requests.RequestException, ValueError):
+                    st.error("Não foi possível confirmar o reprocessamento. Consulte as execuções antes de tentar novamente.")
         elif doc.get("armazenamento_oci", {}).get("caminho_objeto"):
             if st.button("Abrir documento", key="consultar_" + chave, icon=":material/description:", width="stretch"):
-                st.session_state.documento_em_consulta = item["documento_id"]
+                st.session_state.documento_em_consulta = chave_documento(doc)
                 st.switch_page("app_pages/documentos.py")
         with st.expander("Etapas registradas", icon=":material/history:"):
             if not item.get("eventos"):

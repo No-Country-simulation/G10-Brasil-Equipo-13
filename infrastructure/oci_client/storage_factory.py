@@ -34,7 +34,8 @@ def get_storage_adapter():
         return MemoryStorageAdapter()
     if settings.STORAGE_MODE == "emulator":
         config = criar_config_emulador(settings.OCI_SERVICE_ENDPOINT)
-        storage = OCIStorageAdapter(config, settings.OCI_NAMESPACE, service_endpoint=settings.OCI_SERVICE_ENDPOINT)
+        storage = OCIStorageAdapter(config, settings.OCI_NAMESPACE, service_endpoint=settings.OCI_SERVICE_ENDPOINT,
+            reservas_db=settings.MEDIFLOW_RESERVAS_DB or None)
         storage.modo = "emulador_oci"
         # O namespace do emulador pertence à tenancy local e pode ser derivado por ele.
         storage.namespace = storage.client.get_namespace().data

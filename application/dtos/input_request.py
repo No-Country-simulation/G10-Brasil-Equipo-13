@@ -15,7 +15,7 @@ class TipoArquivoEnum(str, Enum):
 class TriagemRequestDTO(BaseModel):
     """Schema de entrada para requisição de processamento clínico."""
     documento_id: str = Field(
-        ..., 
+        ..., min_length=1,
         description="Identificador único do documento", 
         examples=["DOC-CLIN-2026-8942"]
     )
