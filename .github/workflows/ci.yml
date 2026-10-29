@@ -174,9 +174,10 @@ jobs:
       - name: Executar testes de integração
         env:
           RUN_COMPOSE_TESTS: "1"
+          RUN_OCI_EMULATOR_TESTS: "1"
           OCI_SERVICE_ENDPOINT: http://localhost:4599
           COMPOSE_TEST_API_URL: http://localhost:8001/triagem
-        run: python -m pytest tests/integration/test_compose_cenarios.py -q
+        run: python -m pytest tests/integration/test_compose_cenarios.py tests/integration/test_oci_emulator.py tests/unit/test_issue31.py -q
 
       - name: Logs dos containers em caso de falha
         if: failure()

@@ -3,14 +3,17 @@ from copy import deepcopy
 from datetime import datetime, timezone
 from hashlib import sha256
 from uuid import uuid4
+from application.use_cases.identidade_documento import identificar_relatorio
 
 
-def chave_fluxo(documento_id):
-    return f"fluxo/{sha256(documento_id.encode('utf-8')).hexdigest()}.json"
+def chave_fluxo(documento_id, execucao_id=None):
+    identidade = sha256(documento_id.encode('utf-8')).hexdigest()
+    return f"fluxo/{identidade}/{execucao_id}.json" if execucao_id else f"fluxo/{identidade}.json"
 
 
 def novo_registro(documento_id, execucao_id=None):
-    return {"versao": 1, "documento_id": documento_id, "execucao_id": execucao_id or uuid4().hex, "eventos": []}
+    return {"versao": 1, "documento_id": documento_id, "execucao_id": execucao_id or uuid4().hex,
+            "criado_em": datetime.now(timezone.utc).isoformat(), "eventos": []}
 
 
 def registrar_etapa(storage, bucket, registro, etapa, documento=None, mensagem=None):
@@ -22,14 +25,21 @@ def registrar_etapa(storage, bucket, registro, etapa, documento=None, mensagem=N
         proximo["documento"] = documento
     if mensagem:
         proximo["mensagem"] = mensagem
-    if not storage.salvar_json(bucket, chave_fluxo(registro["documento_id"]), proximo):
+    chave = registro.get("chave_persistida") or chave_fluxo(registro["documento_id"], registro["execucao_id"])
+    if not storage.salvar_json(bucket, chave, proximo):
         raise RuntimeError("Não foi possível registrar a etapa do processamento.")
     registro.clear()
     registro.update(proximo)
 
 
 def concluir_homologacao(storage, bucket, documento, aprovado):
-    registro = storage.obter_json(bucket, chave_fluxo(documento["documento_id"]))
+    chave = chave_fluxo(documento["documento_id"], documento.get("execucao_id"))
+    registro = storage.obter_json(bucket, chave)
+    if not registro:
+        chave_legada = chave_fluxo(documento["documento_id"])
+        legado = storage.obter_json(bucket, chave_legada)
+        if legado and legado.get("execucao_id") == documento.get("execucao_id"):
+            registro = {**legado, "chave_persistida": chave_legada}
     if not isinstance(registro, dict) or registro.get("versao") != 1:
         registro = novo_registro(documento["documento_id"], documento.get("execucao_id"))
     if aprovado:
@@ -59,7 +69,8 @@ def consultar_fluxo(storage, bucket):
         if chave.endswith(".json"):
             item = storage.obter_json(bucket, chave)
             if item and item.get("versao") == 1:
-                registros[item["documento_id"]] = item
+                item["registro_id"] = chave
+                registros[(item["documento_id"], item.get("execucao_id") or chave)] = item
     # Reconcilia decisões já persistidas, inclusive quando a última gravação do
     # acompanhamento falhou. Um resultado de execução anterior não encerra a atual.
     for prefixo in ("processados/", "auditoria_humana/"):
@@ -69,9 +80,14 @@ def consultar_fluxo(storage, bucket):
             doc = storage.obter_json(bucket, chave)
             if not doc or not doc.get("documento_id"):
                 continue
-            anterior = registros.get(doc["documento_id"])
-            if anterior and anterior.get("execucao_id") != doc.get("execucao_id"):
-                continue
+            doc = identificar_relatorio(doc, chave)
+            identidade = (doc["documento_id"], doc.get("execucao_id") or chave)
+            anterior = registros.get(identidade)
+            # Duplicados anteriores podem inclusive compartilhar execucao_id.
+            # Nunca substituir um relatório já reconciliado por outro caminho.
+            if anterior and anterior.get("registro_id", "").startswith(("processados/", "auditoria_humana/")) and anterior["registro_id"] != chave:
+                identidade = (doc["documento_id"], chave)
+                anterior = None
             item = deepcopy(anterior) if anterior else {
                 "documento_id": doc["documento_id"], "execucao_id": doc.get("execucao_id"),
                 "eventos": [], "atualizado_em": None, "registro_anterior": True,
@@ -80,5 +96,6 @@ def consultar_fluxo(storage, bucket):
             if anterior and etapa != anterior.get("etapa"):
                 item.update(atualizado_em=None, registro_reconciliado=True)
             item.update(etapa=etapa, documento=doc)
-            registros[doc["documento_id"]] = item
+            item["registro_id"] = chave
+            registros[identidade] = item
     return sorted(registros.values(), key=lambda r: (r.get("atualizado_em") or "", r["documento_id"]), reverse=True)

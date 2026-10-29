@@ -132,7 +132,7 @@ def test_reconcilia_resultado_quando_ultima_etapa_nao_foi_gravada():
     storage.salvar_json = salvar
     resposta = caso(storage=storage).executar(request())
     assert resposta.acompanhamento_fluxo_confirmado is False
-    assert storage.obter_json("teste", chave_fluxo("FLUXO"))["etapa"] == "processados"
+    assert storage.obter_json("teste", chave_fluxo("FLUXO", resposta.execucao_id))["etapa"] == "processados"
     reconciliado = consultar_fluxo(storage, "teste")[0]
     assert reconciliado["etapa"] == "encaminhados"
     assert reconciliado["registro_reconciliado"] and reconciliado["atualizado_em"] is None

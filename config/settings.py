@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     OCI_KEY_HOST_FILE: str = ""
     STORAGE_MODE: Literal["memory", "emulator", "oci"] = "memory"
     OCI_SERVICE_ENDPOINT: str = "http://localhost:4599"
+    MEDIFLOW_RESERVAS_DB: str = ""
     OCI_NAMESPACE: str = os.getenv("OCI_NAMESPACE", "mi-tenancy-namespace")
     OCI_BUCKET_NAME: str = os.getenv("OCI_BUCKET_NAME", "mediflow-documentos-clinicos")
 

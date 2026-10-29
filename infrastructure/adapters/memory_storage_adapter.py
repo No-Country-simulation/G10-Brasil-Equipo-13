@@ -1,5 +1,6 @@
 """Armazenamento efêmero de desenvolvimento, sem dependência do SDK OCI."""
 import json
+from threading import RLock
 
 from domain.ports.storage_port import StoragePort
 
@@ -10,6 +11,15 @@ class MemoryStorageAdapter(StoragePort):
 
     def __init__(self):
         self.objetos = {}
+        self._lock = RLock()
+
+    def criar_json_exclusivo(self, bucket_name, object_name, json_data):
+        with self._lock:
+            if (bucket_name, object_name) in self.objetos:
+                return False
+            if not self.salvar_json(bucket_name, object_name, json_data):
+                raise RuntimeError("Não foi possível reservar o cadastro.")
+            return True
 
     def salvar_arquivo(self, bucket_name, object_name, data, content_type="application/octet-stream"):
         self.objetos[(bucket_name, object_name)] = bytes(data)

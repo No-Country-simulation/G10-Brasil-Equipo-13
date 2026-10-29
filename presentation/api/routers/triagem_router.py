@@ -14,6 +14,9 @@ from application.dtos.input_request import TipoArquivoEnum, TriagemRequestDTO
 from application.dtos.output_response import TriagemResponseDTO
 from application.use_cases.processar_triagem import ProcessarTriagemUseCase
 from application.use_cases.acompanhar_fluxo import concluir_homologacao
+from application.use_cases.identidade_documento import identificar_relatorio, caminho_execucao
+from domain.exceptions import DocumentoJaExiste
+from hashlib import sha256
 from infrastructure.oci_client.client_factory import get_triagem_use_case
 
 logger = logging.getLogger("MediFlowAuditoria")
@@ -45,6 +48,41 @@ class HomologacaoAuditoriaDTO(BaseModel):
     decisao: str = Field(..., pattern="^(aprovar|rejeitar)$", description="'aprovar' ou 'rejeitar'")
 
 
+class ReprocessamentoDTO(BaseModel):
+    documento_id: str
+    origem_oci_path: str
+    canal_origem: str = Field(..., min_length=1)
+
+
+@router.post("/reprocessar", response_model=TriagemResponseDTO)
+def reprocessar_documento(payload: ReprocessamentoDTO, use_case=Depends(get_triagem_use_case)):
+    caminho = payload.origem_oci_path
+    if not caminho.startswith(("processados/", "auditoria_humana/", "fluxo/")) or ".." in caminho.split("/"):
+        raise HTTPException(422, "Selecione um relatório ou acompanhamento existente.")
+    anterior = use_case.storage.obter_json(use_case.bucket_name, caminho)
+    if not anterior:
+        raise HTTPException(404, "Execução anterior não localizada.")
+    if anterior.get("documento_id") != payload.documento_id:
+        raise HTTPException(422, "O identificador não corresponde à execução selecionada.")
+    doc = anterior.get("documento") or anterior
+    bruto = doc.get("armazenamento_oci", {}).get("caminho_documento_bruto") or anterior.get("caminho_documento_bruto")
+    if not bruto or not bruto.startswith("recebidos/") or ".." in bruto.split("/"):
+        raise HTTPException(409, "Execução sem referência válida ao original; reprocessamento indisponível.")
+    conteudo = use_case.storage.obter_arquivo(use_case.bucket_name, bruto)
+    if not conteudo:
+        raise HTTPException(409, "Original indisponível; verifique versões ou cópias antes de reprocessar.")
+    tipo = doc.get("tipo_arquivo") or anterior.get("tipo_arquivo") or ("PDF" if bruto.endswith(".pdf") else "IMAGEM" if bruto.endswith((".jpg", ".jpeg", ".png")) else "TEXTO")
+    request = TriagemRequestDTO(documento_id=payload.documento_id, tipo_arquivo=tipo,
+        arquivo_base64=base64.b64encode(conteudo).decode("ascii"), canal_origem=payload.canal_origem)
+    try:
+        execucao_anterior = anterior.get("execucao_id") or "legado-" + sha256(caminho.encode()).hexdigest()
+        return use_case.executar(request, reprocessamento_de=caminho, execucao_anterior_id=execucao_anterior)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(500, "Falha ao reprocessar o documento. Consulte o acompanhamento da execução.") from exc
+
+
 # -------------------------------------------------------------------------
 # 1. Endpoints de Ingestão e Processamento
 # -------------------------------------------------------------------------
@@ -63,6 +101,8 @@ def processar_documento_json(
     """Endpoint primário de triagem automatizada via requisição JSON estruturada."""
     try:
         return use_case.executar(request)
+    except DocumentoJaExiste as exc:
+        raise HTTPException(409, str(exc)) from exc
     except ValueError as ve:
         raise HTTPException(
             # Literal: a constante mudou de nome entre versões do Starlette.
@@ -124,6 +164,8 @@ async def processar_documento_upload(
     try:
         dto_entrada.conteudo_para_extracao()
         return await run_in_threadpool(use_case.executar, dto_entrada)
+    except DocumentoJaExiste as exc:
+        raise HTTPException(409, str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
     except Exception as exc:
@@ -155,13 +197,13 @@ def listar_fila_urgencias(
         if chave.endswith(".json"):
             doc = use_case.storage.obter_json(use_case.bucket_name, chave)
             if doc:
-                casos.append(doc)
+                casos.append(identificar_relatorio(doc, chave))
     # Um urgente com pendências mantém um único registro na auditoria.
     for chave in use_case.storage.listar_objetos_por_prefixo(use_case.bucket_name, "auditoria_humana/"):
         if chave.endswith(".json"):
             doc = use_case.storage.obter_json(use_case.bucket_name, chave)
             if doc and doc.get("decisao_roteamento", {}).get("destino_principal") == "Fila_Emergencia_Medica":
-                casos.append(doc)
+                casos.append(identificar_relatorio(doc, chave))
     return casos
 
 
@@ -183,7 +225,7 @@ def listar_fila_auditoria(
         if chave.endswith(".json"):
             doc = use_case.storage.obter_json(use_case.bucket_name, chave)
             if doc:
-                pendencias.append(doc)
+                pendencias.append(identificar_relatorio(doc, chave))
     return pendencias
 
 
@@ -268,6 +310,12 @@ def homologar_documento_auditoria(
             f"Documento rejeitado em auditoria humana: {payload.parecer_auditor}"
         )
 
+    # Cada homologação continua vinculada à execução selecionada. Legados sem
+    # execução usam o hash do caminho de origem para não colidir entre si.
+    execucao = doc_antigo.get("execucao_id") or "legado-" + sha256(payload.origem_oci_path.encode()).hexdigest()
+    doc_antigo["execucao_id"] = execucao
+    pasta = novo_caminho.rsplit("/", 1)[0]
+    novo_caminho = f"{pasta}/{caminho_execucao(payload.documento_id, execucao)}.json"
     doc_antigo.setdefault("armazenamento_oci", {})
     doc_antigo["armazenamento_oci"]["caminho_objeto"] = novo_caminho
     doc_antigo["armazenamento_oci"]["status_backup"] = "sucesso"

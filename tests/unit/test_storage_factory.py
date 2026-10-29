@@ -17,7 +17,9 @@ def limpar_cache():
     storage_factory.get_storage_adapter.cache_clear()
 
 
-def test_env_aceita_caminhos_host_do_compose(tmp_path):
+def test_env_aceita_caminhos_host_do_compose(tmp_path, monkeypatch):
+    monkeypatch.delenv("OCI_CONFIG_HOST_FILE", raising=False)
+    monkeypatch.delenv("OCI_KEY_HOST_FILE", raising=False)
     arquivo = tmp_path / ".env"
     arquivo.write_text(
         'OCI_CONFIG_HOST_FILE="C:/privado/config.docker"\n'
@@ -81,16 +83,15 @@ def test_falha_ao_gravar_destino_nao_remove_origem():
 
 @pytest.mark.parametrize("excecao", [False, True])
 def test_falha_no_original_nao_reporta_backup_completo(excecao):
-    storage = Mock()
-    storage.salvar_arquivo.return_value = ""
+    storage = MemoryStorageAdapter()
+    storage.salvar_arquivo = Mock(return_value="")
     if excecao:
         storage.salvar_arquivo.side_effect = RuntimeError("falha de gravação")
-    storage.salvar_json.return_value = True
+    storage.salvar_json = Mock(return_value=True)
     llm = Mock()
     llm.processar_documento.return_value = {"score_confianca": .3}
     caso = ProcessarTriagemUseCase(llm, storage, Mock(), "teste")
-    resposta = caso.executar(TriagemRequestDTO(documento_id="TESTE", tipo_arquivo="TEXTO", documento_texto="Dados fictícios", canal_origem="Teste"))
-    assert resposta.armazenamento_oci.status_backup == "falha"
-    assert resposta.armazenamento_oci.caminho_documento_bruto is None
-    relatorios = [c.kwargs["json_data"] for c in storage.salvar_json.call_args_list if "json_data" in c.kwargs]
-    assert relatorios[0]["armazenamento_oci"]["status_backup"] == "falha"
+    with pytest.raises(RuntimeError, match="preservar o documento original"):
+        caso.executar(TriagemRequestDTO(documento_id="TESTE", tipo_arquivo="TEXTO", documento_texto="Dados fictícios", canal_origem="Teste"))
+    llm.processar_documento.assert_not_called()
+    assert not any(c.kwargs.get("object_name", "").startswith(("processados/", "auditoria_humana/")) for c in storage.salvar_json.call_args_list)
