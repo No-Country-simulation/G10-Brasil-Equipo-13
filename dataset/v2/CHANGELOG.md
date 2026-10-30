@@ -48,3 +48,8 @@
 - Pendente de validação: reunir evidências dos testes de regressão relacionados às issues #23 (CRM ausente) e #24 (processamento de TXT e codificações).
 - A alteração dos schemas para incluir `notificacoes_adicionais` fica para uma PR separada, após alinhamento com o backend.
 - A substituição e o arquivamento do gerador antigo ficam para uma etapa posterior.
+
+## Ajustes de documentação do PR #35
+
+- Status da versão v2 alinhado com o congelamento registrado em 23/10/2026 09:25.
+- A reorganização dos materiais no Drive e a atualização dos respectivos manifestos e checksums permanecem separadas dos arquivos versionados nesta PR.
