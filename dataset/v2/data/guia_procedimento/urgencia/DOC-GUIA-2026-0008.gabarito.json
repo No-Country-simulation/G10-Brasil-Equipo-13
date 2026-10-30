@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-GUIA-2026-0008",
+  "cenario": "urgencia",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Isabel Fonseca Camargo",
+      "idade": 22,
+      "cpf": "932.540.876-74"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Pedro Lucas da Rocha",
+      "crm": "739884-PE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infarto Agudo do Miocárdio",
+    "cid_sugerido": "I21.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Dosagem de Troponina"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-971482",
+    "convenio": "Vida Plena Planos",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

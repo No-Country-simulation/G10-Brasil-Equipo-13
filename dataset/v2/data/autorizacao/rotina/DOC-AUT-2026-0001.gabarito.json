@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-AUT-2026-0001",
+  "cenario": "rotina",
+  "tipo_documento": "Autorização Administrativa",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Auditoria_Autorizacoes",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Oliver Machado das Neves",
+      "idade": 39,
+      "cpf": "741.092.635-06"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Clara Borges",
+      "crm": "822233-GO"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Gastrite não especificada",
+    "cid_sugerido": "K29.7",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Endoscopia Digestiva Alta"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-982027",
+    "convenio": "Convênio Horizonte",
+    "status_autorizacao": "aprovada",
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-AUT-2026-0006",
+  "cenario": "ambiguo",
+  "tipo_documento": "Autorização Administrativa",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Ísis Mendes Araújo",
+      "idade": 53,
+      "cpf": "146.937.820-50"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Maria Helena Viana",
+      "crm": "55718-XX"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hiperlipidemia não especificada",
+    "cid_sugerido": "E78.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Perfil Lipídico"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-412071",
+    "convenio": "Prime Saúde",
+    "status_autorizacao": "pendente",
+    "pendencias": [
+      "Laudo médico anexo"
+    ]
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

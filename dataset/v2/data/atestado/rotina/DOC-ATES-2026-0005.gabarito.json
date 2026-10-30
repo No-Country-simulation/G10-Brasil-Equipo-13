@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-ATES-2026-0005",
+  "cenario": "rotina",
+  "tipo_documento": "Atestado Médico",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Ana Lívia Duarte Borges",
+      "idade": 68,
+      "cpf": "870.216.439-69"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Ravi Freitas",
+      "crm": "594929-SC"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hipertensão Essencial",
+    "cid_sugerido": "I10",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": 6,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-AUT-2026-0008",
+  "cenario": "ambiguo",
+  "tipo_documento": "Autorização Administrativa",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Maria Julia Moura Fogaça",
+      "idade": 50,
+      "cpf": "932.015.786-30"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Hellena Oliveira",
+      "crm": "221883-RS"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Gastrite não especificada",
+    "cid_sugerido": "K29.7",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Endoscopia Digestiva Alta"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-968170",
+    "convenio": "Prime Saúde",
+    "status_autorizacao": null,
+    "pendencias": [
+      "Laudo médico anexo"
+    ]
+  },
+  "motivo_ambiguidade": "Status da autorização ausente",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

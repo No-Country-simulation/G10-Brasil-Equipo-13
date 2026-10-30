@@ -1,0 +1,44 @@
+{
+  "documento_id": "DOC-ALTA-2026-0018",
+  "cenario": "ambiguo",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 17,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Maria Júlia Pastor",
+      "crm": "598933-CE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Apendicite Aguda",
+    "cid_sugerido": "K35.8",
+    "medicamentos": [
+      {
+        "nome": "Metronidazol",
+        "dosagem": "500 mg",
+        "via": "EV",
+        "frequencia": "8/8h",
+        "duracao": "7 dias"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "alta",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "evento_critico_historico"
+  ]
+}

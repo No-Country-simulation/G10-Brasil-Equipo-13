@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-ATES-2026-0009",
+  "cenario": "ambiguo",
+  "tipo_documento": "Atestado Médico",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Luara Ribeiro Cardoso",
+      "idade": 43,
+      "cpf": "348.629.517-91"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Júlia da Conceição",
+      "crm": "622056-BA"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infecção do Trato Urinário",
+    "cid_sugerido": "N39.0",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Dias de afastamento ausentes",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-GUIA-2026-0011",
+  "cenario": "ambiguo",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Caio Nunes Ramos",
+      "idade": 24,
+      "cpf": "659.078.243-10"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Pietro Freitas",
+      "crm": "88215-XX"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hipertensão Essencial",
+    "cid_sugerido": "I10",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Creatinina"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-753064",
+    "convenio": "Convênio Horizonte",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

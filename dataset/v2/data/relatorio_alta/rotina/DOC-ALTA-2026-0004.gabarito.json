@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-ALTA-2026-0004",
+  "cenario": "rotina",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Noah Costela Araújo",
+      "idade": 47,
+      "cpf": "954.761.238-73"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. João Vitor Oliveira",
+      "crm": "43958-GO"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infecção do Trato Urinário",
+    "cid_sugerido": "N39.0",
+    "medicamentos": [
+      {
+        "nome": "Nitrofurantoína",
+        "dosagem": "100 mg",
+        "via": "VO",
+        "frequencia": "6/6h",
+        "duracao": "7 dias"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "evolucao",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

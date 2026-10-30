@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-GUIA-2026-0009",
+  "cenario": "urgencia",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Davi Miguel Vieira Vieira",
+      "idade": 79,
+      "cpf": "672.581.930-30"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Otávio Vieira",
+      "crm": "29927-RJ"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Apendicite Aguda",
+    "cid_sugerido": "K35.8",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Ultrassonografia de Abdome Total"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-368355",
+    "convenio": "Vida Plena Planos",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

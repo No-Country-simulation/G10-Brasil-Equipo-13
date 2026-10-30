@@ -1,0 +1,4 @@
+﻿MediFlow dataset v2 (congelada)
+Data: 23/10/2026 09:25
+Documentos: 115
+Cenarios: {'rotina': 39, 'urgencia': 21, 'ambiguo': 38, 'urgencia_ambigua': 17}

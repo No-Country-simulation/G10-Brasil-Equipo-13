@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-AUT-2026-0003",
+  "cenario": "rotina",
+  "tipo_documento": "Autorização Administrativa",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Auditoria_Autorizacoes",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "João Lucas Campos Albuquerque",
+      "idade": 70,
+      "cpf": "032.187.946-50"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Ana Vitória Almeida",
+      "crm": "975236-GO"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hiperlipidemia não especificada",
+    "cid_sugerido": "E78.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Perfil Lipídico"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-594514",
+    "convenio": "Saúde Alvorada",
+    "status_autorizacao": "pendente",
+    "pendencias": [
+      "Laudo médico anexo"
+    ]
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

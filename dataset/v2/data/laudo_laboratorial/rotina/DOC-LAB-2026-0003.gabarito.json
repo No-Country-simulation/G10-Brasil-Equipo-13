@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-LAB-2026-0003",
+  "cenario": "rotina",
+  "tipo_documento": "Laudo de Exame Laboratorial",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Larissa Cassiano Jesus",
+      "idade": 8,
+      "cpf": "367.850.124-90"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Lunna Ribeiro",
+      "crm": "598967-CE"
+    },
+    "exame_realizado": "Urocultura",
+    "diagnostico_principal": "Infecção do Trato Urinário",
+    "cid_sugerido": "N39.0",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Crescimento de Escherichia coli acima de 100.000 UFC/mL.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

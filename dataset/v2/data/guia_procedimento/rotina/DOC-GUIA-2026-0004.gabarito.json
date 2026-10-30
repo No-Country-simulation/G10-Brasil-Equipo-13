@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-GUIA-2026-0004",
+  "cenario": "rotina",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Auditoria_Autorizacoes",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Júlia Gomes Vasconcelos",
+      "idade": 65,
+      "cpf": "183.469.702-69"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Juliana da Rosa",
+      "crm": "755957-RJ"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Gastrite não especificada",
+    "cid_sugerido": "K29.7",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Endoscopia Digestiva Alta"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-986982",
+    "convenio": "Saúde Alvorada",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

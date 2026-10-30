@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-IMG-2026-0001",
+  "cenario": "rotina",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Ana Cecília Martins Rocha",
+      "idade": 51,
+      "cpf": "869.715.340-93"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Kamilly Correia",
+      "crm": "242335-SC"
+    },
+    "exame_realizado": "Radiografia de Tórax",
+    "diagnostico_principal": "Pneumonia não especificada",
+    "cid_sugerido": "J18.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Opacidade alveolar em lobo inferior direito, compatível com processo pneumônico.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}
