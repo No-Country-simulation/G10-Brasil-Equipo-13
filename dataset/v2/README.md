@@ -23,16 +23,16 @@ Os arquivos de entrada e os gabaritos são mantidos no Git para permitir o versi
 
 ## Arquivos mantidos no Drive
 
-As pastas `documentos_gerados/` e `casos_teste/` não estão versionadas neste PR e permanecem no Drive do projeto por enquanto.
+As pastas `documentos_gerados/` e `casos_teste/` não estão versionadas nesta PR e permanecem no Drive do projeto.
 
-Entre os materiais previstos estão:
+Os materiais mantidos no Drive incluem:
 
 - PDFs digitais e digitalizados.
-- Imagens de documentos, incluindo variantes limpas e degradadas.
-- Arquivos de casos de teste que ainda precisam ser incorporados ou organizados no repositório.
+- Imagens de documentos, incluindo variantes limpas e degradadas, organizadas em `documentos_gerados/imagens_formatos/`.
+- Arquivos de casos de teste.
 - Manifestos e checksums associados aos materiais armazenados no Drive.
 
-A organização definitiva desses arquivos e seus caminhos será atualizada após a confirmação da estrutura final com a equipe.
+A reorganização das pastas e a atualização dos caminhos nos manifestos e checksums foram realizadas no pacote mantido no Drive. Essas alterações não modificam os documentos, gabaritos, schemas ou `manifest.csv` versionados nesta PR.
 
 ## Documentos por tipo e cenário
 

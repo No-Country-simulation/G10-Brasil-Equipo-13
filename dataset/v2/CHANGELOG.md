@@ -53,3 +53,9 @@
 
 - Status da versão v2 alinhado com o congelamento registrado em 23/10/2026 09:25.
 - A reorganização dos materiais no Drive e a atualização dos respectivos manifestos e checksums permanecem separadas dos arquivos versionados nesta PR.
+
+## 30/10/2026 — Reorganização de pastas no Drive (sem mudança de conteúdo)
+
+- A pasta `imagens_formatos` foi reorganizada para `documentos_gerados/imagens_formatos/`, concentrando PDFs e imagens na pasta `documentos_gerados/`, mantida no Drive.
+- Os caminhos foram atualizados no `manifest_imagens_formatos.csv`, no README e no `CHECKSUMS.sha256` do pacote armazenado no Drive.
+- Documentos, gabaritos, schemas e `manifest.csv` permanecem sem alteração. O ZIP de referência continua válido para o conteúdo da v2.
