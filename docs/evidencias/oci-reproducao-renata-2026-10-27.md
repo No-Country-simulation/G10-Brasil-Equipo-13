@@ -105,3 +105,4 @@ Grupo IAM mediflow-storage e usuário técnico mediflow-app
 
 ![Tela da OCI](./imagens/Captura%20de%20tela%202026-10-26%20233914.png)
 ![Tela da OCI](./imagens/Captura%20de%20tela%202026-10-26%20234332.png)
+![Tela da OCI](./imagens/politica-statements.png)
