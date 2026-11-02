@@ -1,5 +1,8 @@
 """Adaptador OCI nativo, compartilhado entre a nuvem e o emulador local."""
 import json
+import os
+import tempfile
+from pathlib import Path
 
 import oci
 
@@ -10,8 +13,13 @@ class OCIStorageAdapter(StoragePort):
     modo = "oci"
     simulado = False
 
-    def __init__(self, config_dict, namespace_name, service_endpoint=None):
+    def __init__(self, config_dict, namespace_name, service_endpoint=None, reservas_db=None):
         self.namespace = namespace_name
+        self.reservas = None
+        if service_endpoint is not None:
+            from infrastructure.adapters.sqlite_reservas import SqliteReservas
+            caminho = reservas_db or os.getenv("MEDIFLOW_RESERVAS_DB") or Path(tempfile.gettempdir()) / "mediflow-reservas.sqlite3"
+            self.reservas = SqliteReservas(caminho)
         self.client = oci.object_storage.ObjectStorageClient(
             config_dict, service_endpoint=service_endpoint, timeout=(5, 15),
             retry_strategy=oci.retry.NoneRetryStrategy(),
@@ -43,6 +51,26 @@ class OCIStorageAdapter(StoragePort):
     def salvar_json(self, bucket_name, object_name, json_data):
         payload = json.dumps(json_data, ensure_ascii=False).encode("utf-8") if isinstance(json_data, (dict, list)) else str(json_data).encode("utf-8")
         self.salvar_arquivo(bucket_name, object_name, payload, "application/json; charset=utf-8")
+        return True
+
+    def criar_json_exclusivo(self, bucket_name, object_name, json_data):
+        # No emulador, a restrição SQL é compartilhada entre processos. A
+        # reserva permanece após falha: nunca liberar um ID automaticamente.
+        if self.reservas and not self.reservas.criar(self.namespace, bucket_name, object_name):
+            return False
+        # SDK OCI put_object: '*' é o único valor válido de if_none_match.
+        # Não há fallback para escrita incondicional se o serviço não suportar.
+        try:
+            self.client.put_object(
+                namespace_name=self.namespace, bucket_name=bucket_name,
+                object_name=object_name,
+                put_object_body=json.dumps(json_data, ensure_ascii=False).encode("utf-8"),
+                content_type="application/json; charset=utf-8", if_none_match="*",
+            )
+        except oci.exceptions.ServiceError as exc:
+            if exc.status == 412:
+                return False
+            raise
         return True
 
     def obter_arquivo(self, bucket_name, object_name):

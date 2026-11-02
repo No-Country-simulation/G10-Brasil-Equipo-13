@@ -14,11 +14,17 @@ services:
       AUTH_ENABLED: "false"
       GEMINI_API_KEY: ""
       WEBHOOK_URL: ""
+      MEDIFLOW_RESERVAS_DB: /var/lib/mediflow/reservas.sqlite3
     volumes:
       - ./application:/app/application:ro
+      - ./domain:/app/domain:ro
       - ./infrastructure:/app/infrastructure:ro
       - ./presentation:/app/presentation:ro
       - ./presentation_examples:/app/presentation_examples:ro
       - ./tests:/app/tests:ro
+      - mediflow-test-reservas:/var/lib/mediflow
     depends_on:
       - oci-emulator
+
+volumes:
+  mediflow-test-reservas:

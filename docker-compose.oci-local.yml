@@ -24,9 +24,11 @@ services:
       - ./presentation:/app/presentation:ro
       - ./scripts:/app/scripts:ro
       - ./tests:/app/tests:ro
+      - mediflow-reservas:/var/lib/mediflow
     environment:
       STORAGE_MODE: emulator
       OCI_SERVICE_ENDPOINT: http://oci-emulator:4599
+      MEDIFLOW_RESERVAS_DB: /var/lib/mediflow/reservas.sqlite3
     command: ["sh", "-c", "python -m infrastructure.oci_client.wait_storage && exec uvicorn presentation.api.main:app --host 0.0.0.0 --port 8000"]
     depends_on:
       oci-emulator:
@@ -48,3 +50,4 @@ services:
 
 volumes:
   mediflow-oci-data:
+  mediflow-reservas:

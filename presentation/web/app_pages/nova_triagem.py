@@ -72,8 +72,11 @@ if processar:
             st.session_state.ultimo_documento_id = doc_id.strip()
         except (ValueError, UnicodeDecodeError):
             st.error("Documento vazio ou conteúdo inválido. Para arquivos TXT, use codificação UTF-8.")
-        except requests.RequestException:
-            st.error("Não foi possível concluir a triagem. Verifique a API antes de reenviar.")
+        except requests.RequestException as exc:
+            if exc.response is not None and exc.response.status_code == 409:
+                st.error("Este ID já está cadastrado. Abra o registro em Documentos clínicos e use Reprocessar documento, ou informe outro ID para um novo documento.")
+            else:
+                st.error("Não foi possível concluir a triagem. Verifique a API antes de reenviar.")
 
 with etapas:
     etapas_triagem(st.session_state.resultado_triagem)
