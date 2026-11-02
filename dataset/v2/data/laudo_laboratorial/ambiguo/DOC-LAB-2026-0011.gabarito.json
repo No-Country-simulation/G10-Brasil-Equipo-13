@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-LAB-2026-0011",
+  "cenario": "ambiguo",
+  "tipo_documento": "Laudo de Exame Laboratorial",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 71,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Anthony Gabriel Sousa",
+      "crm": "398028-MG"
+    },
+    "exame_realizado": "TSH e T4 Livre",
+    "diagnostico_principal": "Hipotireoidismo não especificado",
+    "cid_sugerido": "E03.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "TSH: 9,8 mUI/L (referência: 0,4 a 4,0). T4 livre: 0,6 ng/dL (referência: 0,8 a 1,8).",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

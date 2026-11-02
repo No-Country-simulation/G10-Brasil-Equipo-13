@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-ALTA-2026-0011",
+  "cenario": "ambiguo",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Rafaela Rodrigues Macedo",
+      "idade": 79,
+      "cpf": "095.683.147-84"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Heloísa Gomes",
+      "crm": "873333-BA"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": null,
+    "cid_sugerido": null,
+    "medicamentos": [
+      {
+        "nome": "Ibuprofeno",
+        "dosagem": "600 mg",
+        "via": "VO",
+        "frequencia": "8/8h",
+        "duracao": "5 dias"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "evolucao",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Diagnóstico principal ausente",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

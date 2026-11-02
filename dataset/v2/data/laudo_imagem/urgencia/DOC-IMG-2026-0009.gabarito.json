@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-IMG-2026-0009",
+  "cenario": "urgencia",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Gabrielly Martins Nascimento",
+      "idade": 77,
+      "cpf": "548.273.901-50"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Luiza Costela",
+      "crm": "618519-PE"
+    },
+    "exame_realizado": "Ultrassonografia de Abdome Total",
+    "diagnostico_principal": "Apendicite Aguda",
+    "cid_sugerido": "K35.8",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Apêndice cecal não compressível, com 9 mm de diâmetro e alteração da gordura ao redor, compatível com apendicite aguda.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

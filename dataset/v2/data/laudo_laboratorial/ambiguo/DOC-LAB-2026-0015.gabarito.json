@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-LAB-2026-0015",
+  "cenario": "ambiguo",
+  "tipo_documento": "Laudo de Exame Laboratorial",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 87,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Isadora Rodrigues",
+      "crm": "709539-CE"
+    },
+    "exame_realizado": "Hemograma Completo",
+    "diagnostico_principal": "Infecção Aguda de Vias Aéreas Superiores",
+    "cid_sugerido": "J06.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Leucócitos: 11.200/mm³ (referência: 4.000 a 11.000). Demais séries sem alterações.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

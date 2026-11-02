@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-GUIA-2026-0010",
+  "cenario": "urgencia",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Manuela Peixoto Mendes",
+      "idade": 78,
+      "cpf": "968.402.537-83"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Maria Cavalcante",
+      "crm": "823875-RJ"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Sepse não especificada",
+    "cid_sugerido": "A41.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Hemocultura"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-402096",
+    "convenio": "Vida Plena Planos",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

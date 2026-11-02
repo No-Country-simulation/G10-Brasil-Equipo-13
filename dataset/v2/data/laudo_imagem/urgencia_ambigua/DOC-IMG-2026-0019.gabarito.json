@@ -1,0 +1,37 @@
+{
+  "documento_id": "DOC-IMG-2026-0019",
+  "cenario": "urgencia_ambigua",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Rodrigo Nunes Gomes",
+      "idade": 44,
+      "cpf": "856.791.024-20"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Ana Júlia Brito",
+      "crm": "147414-GO"
+    },
+    "exame_realizado": "Ultrassonografia de Abdome Total",
+    "diagnostico_principal": "Apendicite Aguda",
+    "cid_sugerido": "K35.8",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Achados do exame ausentes",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica",
+    "revisao_humana_paralela"
+  ]
+}

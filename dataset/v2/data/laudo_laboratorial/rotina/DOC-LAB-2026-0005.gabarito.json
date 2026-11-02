@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-LAB-2026-0005",
+  "cenario": "rotina",
+  "tipo_documento": "Laudo de Exame Laboratorial",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Ana Cecília Vargas da Paz",
+      "idade": 54,
+      "cpf": "375.924.810-14"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Ísis Garcia",
+      "crm": "118633-SC"
+    },
+    "exame_realizado": "Creatinina",
+    "diagnostico_principal": "Hipertensão Essencial",
+    "cid_sugerido": "I10",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Creatinina: 1,1 mg/dL (referência: 0,6 a 1,3 mg/dL). Dentro do esperado.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

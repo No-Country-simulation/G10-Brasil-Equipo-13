@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-GUIA-2026-0003",
+  "cenario": "rotina",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Auditoria_Autorizacoes",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Lorena Machado Novais",
+      "idade": 54,
+      "cpf": "896.075.234-74"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Lunna Gomes",
+      "crm": "850181-RS"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infecção Aguda de Vias Aéreas Superiores",
+    "cid_sugerido": "J06.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Hemograma Completo"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-734035",
+    "convenio": "Vida Plena Planos",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-GUIA-2026-0005",
+  "cenario": "rotina",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Auditoria_Autorizacoes",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "João Vitor Azevedo Cavalcante",
+      "idade": 52,
+      "cpf": "649.230.718-69"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Thales Peixoto",
+      "crm": "164506-CE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Diabetes Mellitus tipo 2",
+    "cid_sugerido": "E11.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Hemoglobina Glicada"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-971415",
+    "convenio": "Convênio Horizonte",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

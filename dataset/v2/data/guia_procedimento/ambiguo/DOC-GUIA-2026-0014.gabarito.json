@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-GUIA-2026-0014",
+  "cenario": "ambiguo",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 23,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Maria Luiza Pires",
+      "crm": "275971-SC"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Gastrite não especificada",
+    "cid_sugerido": "K29.7",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Endoscopia Digestiva Alta"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-883618",
+    "convenio": "Saúde Alvorada",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

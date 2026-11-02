@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-GUIA-2026-0013",
+  "cenario": "ambiguo",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Noah Moreira Mendes",
+      "idade": 54,
+      "cpf": "571.396.208-30"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Augusto Santos",
+      "crm": "76535-XX"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Fratura da Extremidade Distal do Rádio",
+    "cid_sugerido": "S52.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Radiografia de Punho"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-648913",
+    "convenio": "Prime Saúde",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

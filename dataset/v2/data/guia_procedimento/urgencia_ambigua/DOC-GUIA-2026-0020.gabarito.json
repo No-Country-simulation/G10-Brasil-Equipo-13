@@ -1,0 +1,39 @@
+{
+  "documento_id": "DOC-GUIA-2026-0020",
+  "cenario": "urgencia_ambigua",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 72,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Samuel Cavalcante",
+      "crm": "872287-GO"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Tromboembolismo Pulmonar Agudo (TEP)",
+    "cid_sugerido": "I26.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Tomografia de Tórax com contraste"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-289222",
+    "convenio": "Prime Saúde",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica",
+    "revisao_humana_paralela"
+  ]
+}

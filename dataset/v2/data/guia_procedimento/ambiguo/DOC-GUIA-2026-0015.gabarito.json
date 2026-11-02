@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-GUIA-2026-0015",
+  "cenario": "ambiguo",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Luana Gonçalves Alves",
+      "idade": 31,
+      "cpf": "937.485.026-56"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Gabrielly da Mota",
+      "crm": "149890-SC"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hiperlipidemia não especificada",
+    "cid_sugerido": "E78.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Perfil Lipídico"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": "Prime Saúde",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Número da guia ausente",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

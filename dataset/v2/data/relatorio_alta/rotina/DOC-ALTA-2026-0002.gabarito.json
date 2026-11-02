@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-ALTA-2026-0002",
+  "cenario": "rotina",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Ian da Mata Vasconcelos",
+      "idade": 46,
+      "cpf": "850.693.147-93"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Isadora da Rosa",
+      "crm": "297892-BA"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Pneumonia não especificada",
+    "cid_sugerido": "J18.9",
+    "medicamentos": [
+      {
+        "nome": "Amoxicilina",
+        "dosagem": "500 mg",
+        "via": "VO",
+        "frequencia": "8/8h",
+        "duracao": "7 dias"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "evolucao",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-ALTA-2026-0014",
+  "cenario": "ambiguo",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Ana Vitória Vieira Carvalho",
+      "idade": 86,
+      "cpf": "341.785.290-05"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Kevin Costela",
+      "crm": "186827-DF"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": null,
+    "cid_sugerido": null,
+    "medicamentos": [
+      {
+        "nome": "Levotiroxina",
+        "dosagem": "50 mcg",
+        "via": "VO",
+        "frequencia": "1x ao dia em jejum",
+        "duracao": "uso contínuo"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "evolucao",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Diagnóstico principal ausente",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

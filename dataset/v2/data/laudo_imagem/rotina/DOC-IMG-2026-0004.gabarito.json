@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-IMG-2026-0004",
+  "cenario": "rotina",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Raquel Câmara Jesus",
+      "idade": 27,
+      "cpf": "490.861.325-70"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Benicio Ferreira",
+      "crm": "528119-DF"
+    },
+    "exame_realizado": "Ressonância de Coluna Lombar",
+    "diagnostico_principal": "Dor Lombar Baixa",
+    "cid_sugerido": "M54.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Protrusão discal posterior em L4-L5, sem compressão significativa de raízes nervosas.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-CLIN-2026-0013",
+  "cenario": "ambiguo",
+  "tipo_documento": "Receituário Médico",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 76,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Enrico Duarte",
+      "crm": "449486-CE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hipertensão Essencial",
+    "cid_sugerido": "I10",
+    "medicamentos": [
+      {
+        "nome": "Losartana",
+        "dosagem": "50 mg",
+        "via": "VO",
+        "frequencia": "1x ao dia",
+        "duracao": "uso contínuo"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

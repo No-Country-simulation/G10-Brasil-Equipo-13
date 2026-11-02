@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-ATES-2026-0006",
+  "cenario": "ambiguo",
+  "tipo_documento": "Atestado Médico",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Marina Vargas Vasconcelos",
+      "idade": 66,
+      "cpf": "389.107.546-48"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Anthony Farias",
+      "crm": "72094"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Fratura da Extremidade Distal do Rádio",
+    "cid_sugerido": "S52.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": 1,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

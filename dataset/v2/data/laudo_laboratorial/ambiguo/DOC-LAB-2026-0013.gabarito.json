@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-LAB-2026-0013",
+  "cenario": "ambiguo",
+  "tipo_documento": "Laudo de Exame Laboratorial",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Maria Liz Duarte da Cruz",
+      "idade": 52,
+      "cpf": "046.132.879-87"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. José Pedro Rezende",
+      "crm": "519253-BA"
+    },
+    "exame_realizado": "Creatinina",
+    "diagnostico_principal": "Hipertensão Essencial",
+    "cid_sugerido": "I10",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Achados do exame ausentes",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

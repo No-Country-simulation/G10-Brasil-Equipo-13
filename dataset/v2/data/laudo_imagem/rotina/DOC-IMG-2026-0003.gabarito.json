@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-IMG-2026-0003",
+  "cenario": "rotina",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Luna da Conceição Nogueira",
+      "idade": 36,
+      "cpf": "302.471.596-70"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Isaac da Rosa",
+      "crm": "278402-MG"
+    },
+    "exame_realizado": "Endoscopia Digestiva Alta",
+    "diagnostico_principal": "Gastrite não especificada",
+    "cid_sugerido": "K29.7",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Mucosa gástrica com eritema leve em antro, sem úlceras.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

@@ -1,0 +1,39 @@
+{
+  "documento_id": "DOC-GUIA-2026-0019",
+  "cenario": "urgencia_ambigua",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Stephany Sales Ramos",
+      "idade": 73,
+      "cpf": "289.371.465-09"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Ana Júlia Fogaça",
+      "crm": "58148-XX"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Acidente Vascular Cerebral Isquêmico",
+    "cid_sugerido": "I63.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Tomografia de Crânio sem contraste"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-505426",
+    "convenio": "Prime Saúde",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica",
+    "revisao_humana_paralela"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-ATES-2026-0003",
+  "cenario": "rotina",
+  "tipo_documento": "Atestado Médico",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Maria Julia Fonseca Gomes",
+      "idade": 52,
+      "cpf": "290.453.167-06"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Oliver Silveira",
+      "crm": "214110-CE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Pneumonia não especificada",
+    "cid_sugerido": "J18.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": 6,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

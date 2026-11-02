@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-GUIA-2026-0007",
+  "cenario": "urgencia",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "João Gabriel da Rosa Duarte",
+      "idade": 11,
+      "cpf": "937.218.654-64"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Joaquim Duarte",
+      "crm": "344165-SP"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Apendicite Aguda",
+    "cid_sugerido": "K35.8",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Ultrassonografia de Abdome Total"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-203896",
+    "convenio": "Prime Saúde",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

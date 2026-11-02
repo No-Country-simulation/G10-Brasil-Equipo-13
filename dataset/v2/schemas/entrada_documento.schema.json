@@ -1,0 +1,53 @@
+{
+  "properties": {
+    "documento_id": {
+      "title": "Documento Id",
+      "type": "string"
+    },
+    "tipo_arquivo": {
+      "enum": [
+        "PDF",
+        "IMAGEM",
+        "JSON",
+        "TEXTO"
+      ],
+      "title": "Tipo Arquivo",
+      "type": "string"
+    },
+    "documento_texto": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Documento Texto"
+    },
+    "caminho_arquivo": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Caminho Arquivo"
+    },
+    "canal_origem": {
+      "title": "Canal Origem",
+      "type": "string"
+    }
+  },
+  "required": [
+    "documento_id",
+    "tipo_arquivo",
+    "canal_origem"
+  ],
+  "title": "EntradaDocumento",
+  "type": "object"
+}

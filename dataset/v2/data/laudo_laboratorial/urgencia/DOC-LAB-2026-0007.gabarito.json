@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-LAB-2026-0007",
+  "cenario": "urgencia",
+  "tipo_documento": "Laudo de Exame Laboratorial",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Stephany da Mata Novais",
+      "idade": 53,
+      "cpf": "421.956.708-94"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Vitória Câmara",
+      "crm": "896209-BA"
+    },
+    "exame_realizado": "Dosagem de Troponina",
+    "diagnostico_principal": "Infarto Agudo do Miocárdio",
+    "cid_sugerido": "I21.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Troponina I: 2,8 ng/mL (referência: até 0,04 ng/mL). Valor muito acima do limite, resultado crítico.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

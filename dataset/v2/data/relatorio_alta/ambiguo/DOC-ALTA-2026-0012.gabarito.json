@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-ALTA-2026-0012",
+  "cenario": "ambiguo",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Gustavo Caldeira Dias",
+      "idade": 84,
+      "cpf": "542.319.076-25"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Enzo Macedo",
+      "crm": "680872-CE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": null,
+    "cid_sugerido": null,
+    "medicamentos": [
+      {
+        "nome": "Omeprazol",
+        "dosagem": "20 mg",
+        "via": "VO",
+        "frequencia": "1x ao dia em jejum",
+        "duracao": "30 dias"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "evolucao",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Diagnóstico principal ausente",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-IMG-2026-0005",
+  "cenario": "rotina",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Giovanna Viana Moura",
+      "idade": 88,
+      "cpf": "568.123.794-09"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Isabella Câmara",
+      "crm": "684225-GO"
+    },
+    "exame_realizado": "Radiografia de Punho",
+    "diagnostico_principal": "Fratura da Extremidade Distal do Rádio",
+    "cid_sugerido": "S52.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Traço de fratura na extremidade distal do rádio, sem desvio significativo.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

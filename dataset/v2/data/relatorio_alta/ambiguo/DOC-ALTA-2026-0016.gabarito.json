@@ -1,0 +1,44 @@
+{
+  "documento_id": "DOC-ALTA-2026-0016",
+  "cenario": "ambiguo",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Sarah Albuquerque Fonseca",
+      "idade": 79,
+      "cpf": "526.743.890-10"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Ravy Vargas",
+      "crm": "435818-DF"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": null,
+    "cid_sugerido": null,
+    "medicamentos": [
+      {
+        "nome": "AAS",
+        "dosagem": "300 mg",
+        "via": "VO",
+        "frequencia": "dose única",
+        "duracao": "1 dia"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "alta",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Diagnóstico principal ausente",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "evento_critico_historico"
+  ]
+}

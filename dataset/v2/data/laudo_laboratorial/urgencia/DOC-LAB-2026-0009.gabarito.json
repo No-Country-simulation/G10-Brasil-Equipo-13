@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-LAB-2026-0009",
+  "cenario": "urgencia",
+  "tipo_documento": "Laudo de Exame Laboratorial",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Alícia Duarte da Paz",
+      "idade": 1,
+      "cpf": "013.459.876-84"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Arthur Miguel Gonçalves",
+      "crm": "603830-MG"
+    },
+    "exame_realizado": "Hemocultura",
+    "diagnostico_principal": "Sepse não especificada",
+    "cid_sugerido": "A41.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Crescimento de bactéria Gram-negativa em 2 de 2 frascos. Resultado crítico.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

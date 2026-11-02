@@ -1,0 +1,37 @@
+{
+  "documento_id": "DOC-IMG-2026-0018",
+  "cenario": "urgencia_ambigua",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Yasmin Nunes Ribeiro",
+      "idade": 27,
+      "cpf": "025.914.783-41"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Breno da Rosa",
+      "crm": "542351-RJ"
+    },
+    "exame_realizado": "Tomografia de Tórax com contraste",
+    "diagnostico_principal": "Tromboembolismo Pulmonar Agudo (TEP)",
+    "cid_sugerido": "I26.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Achados do exame ausentes",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica",
+    "revisao_humana_paralela"
+  ]
+}

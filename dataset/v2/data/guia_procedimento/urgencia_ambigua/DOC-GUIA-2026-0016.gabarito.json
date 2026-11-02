@@ -1,0 +1,39 @@
+{
+  "documento_id": "DOC-GUIA-2026-0016",
+  "cenario": "urgencia_ambigua",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Davi Lucas Oliveira Caldeira",
+      "idade": 77,
+      "cpf": "825.913.076-95"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Vitória Porto",
+      "crm": "47-PE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infarto Agudo do Miocárdio",
+    "cid_sugerido": "I21.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Dosagem de Troponina"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-291132",
+    "convenio": "Vida Plena Planos",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica",
+    "revisao_humana_paralela"
+  ]
+}

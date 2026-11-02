@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-IMG-2026-0008",
+  "cenario": "urgencia",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Brenda da Rosa Albuquerque",
+      "idade": 22,
+      "cpf": "391.587.460-48"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Yuri Duarte",
+      "crm": "90458-PR"
+    },
+    "exame_realizado": "Tomografia de Crânio sem contraste",
+    "diagnostico_principal": "Acidente Vascular Cerebral Isquêmico",
+    "cid_sugerido": "I63.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Área hipodensa em território da artéria cerebral média esquerda, sugestiva de isquemia aguda.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}
