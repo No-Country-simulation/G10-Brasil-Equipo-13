@@ -25,12 +25,14 @@ def contexto():
         app.dependency_overrides.clear()
 
 
-@pytest.mark.parametrize("pendencia", ["crm", "paciente", "score", "conflito", None])
+@pytest.mark.parametrize("pendencia", ["crm", "crm_uf_invalida", "paciente", "score", "conflito", None])
 def test_urgencia_preserva_alerta_e_pendencias(contexto, pendencia):
     client, caso, llm, notifier = contexto
     dados = llm.processar_documento.return_value
     if pendencia == "crm":
         dados["medico_solicitante"]["crm"] = None
+    elif pendencia == "crm_uf_invalida":
+        dados["medico_solicitante"]["crm"] = "55718-XX"
     elif pendencia == "paciente":
         dados["paciente"]["nome"] = None
     elif pendencia == "score":
@@ -120,3 +122,25 @@ def test_base64_invalido_e_texto_direto_literal(contexto):
     resp = client.post("/triagem", json={**payload, "documento_texto": texto})
     assert resp.status_code == 200
     llm.processar_documento.assert_called_once_with(conteudo=texto, tipo_arquivo="TEXTO")
+
+from application.workflows.rules import validar_formato_crm
+
+
+@pytest.mark.parametrize("crm", [
+    "55718-XX",  # DOC-AUT-2026-0006
+    "53292-XX",  # DOC-AUT-2026-0009
+    "88215-XX",  # DOC-GUIA-2026-0011
+    "76535-XX",  # DOC-GUIA-2026-0013
+    "58148-XX",  # DOC-GUIA-2026-0019
+    "57749-XX",  # DOC-IMG-2026-0020
+    "51033-XX",  # DOC-LAB-2026-0018
+    "70305-XX",  # DOC-LAB-2026-0019
+    "22015-XX",  # DOC-CLIN-2026-0015
+    "85718-XX",  # DOC-ALTA-2026-0019
+])
+def test_crm_uf_invalida_med11(crm):
+    assert validar_formato_crm(crm) is False
+
+
+def test_crm_uf_valida():
+    assert validar_formato_crm("123456-SP") is True

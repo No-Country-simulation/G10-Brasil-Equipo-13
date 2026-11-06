@@ -4,6 +4,7 @@ Implementa a porta LLMPort utilizando o SDK oficial Google GenAI.
 Suporta inferência multimodal (PDF, imagens, texto plano) e Structured Outputs estritos.
 """
 
+import html
 import base64
 import binascii
 import logging
@@ -43,12 +44,29 @@ class GeminiLLMAdapter(LLMPort):
             "És um assistente clínico de triagem médica de alta precisão do sistema MediFlow. "
             "A tua função é analisar documentos médicos (PDFs digitais/digitalizados, fotos de receitas, "
             "laudos de exames ou texto bruto), classificar a sua categoria documental e extrair dados vitais. "
+            "Classifica o documento exclusivamente numa das sete categorias: "
+            "Receituário Médico; Laudo de Exame Laboratorial; Laudo de Exame de Imagem; "
+            "Guia de Solicitação de Procedimento; Relatório de Alta/Internação; "
+            "Autorização Administrativa; Atestado Médico.\n"
+            "Distingue Guia de Solicitação de Procedimento, que solicita a realização de "
+            "um procedimento, de Autorização Administrativa, que registra a autorização, "
+            "negativa ou situação administrativa de uma solicitação. "
+            "Não utilizes 'Guia TISS' como categoria documental.\n"
             "Regras mandatórias:\n"
             "1. Atribui score_confianca baixo (< 0.85) se houver rasuras, letras ilegíveis, imagens borradas "
             "ou falta do nome do paciente e CRM.\n"
-            "2. Identifica sinais de urgência com rigor absoluto. Define achado_critico=True e "
-            "nivel_prioridade='Urgente' perante risco de morte iminente (ex.: TEP agudo, AVC, Enfarte, choque).\n"
-            "3. Garante conformidade estrita com o schema JSON configurado."
+            "2. Avalia a urgência considerando o estado clínico atual e o contexto temporal. "
+            "Define achado_critico=True e nivel_prioridade='Urgente' quando houver evidências "
+            "de condição crítica ativa ou risco iminente à vida (ex.: TEP agudo, AVC, enfarte, choque). "
+            "Eventos graves históricos, já tratados ou resolvidos, especialmente em relatórios de alta, "
+            "não devem isoladamente determinar urgência ou achado_critico=True. "
+            "Considera sinais atuais de agravamento e não presume que toda alta hospitalar seja rotina.\n"
+            "3. Extrai diagnósticos e códigos CID-10 somente quando estiverem explicitamente "
+            "documentados. Não inventes diagnósticos nem atribuas códigos CID por inferência "
+            "clínica. Quando a informação estiver ausente, ilegível ou não informada, utiliza "
+            "null no campo correspondente. Não confundas histórico clínico com diagnóstico "
+            "principal documentado.\n"
+            "4. Garante conformidade estrita com o schema JSON configurado."
         )
 
     def _preparar_partes_multimodais(self, conteudo: Any, tipo_arquivo: str) -> List[Any]:
@@ -117,7 +135,20 @@ class GeminiLLMAdapter(LLMPort):
                     parsed = parsed.model_dump()
                 if parsed is None:
                     raise ValueError("Resposta estruturada ausente.")
-                return ExtracaoClinicaLLMSchema.model_validate(parsed, strict=True).model_dump()
+                dados = ExtracaoClinicaLLMSchema.model_validate(
+                    parsed, strict=True
+                ).model_dump()
+
+                def normalizar_html(valor):
+                    if isinstance(valor, str):
+                        return html.unescape(valor)
+                    if isinstance(valor, list):
+                        return [normalizar_html(item) for item in valor]
+                    if isinstance(valor, dict):
+                        return {chave: normalizar_html(item) for chave, item in valor.items()}
+                    return valor
+
+                return normalizar_html(dados)
             except Exception as exc:
                 codigo_http = getattr(exc, "code", None)
                 temporaria = codigo_http in (408, 429, 500, 502, 503, 504) or isinstance(
