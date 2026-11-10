@@ -16,9 +16,13 @@ O uso direto do adaptador com endpoint emulado permite informar `reservas_db`;
 sem configuração, usa um arquivo no diretório temporário local, adequado
 somente a testes. Na OCI real o índice SQLite não é usado.
 
-O cadastro fica reservado mesmo após falha ou reinício da API. Não remover
-marcadores para repetir um cadastro. O modo memória é efêmero: somente OCI
-preserva dados após reinício do processo de armazenamento.
+Se a tentativa falhar antes de guardar o original, a API libera sua reserva
+depois de confirmar que o original está ausente. O reenvio disputa novamente
+a criação atômica. Se o original existir ou a verificação falhar, a reserva
+permanece para proteger os dados e a API tenta registrar a interrupção para
+reprocessamento. Não remover marcadores manualmente para repetir um cadastro.
+O modo memória é efêmero. Somente OCI preserva dados após reinício do processo
+de armazenamento.
 No emulador, preservar tanto o volume do Floci quanto o volume de reservas.
 
 Cada execução tem UUID próprio, data UTC, origem e caminhos por documento
@@ -49,7 +53,8 @@ registradas. Não há migração, exclusão, renomeação ou deduplicação auto
 Cadastro novo verifica também os arquivos anteriores à reserva de IDs.
 Cada legado continua acessível pelo caminho, mesmo compartilhando ID.
 A homologação mantém seu fluxo de movimentação, com destino exclusivo por
-execução; legados sem execução recebem uma identidade derivada da origem.
+execução. Os legados recebem uma identidade derivada da chave de origem
+para distinguir registros que já compartilhavam o mesmo ID de execução.
 
 ## Antes de usar na OCI real
 

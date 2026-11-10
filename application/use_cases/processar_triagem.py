@@ -29,8 +29,8 @@ from application.dtos.output_response import (
     ArmazenamentoOciDTO,
 )
 from application.workflows.graph import criar_grafo_triagem
-from application.use_cases.acompanhar_fluxo import novo_registro, registrar_etapa
-from application.use_cases.identidade_documento import reservar_cadastro, caminho_execucao
+from application.use_cases.acompanhar_fluxo import chave_fluxo, novo_registro, registrar_etapa
+from application.use_cases.identidade_documento import chave_cadastro, reservar_cadastro, caminho_execucao
 
 logger = logging.getLogger("MediFlowUseCase")
 
@@ -53,13 +53,13 @@ class ProcessarTriagemUseCase:
         self.notifier = notifier
         self.bucket_name = bucket_name
 
-    def _salvar_documento_original(self, request: TriagemRequestDTO, execucao_id: str) -> Optional[str]:
+    def _salvar_documento_original(self, request: TriagemRequestDTO, registro: dict) -> Optional[str]:
         """
         Salva o arquivo bruto original (PDF, Imagem ou Texto) no prefixo 'recebidos/' da OCI.
         """
         tipo = request.tipo_arquivo.value.upper()
         extensao = "pdf" if tipo == "PDF" else ("jpg" if tipo == "IMAGEM" else "txt")
-        caminho_bruto = f"recebidos/{caminho_execucao(request.documento_id, execucao_id)}.{extensao}"
+        caminho_bruto = f"recebidos/{caminho_execucao(request.documento_id, registro['execucao_id'])}.{extensao}"
 
         content_type = "application/pdf" if tipo == "PDF" else ("image/jpeg" if tipo == "IMAGEM" else "text/plain; charset=utf-8")
 
@@ -75,6 +75,7 @@ class ProcessarTriagemUseCase:
         if not dados_bytes:
             return None
 
+        registro["caminho_documento_bruto"] = caminho_bruto
         try:
             confirmacao = self.storage.salvar_arquivo(
                 bucket_name=self.bucket_name,
@@ -102,7 +103,7 @@ class ProcessarTriagemUseCase:
         return NotificacaoGeradaDTO(canal=canal, mensagem=mensagem)
 
     def executar(self, request: TriagemRequestDTO, *, reprocessamento_de=None, execucao_anterior_id=None) -> TriagemResponseDTO:
-        request.conteudo_para_extracao()
+        conteudo = request.conteudo_para_extracao()
         registro = novo_registro(request.documento_id)
         if reprocessamento_de is None:
             reservar_cadastro(self.storage, self.bucket_name, registro)
@@ -111,28 +112,41 @@ class ProcessarTriagemUseCase:
             registro["execucao_anterior_id"] = execucao_anterior_id
         registro["canal_origem"] = request.canal_origem
         registro["tipo_arquivo"] = request.tipo_arquivo.value
+        original_confirmado = False
         try:
             registrar_etapa(self.storage, self.bucket_name, registro, "recebidos")
-            return self._executar(request, registro)
+            if not self._salvar_documento_original(request, registro):
+                raise RuntimeError("Não foi possível preservar o documento original. A triagem não foi iniciada.")
+            original_confirmado = True
+            return self._executar(request, registro, conteudo)
         except Exception:
             try:
-                registrar_etapa(self.storage, self.bucket_name, registro, "falha", mensagem="Processamento interrompido. Confira o documento antes de reenviar.")
+                self._tratar_interrupcao(registro, reprocessamento_de is None and not original_confirmado)
             except Exception:
-                logger.error("Falha ao registrar interrupção de %s", request.documento_id)
+                logger.exception("Falha ao tratar interrupção de %s", request.documento_id)
             raise
 
-    def _executar(self, request: TriagemRequestDTO, registro) -> TriagemResponseDTO:
-        """
-        Executa a triagem condicional de um documento clínico e retorna o contrato validado.
-        """
-        # Normaliza antes de persistir ou iniciar o grafo.
-        conteudo = request.conteudo_para_extracao()
+    def _tratar_interrupcao(self, registro, pode_cancelar_cadastro):
+        if pode_cancelar_cadastro:
+            bruto = registro.get("caminho_documento_bruto")
+            try:
+                sem_original = bruto is None or self.storage.obter_arquivo(self.bucket_name, bruto) is None
+            except Exception:
+                logger.exception("Falha ao verificar se o original foi salvo")
+                sem_original = False
+            if sem_original:
+                documento_id = registro["documento_id"]
+                self.storage.cancelar_cadastro(
+                    self.bucket_name, chave_cadastro(documento_id),
+                    chave_fluxo(documento_id, registro["execucao_id"]),
+                )
+                return
+        registrar_etapa(self.storage, self.bucket_name, registro, "falha",
+                       mensagem="Processamento interrompido. Confira o documento antes de reenviar.")
 
-        # 1. Persistência mandatória do documento original em /recebidos/
-        caminho_doc_original = self._salvar_documento_original(request, registro["execucao_id"])
-        if not caminho_doc_original:
-            raise RuntimeError("Não foi possível preservar o documento original. A triagem não foi iniciada.")
-        registro["caminho_documento_bruto"] = caminho_doc_original
+    def _executar(self, request: TriagemRequestDTO, registro, conteudo) -> TriagemResponseDTO:
+        """Executa o grafo e persiste o resultado da triagem."""
+        caminho_doc_original = registro["caminho_documento_bruto"]
         registrar_etapa(self.storage, self.bucket_name, registro, "em_analise")
 
         # 2. Definição do conteúdo para processamento da LLM
@@ -208,11 +222,7 @@ class ProcessarTriagemUseCase:
             notificacoes_adicionais=adicionais_dto,
         )
 
-        caminho_decisao_oci = resultado.get(
-            "caminho_oci_sugerido",
-            f"auditoria_humana/{request.documento_id}.json"
-        )
-        pasta = caminho_decisao_oci.rsplit("/", 1)[0]
+        pasta = resultado.get("pasta_oci_sugerida", "auditoria_humana")
         caminho_decisao_oci = f"{pasta}/{caminho_execucao(request.documento_id, registro['execucao_id'])}.json"
 
         # 6. Instanciação do DTO de resposta já assumindo 'sucesso' para a persistência

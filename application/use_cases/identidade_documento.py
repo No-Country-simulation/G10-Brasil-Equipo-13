@@ -16,6 +16,13 @@ def caminho_execucao(documento_id, execucao_id):
     return f"{identidade(documento_id)}/{execucao_id}"
 
 
+def identidade_execucao(doc, caminho):
+    execucao_id = doc.get("execucao_id")
+    if execucao_id and caminho.endswith(f"/{caminho_execucao(doc['documento_id'], execucao_id)}.json"):
+        return execucao_id
+    return f"legado-{identidade(caminho)}"
+
+
 def documento_legado_existe(storage, bucket, documento_id):
     # Compatibilidade sem renomear/excluir dados anteriores. Falhas de leitura
     # propagam: nunca admitir cadastro quando a consulta não pôde ser concluída.

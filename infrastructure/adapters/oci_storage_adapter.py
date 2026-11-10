@@ -54,8 +54,7 @@ class OCIStorageAdapter(StoragePort):
         return True
 
     def criar_json_exclusivo(self, bucket_name, object_name, json_data):
-        # No emulador, a restrição SQL é compartilhada entre processos. A
-        # reserva permanece após falha: nunca liberar um ID automaticamente.
+        # No emulador, a restrição SQL é compartilhada entre processos.
         if self.reservas and not self.reservas.criar(self.namespace, bucket_name, object_name):
             return False
         # SDK OCI put_object: '*' é o único valor válido de if_none_match.
@@ -72,6 +71,16 @@ class OCIStorageAdapter(StoragePort):
                 return False
             raise
         return True
+
+    def cancelar_cadastro(self, bucket_name, cadastro, fluxo):
+        for chave in (fluxo, cadastro):
+            try:
+                self.client.delete_object(self.namespace, bucket_name, chave)
+            except oci.exceptions.ServiceError as exc:
+                if exc.status != 404:
+                    raise
+        if self.reservas:
+            self.reservas.remover(self.namespace, bucket_name, cadastro)
 
     def obter_arquivo(self, bucket_name, object_name):
         try:

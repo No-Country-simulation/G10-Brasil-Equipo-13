@@ -9,6 +9,10 @@ class StoragePort(ABC):
         """Cria atomicamente; False somente se já existe. Nunca sobrescreve."""
         raise NotImplementedError("O armazenamento precisa suportar criação atômica.")
 
+    def cancelar_cadastro(self, bucket_name: str, cadastro: str, fluxo: str) -> None:
+        """Libera uma reserva própria sem original, removendo primeiro seu acompanhamento."""
+        raise NotImplementedError
+
     def obter_arquivo(self, bucket_name: str, object_name: str) -> bytes | None:
         """Recupera o original quando suportado pelo adaptador."""
         raise NotImplementedError

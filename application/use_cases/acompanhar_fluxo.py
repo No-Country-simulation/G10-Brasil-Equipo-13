@@ -32,14 +32,16 @@ def registrar_etapa(storage, bucket, registro, etapa, documento=None, mensagem=N
     registro.update(proximo)
 
 
-def concluir_homologacao(storage, bucket, documento, aprovado):
+def concluir_homologacao(storage, bucket, documento, aprovado, *, origem):
     chave = chave_fluxo(documento["documento_id"], documento.get("execucao_id"))
     registro = storage.obter_json(bucket, chave)
     if not registro:
         chave_legada = chave_fluxo(documento["documento_id"])
         legado = storage.obter_json(bucket, chave_legada)
-        if legado and legado.get("execucao_id") == documento.get("execucao_id"):
-            registro = {**legado, "chave_persistida": chave_legada}
+        if legado:
+            caminho_legado = (legado.get("documento") or {}).get("armazenamento_oci", {}).get("caminho_objeto")
+            if caminho_legado == origem or legado.get("execucao_id") == documento.get("execucao_id"):
+                registro = {**legado, "chave_persistida": chave_legada, "execucao_id": documento["execucao_id"]}
     if not isinstance(registro, dict) or registro.get("versao") != 1:
         registro = novo_registro(documento["documento_id"], documento.get("execucao_id"))
     if aprovado:

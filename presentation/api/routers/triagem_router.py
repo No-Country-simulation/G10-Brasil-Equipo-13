@@ -14,9 +14,8 @@ from application.dtos.input_request import TipoArquivoEnum, TriagemRequestDTO
 from application.dtos.output_response import TriagemResponseDTO
 from application.use_cases.processar_triagem import ProcessarTriagemUseCase
 from application.use_cases.acompanhar_fluxo import concluir_homologacao
-from application.use_cases.identidade_documento import identificar_relatorio, caminho_execucao
+from application.use_cases.identidade_documento import identificar_relatorio, caminho_execucao, identidade_execucao
 from domain.exceptions import DocumentoJaExiste
-from hashlib import sha256
 from infrastructure.oci_client.client_factory import get_triagem_use_case
 
 logger = logging.getLogger("MediFlowAuditoria")
@@ -75,7 +74,7 @@ def reprocessar_documento(payload: ReprocessamentoDTO, use_case=Depends(get_tria
     request = TriagemRequestDTO(documento_id=payload.documento_id, tipo_arquivo=tipo,
         arquivo_base64=base64.b64encode(conteudo).decode("ascii"), canal_origem=payload.canal_origem)
     try:
-        execucao_anterior = anterior.get("execucao_id") or "legado-" + sha256(caminho.encode()).hexdigest()
+        execucao_anterior = identidade_execucao(anterior, caminho)
         return use_case.executar(request, reprocessamento_de=caminho, execucao_anterior_id=execucao_anterior)
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
@@ -298,11 +297,11 @@ def homologar_documento_auditoria(
             doc_antigo["classificacao"]["nivel_prioridade"] = "Rotina"
             doc_antigo["decisao_roteamento"]["notificacao_gerada"] = None
 
-        novo_caminho = f"processados/{subpasta}/{payload.documento_id}.json"
+        pasta = f"processados/{subpasta}"
 
     else:
         # Fluxo de rejeição
-        novo_caminho = f"processados/rejeitados/{payload.documento_id}.json"
+        pasta = "processados/rejeitados"
         doc_antigo["status"] = "erro"
         doc_antigo.setdefault("decisao_roteamento", {})
         doc_antigo["decisao_roteamento"]["requer_auditoria_humana"] = False
@@ -310,11 +309,11 @@ def homologar_documento_auditoria(
             f"Documento rejeitado em auditoria humana: {payload.parecer_auditor}"
         )
 
-    # Cada homologação continua vinculada à execução selecionada. Legados sem
-    # execução usam o hash do caminho de origem para não colidir entre si.
-    execucao = doc_antigo.get("execucao_id") or "legado-" + sha256(payload.origem_oci_path.encode()).hexdigest()
+    # A chave de origem distingue legados que compartilham execucao_id.
+    execucao = identidade_execucao(doc_antigo, payload.origem_oci_path)
+    if doc_antigo.get("execucao_id") and doc_antigo["execucao_id"] != execucao:
+        doc_antigo["execucao_legada_id"] = doc_antigo["execucao_id"]
     doc_antigo["execucao_id"] = execucao
-    pasta = novo_caminho.rsplit("/", 1)[0]
     novo_caminho = f"{pasta}/{caminho_execucao(payload.documento_id, execucao)}.json"
     doc_antigo.setdefault("armazenamento_oci", {})
     doc_antigo["armazenamento_oci"]["caminho_objeto"] = novo_caminho
@@ -335,7 +334,10 @@ def homologar_documento_auditoria(
 
     acompanhamento_confirmado = True
     try:
-        concluir_homologacao(use_case.storage, use_case.bucket_name, doc_antigo, payload.decisao == "aprovar")
+        concluir_homologacao(
+            use_case.storage, use_case.bucket_name, doc_antigo, payload.decisao == "aprovar",
+            origem=payload.origem_oci_path,
+        )
     except Exception:
         acompanhamento_confirmado = False
         logger.error("Decisão persistida, mas acompanhamento não confirmado para %s", payload.documento_id)

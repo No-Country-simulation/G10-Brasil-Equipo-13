@@ -19,3 +19,10 @@ class SqliteReservas:
         with sqlite3.connect(self.caminho, timeout=30) as conexao:
             cursor = conexao.execute("INSERT INTO reservas VALUES (?, ?, ?) ON CONFLICT DO NOTHING", (namespace, bucket, objeto))
             return cursor.rowcount == 1
+
+    def remover(self, namespace, bucket, objeto):
+        with sqlite3.connect(self.caminho, timeout=30) as conexao:
+            conexao.execute(
+                "DELETE FROM reservas WHERE namespace = ? AND bucket = ? AND objeto = ?",
+                (namespace, bucket, objeto),
+            )

@@ -134,6 +134,62 @@ def test_falha_e_nova_instancia_nao_liberam_id(contexto):
     assert all(snapshot(caso)[k] == v for k, v in antes.items())
 
 
+@pytest.mark.parametrize("prefixo", ["fluxo/", "recebidos/"])
+def test_falha_antes_do_original_permite_novo_cadastro(contexto, prefixo):
+    client, caso, llm, notifier = contexto
+    salvar = caso.storage.salvar_arquivo
+    salvar_json = caso.storage.salvar_json
+
+    def falhar_arquivo(bucket_name, object_name, data, content_type="application/octet-stream"):
+        if object_name.startswith(prefixo):
+            raise RuntimeError("Falha de armazenamento")
+        return salvar(bucket_name, object_name, data, content_type)
+
+    def falhar_json(bucket_name, object_name, json_data):
+        if object_name.startswith(prefixo):
+            salvar_json(bucket_name, object_name, json_data)
+            raise RuntimeError("Resposta perdida ao gravar acompanhamento")
+        return salvar_json(bucket_name, object_name, json_data)
+
+    with patch.object(caso.storage, "salvar_arquivo", side_effect=falhar_arquivo) if prefixo == "recebidos/" else patch.object(
+        caso.storage, "salvar_json", side_effect=falhar_json
+    ):
+        assert client.post("/triagem", json=payload()).status_code == 500
+
+    assert snapshot(caso) == {}
+    llm.processar_documento.assert_not_called()
+    notifier.enviar_alerta_urgencia.assert_not_called()
+    assert client.post("/triagem", json=payload()).status_code == 200
+    assert client.post("/triagem", json=payload()).status_code == 409
+
+
+def test_resposta_perdida_ao_salvar_original_preserva_cadastro(contexto):
+    client, caso, llm, _ = contexto
+    salvar = caso.storage.salvar_arquivo
+
+    def salvar_e_falhar(bucket_name, object_name, data, content_type="application/octet-stream"):
+        resultado = salvar(bucket_name, object_name, data, content_type)
+        if object_name.startswith("recebidos/"):
+            raise RuntimeError("Resposta perdida")
+        return resultado
+
+    with patch.object(caso.storage, "salvar_arquivo", side_effect=salvar_e_falhar):
+        assert client.post("/triagem", json=payload()).status_code == 500
+
+    llm.processar_documento.assert_not_called()
+    antes = snapshot(caso)
+    assert client.post("/triagem", json=payload()).status_code == 409
+    fluxo = consultar_fluxo(caso.storage, caso.bucket_name)[0]
+    assert fluxo["etapa"] == "falha"
+    assert fluxo["caminho_documento_bruto"] in antes
+    resposta = client.post("/triagem/reprocessar", json={
+        "documento_id": "001", "origem_oci_path": fluxo["registro_id"], "canal_origem": "Ambulatorio",
+    })
+    assert resposta.status_code == 200
+    depois = snapshot(caso)
+    assert all(depois[chave] == valor for chave, valor in antes.items())
+
+
 def test_legados_distintos_sem_migracao_destrutiva(contexto):
     client, caso, _, _ = contexto
     for pasta in ("processados/rotina", "processados/urgentes", "auditoria_humana"):
@@ -162,6 +218,51 @@ def test_homologacao_preserva_outras_execucoes(contexto):
     assert len(historico) == 2
     assert len({d["registro_id"] for d in historico}) == 2
     assert all(r["etapa"] == "encaminhados" for r in consultar_fluxo(caso.storage, caso.bucket_name))
+
+
+def test_homologa_legados_com_mesma_execucao_em_separado(contexto):
+    client, caso, _, _ = contexto
+    dados = {"documento_id": "001", "execucao_id": "mesma-execucao"}
+    for numero in (1, 2):
+        caminho = f"auditoria_humana/legado-{numero}.json"
+        caso.storage.salvar_json(caso.bucket_name, caminho, {**dados, "canal_origem": str(numero)})
+    fila = client.get("/triagem/filas/auditoria").json()
+    assert len(fila) == 2
+    for doc in fila:
+        resposta = client.post("/triagem/homologar", json={
+            "documento_id": "001", "origem_oci_path": doc["registro_id"],
+            "paciente_nome": "Paciente sintético", "crm_retificado": "123456-SP",
+            "diagnostico": "Teste", "cid_homologado": "Z00", "destino_aprovado": "Farmacia_Hospitalar",
+            "parecer_auditor": "Conferido", "decisao": "rejeitar",
+        })
+        assert resposta.status_code == 200
+    historico = client.get("/triagem/historico").json()
+    assert {doc["canal_origem"] for doc in historico} == {"1", "2"}
+    assert len({doc["execucao_id"] for doc in historico}) == 2
+    assert all(doc["execucao_legada_id"] == "mesma-execucao" for doc in historico)
+
+
+def test_id_com_barras_permite_reprocessar_e_homologar(contexto):
+    client, _, llm, _ = contexto
+    llm.processar_documento.return_value = resultado_exemplo("revisao")
+    documento_id = "setor/../123"
+    resposta = client.post("/triagem", json=payload(documento_id=documento_id))
+    assert resposta.status_code == 200
+    origem = resposta.json()["armazenamento_oci"]["caminho_objeto"]
+    assert origem.startswith("auditoria_humana/")
+    assert ".." not in origem.split("/")
+    resposta = client.post("/triagem/reprocessar", json={
+        "documento_id": documento_id, "origem_oci_path": origem, "canal_origem": "Ambulatorio",
+    })
+    assert resposta.status_code == 200
+    resposta = client.post("/triagem/homologar", json={
+        "documento_id": documento_id, "origem_oci_path": origem,
+        "paciente_nome": "Paciente sintético", "crm_retificado": "123456-SP",
+        "diagnostico": "Teste", "cid_homologado": "Z00", "destino_aprovado": "Farmacia_Hospitalar",
+        "parecer_auditor": "Conferido", "decisao": "aprovar",
+    })
+    assert resposta.status_code == 200
+    assert ".." not in resposta.json()["caminho_novo_oci"].split("/")
 
 
 def test_reprocessar_valida_origem_identidade_e_original(contexto):
