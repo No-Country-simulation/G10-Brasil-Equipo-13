@@ -119,13 +119,13 @@ def processar_documento_json(
     "/upload",
     response_model=TriagemResponseDTO,
     status_code=status.HTTP_200_OK,
-    summary="Upload direto de arquivo (PDF / Imagem / TXT UTF-8)",
+    summary="Upload direto de arquivo (PDF / Imagem / TXT / JSON)",
     description="Recebe arquivo binário via multipart/form-data e executa a triagem multimodal."
 )
 async def processar_documento_upload(
     documento_id: str = Form(..., description="ID do documento (ex: DOC-CLIN-2026-8942)"),
     canal_origem: str = Form(..., description="Canal de entrada (ex: Pronto_Socorro, Ambulatorio)"),
-    arquivo: UploadFile = File(..., description="Documento PDF, PNG, JPG ou TXT UTF-8 (BOM opcional)"),
+    arquivo: UploadFile = File(..., description="Documento PDF, PNG, JPG, TXT ou JSON em UTF-8 (BOM opcional)"),
     use_case: ProcessarTriagemUseCase = Depends(get_triagem_use_case)
 ) -> TriagemResponseDTO:
     """Endpoint para upload de arquivos brutos via formulário multipart."""
@@ -145,10 +145,12 @@ async def processar_documento_upload(
         nome_arquivo.endswith(ext) for ext in [".jpg", ".jpeg", ".png"]
     ):
         tipo_enum = TipoArquivoEnum.IMAGEM
+    elif nome_arquivo.endswith(".json") or content_type.split(";")[0].strip() == "application/json":
+        tipo_enum = TipoArquivoEnum.JSON
     elif nome_arquivo.endswith(".txt") or content_type.split(";")[0].strip() == "text/plain":
         tipo_enum = TipoArquivoEnum.TEXTO
     else:
-        raise HTTPException(415, "Formato não suportado. Envie PDF, PNG, JPG ou TXT UTF-8.")
+        raise HTTPException(415, "Formato não suportado. Envie PDF, PNG, JPG, TXT ou JSON em UTF-8.")
 
     b64_conteudo = base64.b64encode(conteudo_bytes).decode("utf-8")
 
@@ -161,7 +163,6 @@ async def processar_documento_upload(
     )
 
     try:
-        dto_entrada.conteudo_para_extracao()
         return await run_in_threadpool(use_case.executar, dto_entrada)
     except DocumentoJaExiste as exc:
         raise HTTPException(409, str(exc)) from exc

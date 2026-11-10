@@ -106,7 +106,7 @@ def test_legacy_sem_timestamp_inventado_e_reexecucao_sem_resultado_antigo():
     from application.use_cases.acompanhar_fluxo import novo_registro, registrar_etapa
     novo = novo_registro("REPETIDO")
     registrar_etapa(storage, "teste", novo, "em_analise")
-    atual = next(r for r in consultar_fluxo(storage, "teste") if r["documento_id"] == "REPETIDO")
+    atual = next(r for r in consultar_fluxo(storage, "teste") if r["execucao_id"] == novo["execucao_id"])
     assert atual["etapa"] == "em_analise" and "documento" not in atual
 
 

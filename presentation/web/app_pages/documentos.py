@@ -90,6 +90,8 @@ else:
                 with st.spinner("Reprocessando o documento…"):
                     resultado = enviar("reprocessar", {"documento_id": documento["documento_id"], "origem_oci_path": selecionado, "canal_origem": canal})
                 st.session_state.resultado_triagem = resultado
+                st.session_state.original_triagem = None
+                st.session_state.secao_triagem = "resultado"
                 st.session_state.documento_em_consulta = resultado["armazenamento_oci"]["caminho_objeto"]
                 st.rerun()
             except requests.RequestException as exc:

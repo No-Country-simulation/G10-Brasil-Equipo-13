@@ -1,8 +1,13 @@
 import base64
 import binascii
+import json
 from enum import Enum
 from typing import Optional
 from pydantic import BaseModel, Field
+
+
+def _rejeitar_constante_json(constante: str):
+    raise ValueError(f"Constante inválida em JSON: {constante}")
 
 
 class TipoArquivoEnum(str, Enum):
@@ -29,7 +34,7 @@ class TriagemRequestDTO(BaseModel):
     )
     arquivo_base64: Optional[str] = Field(
         None, 
-        description="Arquivo em Base64: PDF, imagem ou TXT UTF-8 (BOM opcional)"
+        description="Arquivo em Base64: PDF, imagem, TXT ou JSON UTF-8 (BOM opcional)"
     )
     canal_origem: str = Field(
         ..., 
@@ -38,7 +43,18 @@ class TriagemRequestDTO(BaseModel):
     )
 
     def conteudo_para_extracao(self) -> Optional[str]:
-        """Normaliza TXT codificado sem reinterpretar texto enviado literalmente."""
+        """Decodifica arquivos textuais sem reinterpretar texto enviado literalmente."""
+        if self.tipo_arquivo == TipoArquivoEnum.JSON:
+            try:
+                texto = (
+                    base64.b64decode(self.arquivo_base64, validate=True).decode("utf-8-sig")
+                    if self.arquivo_base64 else (self.documento_texto or "").removeprefix("\ufeff")
+                )
+                json.loads(texto, parse_constant=_rejeitar_constante_json)
+            except (ValueError, RecursionError) as exc:
+                raise ValueError("Envie um JSON válido em UTF-8 (BOM opcional).") from exc
+            return texto
+
         if self.tipo_arquivo == TipoArquivoEnum.TEXTO and self.arquivo_base64:
             try:
                 bruto = base64.b64decode(self.arquivo_base64, validate=True)
