@@ -6,6 +6,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from application.use_cases.processar_triagem import ProcessarTriagemUseCase
+from application.workflows.rules import validar_formato_crm
 from infrastructure.adapters.memory_storage_adapter import MemoryStorageAdapter
 from infrastructure.adapters.presentation_llm_adapter import resultado_exemplo
 from infrastructure.oci_client.client_factory import get_triagem_use_case
@@ -122,8 +123,6 @@ def test_base64_invalido_e_texto_direto_literal(contexto):
     resp = client.post("/triagem", json={**payload, "documento_texto": texto})
     assert resp.status_code == 200
     llm.processar_documento.assert_called_once_with(conteudo=texto, tipo_arquivo="TEXTO")
-
-from application.workflows.rules import validar_formato_crm
 
 
 @pytest.mark.parametrize("crm", [
