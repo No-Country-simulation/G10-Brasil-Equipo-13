@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-GUIA-2026-0001",
+  "cenario": "rotina",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Auditoria_Autorizacoes",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Luana Cirino Rodrigues",
+      "idade": 54,
+      "cpf": "961.842.750-11"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Antonella da Mata",
+      "crm": "255369-PE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Gastrite não especificada",
+    "cid_sugerido": "K29.7",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Endoscopia Digestiva Alta"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-659951",
+    "convenio": "Vida Plena Planos",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

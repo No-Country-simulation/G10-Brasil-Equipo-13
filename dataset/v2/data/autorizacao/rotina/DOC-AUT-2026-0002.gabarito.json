@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-AUT-2026-0002",
+  "cenario": "rotina",
+  "tipo_documento": "Autorização Administrativa",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Auditoria_Autorizacoes",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Eduarda Gonçalves Moraes",
+      "idade": 90,
+      "cpf": "048.619.357-84"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Calebe Martins",
+      "crm": "472462-SP"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Fratura da Extremidade Distal do Rádio",
+    "cid_sugerido": "S52.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Radiografia de Punho"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-428930",
+    "convenio": "Convênio Horizonte",
+    "status_autorizacao": "aprovada",
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

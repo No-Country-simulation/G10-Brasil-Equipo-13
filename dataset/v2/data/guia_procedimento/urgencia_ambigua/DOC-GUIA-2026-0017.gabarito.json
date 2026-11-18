@@ -1,0 +1,39 @@
+{
+  "documento_id": "DOC-GUIA-2026-0017",
+  "cenario": "urgencia_ambigua",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 58,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Antonella Rocha",
+      "crm": "427568-CE"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Tromboembolismo Pulmonar Agudo (TEP)",
+    "cid_sugerido": "I26.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Tomografia de Tórax com contraste"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-955015",
+    "convenio": "Convênio Horizonte",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica",
+    "revisao_humana_paralela"
+  ]
+}

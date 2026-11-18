@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-AUT-2026-0009",
+  "cenario": "ambiguo",
+  "tipo_documento": "Autorização Administrativa",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Hellena Fogaça Cavalcanti",
+      "idade": 48,
+      "cpf": "235.679.041-16"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Diego Nunes",
+      "crm": "53292-XX"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hipertensão Essencial",
+    "cid_sugerido": "I10",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Creatinina"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-656837",
+    "convenio": "Vida Plena Planos",
+    "status_autorizacao": "pendente",
+    "pendencias": [
+      "Laudo médico anexo"
+    ]
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

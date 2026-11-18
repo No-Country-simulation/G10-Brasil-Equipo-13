@@ -124,7 +124,15 @@ mediflow/
     ├── serve_simulated_api.py       # Entrada exclusiva da API Compose de testes
     └── demonstracao_cenarios.py     # Demonstração separada contra API ativa
 ```
+---
 
+## 🗂️ Dataset de documentos clínicos sintéticos
+
+O projeto conta com o dataset v2, destinado ao desenvolvimento e aos testes do agente de triagem. Ele contém 115 documentos de entrada em JSON, seus respectivos gabaritos e schemas para validação.
+
+A documentação sobre a estrutura, os arquivos disponíveis e as limitações do dataset está em [`docs/dataset-v2.md`](docs/dataset-v2.md).
+
+**Importante:** os documentos são sintéticos e as regras de triagem ainda dependem de validação clínica. Os PDFs e as imagens permanecem no Drive, conforme o alinhamento da equipe.
 ---
 
 ## 🔀 Fluxo de contribuição

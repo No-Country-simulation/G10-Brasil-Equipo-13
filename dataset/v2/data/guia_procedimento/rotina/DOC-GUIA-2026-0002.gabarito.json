@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-GUIA-2026-0002",
+  "cenario": "rotina",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Auditoria_Autorizacoes",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Leandro Sousa Gomes",
+      "idade": 65,
+      "cpf": "591.062.374-52"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Bella Cardoso",
+      "crm": "471999-GO"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hiperlipidemia não especificada",
+    "cid_sugerido": "E78.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Perfil Lipídico"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-584106",
+    "convenio": "Prime Saúde",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

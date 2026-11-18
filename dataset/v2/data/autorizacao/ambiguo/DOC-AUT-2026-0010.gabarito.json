@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-AUT-2026-0010",
+  "cenario": "ambiguo",
+  "tipo_documento": "Autorização Administrativa",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Marina Nogueira das Neves",
+      "idade": 18,
+      "cpf": "270.861.453-35"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Agatha Farias",
+      "crm": "338-PR"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Diabetes Mellitus tipo 2",
+    "cid_sugerido": "E11.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Hemoglobina Glicada"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-784607",
+    "convenio": "Convênio Horizonte",
+    "status_autorizacao": "negada",
+    "pendencias": [
+      "Carência contratual não cumprida"
+    ]
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

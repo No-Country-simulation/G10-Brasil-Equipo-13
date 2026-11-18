@@ -1,0 +1,34 @@
+{
+  "documento_id": "DOC-LAB-2026-0014",
+  "cenario": "ambiguo",
+  "tipo_documento": "Laudo de Exame Laboratorial",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 45,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Laís Freitas",
+      "crm": "371939-RJ"
+    },
+    "exame_realizado": "Perfil Lipídico",
+    "diagnostico_principal": "Hiperlipidemia não especificada",
+    "cid_sugerido": "E78.5",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Colesterol total 248 mg/dL, LDL 162 mg/dL, HDL 38 mg/dL, triglicerídeos 240 mg/dL.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}
