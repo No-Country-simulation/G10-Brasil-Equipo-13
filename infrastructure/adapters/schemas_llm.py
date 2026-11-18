@@ -14,9 +14,17 @@ class MedicoSolicitanteLLMSchema(BaseModel):
 
 class ExtracaoClinicaLLMSchema(BaseModel):
     """Schema estrito para extração de entidades clínicas via LLM Multimodal."""
-    tipo_documento: str = Field(
-        ..., 
-        description="Categoria (ex: Laudo de Exame de Imagem, Receituário Médico, Atestado Médico, Guia TISS)"
+    tipo_documento: Literal[
+        "Receituário Médico",
+        "Laudo de Exame Laboratorial",
+        "Laudo de Exame de Imagem",
+        "Guia de Solicitação de Procedimento",
+        "Relatório de Alta/Internação",
+        "Autorização Administrativa",
+        "Atestado Médico",
+    ] = Field(
+        ...,
+        description="Categoria documental. Selecione exclusivamente uma das sete categorias permitidas."
     )
     especialidade: str = Field(
         ..., 
