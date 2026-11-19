@@ -66,7 +66,7 @@ def test_upload_txt_entrega_texto_legivel_e_preserva_original(contexto, bom):
     resp = client.post("/triagem/upload", data={"documento_id": "TXT", "canal_origem": "Teste"}, files={"arquivo": ("caso.txt", bruto, "text/plain")})
     assert resp.status_code == 200
     llm.processar_documento.assert_called_once_with(conteudo=texto, tipo_arquivo="TEXTO")
-    assert caso.storage.obter_arquivo("teste", "recebidos/TXT.txt") == bruto
+    assert caso.storage.obter_arquivo("teste", resp.json()["armazenamento_oci"]["caminho_documento_bruto"]) == bruto
 
 
 @pytest.mark.parametrize("nome,mime,bruto,status", [
