@@ -72,8 +72,54 @@ def test_upload_txt_entrega_texto_legivel_e_preserva_original(contexto, bom):
     assert caso.storage.obter_arquivo("teste", resp.json()["armazenamento_oci"]["caminho_documento_bruto"]) == bruto
 
 
+@pytest.mark.parametrize("via", ["multipart", "interface"])
+def test_upload_json_valida_preserva_original_e_reprocessa(contexto, via):
+    client, caso, llm, _ = contexto
+    texto = '{"paciente": "João"}'
+    bruto = b"\xef\xbb\xbf" + texto.encode("utf-8")
+    dados = {"documento_id": "CASO-JSON", "canal_origem": "Teste"}
+    if via == "multipart":
+        resp = client.post("/triagem/upload", data=dados, files={
+            "arquivo": ("caso.json", bruto, "application/octet-stream"),
+        })
+    else:
+        resp = client.post("/triagem", json={
+            **dados, "tipo_arquivo": "JSON", "arquivo_base64": base64.b64encode(bruto).decode("ascii"),
+        })
+
+    assert resp.status_code == 200
+    doc = resp.json()
+    assert doc["tipo_arquivo"] == "JSON"
+    llm.processar_documento.assert_called_once_with(conteudo=texto, tipo_arquivo="JSON")
+    original = doc["armazenamento_oci"]["caminho_documento_bruto"]
+    assert original.endswith(".json")
+    assert caso.storage.obter_arquivo("teste", original) == bruto
+
+    resp = client.post("/triagem/reprocessar", json={
+        **dados, "origem_oci_path": doc["armazenamento_oci"]["caminho_objeto"],
+    })
+    assert resp.status_code == 200
+    assert resp.json()["execucao_id"] != doc["execucao_id"]
+    llm.processar_documento.assert_called_with(conteudo=texto, tipo_arquivo="JSON")
+
+
+def test_json_invalido_via_interface_nao_reserva_id(contexto):
+    client, caso, llm, notifier = contexto
+    resp = client.post("/triagem", json={
+        "documento_id": "INVALIDO", "canal_origem": "Teste", "tipo_arquivo": "JSON",
+        "arquivo_base64": base64.b64encode(b'{"valor": NaN}').decode("ascii"),
+    })
+    assert resp.status_code == 422
+    assert caso.storage.listar_objetos_por_prefixo("teste", "") == []
+    llm.processar_documento.assert_not_called()
+    notifier.enviar_alerta_urgencia.assert_not_called()
+
+
 @pytest.mark.parametrize("nome,mime,bruto,status", [
     ("caso.zip", "application/zip", b"PK123", 415),
+    ("caso.json", "application/json", b'{"paciente":', 422),
+    ("caso.json", "application/json", b"\xff", 422),
+    ("caso.json", "application/json", b"", 400),
     ("caso.txt", "text/plain", b"\xff", 422),
     ("caso.txt", "text/plain", b"abc\x00def", 422),
     ("caso.txt", "text/plain", b"   ", 422),

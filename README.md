@@ -404,7 +404,7 @@ documentos únicos. Falhas são estados do processamento e não uma pasta fictí
 Nome, extensão e caminho vêm das chaves listadas; data, tamanho e integridade
 não são verificados. Falha na consulta aparece como indisponibilidade, não como zero.
 
-Em **Nova triagem**, escolha **Enviar arquivo** (PDF, JPG, PNG ou TXT) ou
+Em **Nova triagem**, escolha **Enviar arquivo** (PDF, JPG, JPEG, PNG, TXT ou JSON) ou
 **Fotografar documento**. A câmera captura uma página por vez, pede permissão
 ao navegador e depende de câmera disponível e contexto seguro (localhost ou HTTPS).
 Capture uma imagem legível e clique em **Executar triagem** para iniciar a análise.
@@ -499,7 +499,7 @@ armazenados, busca e encaminhamento para revisao. Nao ha chave de demonstracao o
 metricas ficticias. A navegacao lateral agrupa Central, Nova triagem, Documentos
 clinicos, Urgencias e Revisao humana em Triagem, e Armazenamento e integracoes em
 Plataforma. O tema usa verde-petroleo na sidebar, que pode ser recolhida pelo controle
-nativo do Streamlit. A triagem aceita PDF, JPG/PNG, TXT, JSON ou texto colado e preserva o
+nativo do Streamlit. A triagem aceita PDF, JPG/PNG, TXT, JSON ou uma foto e preserva o
 ultimo resultado na sessao. A auditoria permite conferir o original ao lado dos
 campos editaveis. O historico consulta documentos armazenados, com busca por ID ou
 paciente e exportacao JSON; nao representa um log imutavel de eventos.

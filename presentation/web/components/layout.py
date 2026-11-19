@@ -37,19 +37,3 @@ def estado_vazio(titulo, descricao, icone=":material/folder_open:", nova_triagem
         st.caption(descricao)
         if nova_triagem:
             st.page_link("app_pages/nova_triagem.py", label="Nova triagem", icon=":material/add_circle:")
-
-
-def etapas_triagem(documento=None):
-    """O serviço retorna classificação e extração juntas; não simula progresso."""
-    finalizado = documento is not None
-    falha = bool(documento and documento.get("erro_extracao"))
-    etapas = [
-        ("1 · Recebimento", "Documento enviado" if finalizado else "Envie um documento", ":material/upload_file:"),
-        ("2 · Classificação", "Não realizada" if falha else "Classificação disponível" if finalizado else "Identificação do tipo", ":material/category:"),
-        ("3 · Extração e validação", "Revisão necessária" if falha else "Dados extraídos" if finalizado else "Conferência dos campos", ":material/fact_check:"),
-        ("4 · Resultado", "Encaminhamento disponível" if finalizado else "Destino e justificativa", ":material/route:"),
-    ]
-    for coluna, (titulo, descricao, icone) in zip(st.columns(4), etapas):
-        with coluna.container(border=True, height="stretch"):
-            st.markdown(f"{icone} **{titulo}**")
-            st.caption(descricao)

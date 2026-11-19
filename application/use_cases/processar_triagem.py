@@ -54,14 +54,14 @@ class ProcessarTriagemUseCase:
         self.bucket_name = bucket_name
 
     def _salvar_documento_original(self, request: TriagemRequestDTO, registro: dict) -> Optional[str]:
-        """
-        Salva o arquivo bruto original (PDF, Imagem ou Texto) no prefixo 'recebidos/' da OCI.
-        """
-        tipo = request.tipo_arquivo.value.upper()
-        extensao = "pdf" if tipo == "PDF" else ("jpg" if tipo == "IMAGEM" else "txt")
+        """Salva o arquivo original no prefixo 'recebidos/' da OCI."""
+        extensao, content_type = {
+            "PDF": ("pdf", "application/pdf"),
+            "IMAGEM": ("jpg", "image/jpeg"),
+            "JSON": ("json", "application/json"),
+            "TEXTO": ("txt", "text/plain; charset=utf-8"),
+        }[request.tipo_arquivo.value]
         caminho_bruto = f"recebidos/{caminho_execucao(request.documento_id, registro['execucao_id'])}.{extensao}"
-
-        content_type = "application/pdf" if tipo == "PDF" else ("image/jpeg" if tipo == "IMAGEM" else "text/plain; charset=utf-8")
 
         dados_bytes: bytes = b""
         if request.arquivo_base64:

@@ -40,50 +40,64 @@ def resumo_triagem(doc):
                     st.caption(rotulo)
                     st.text(valor)
         st.caption("A confiança é uma estimativa do modelo para a classificação; não comprova correção clínica.")
-        if falha:
-            return
-        pendentes = campos_nao_identificados(doc.get("dados_extraidos") or {})
-        revisao = bool((doc.get("decisao_roteamento") or {}).get("requer_auditoria_humana"))
-        if pendentes:
-            st.markdown("**Campos não identificados no resultado**")
-            for campo in pendentes:
-                st.text("• " + campo)
-            st.caption("Ausência no resultado não comprova ausência no original ou ilegibilidade. A necessidade desses campos depende do documento.")
-        if revisao:
-            st.warning("Revisão humana necessária. Confira os dados e a justificativa de encaminhamento abaixo.")
-        elif not pendentes:
-            st.caption("Identificação do paciente e do profissional preenchida no resultado; conteúdo ainda sujeito à conferência.")
+        if not falha:
+            exibir_validacao(doc)
+
+
+def exibir_validacao(doc):
+    pendentes = campos_nao_identificados(doc.get("dados_extraidos") or {})
+    revisao = bool((doc.get("decisao_roteamento") or {}).get("requer_auditoria_humana"))
+    if pendentes:
+        st.markdown("**Campos não identificados no resultado**")
+        for campo in pendentes:
+            st.text("• " + campo)
+        st.caption("Ausência no resultado não comprova ausência no original ou ilegibilidade. A necessidade desses campos depende do documento.")
+    if revisao:
+        st.warning("Revisão humana necessária. Confira os dados e o motivo indicado na decisão.")
+    elif not pendentes:
+        st.caption("Identificação do paciente e do profissional preenchida no resultado; conteúdo ainda sujeito à conferência.")
 
 
 def exibir_resultado(doc):
-    if doc.get("acompanhamento_fluxo_confirmado") is False:
-        st.warning("A triagem retornou, mas a última etapa do quadro não pôde ser confirmada. Atualize as filas antes de reenviar.")
     estado = estado_documento(doc)
     cores = {"Falha na extração": "red", "Erro": "red", "Aguardando revisão": "orange", "Processado": "green"}
     st.badge(estado, color=cores.get(estado, "gray"))
     resumo_triagem(doc)
     if doc.get("erro_extracao"):
         st.error("Extração não realizada: " + doc["erro_extracao"]["mensagem"])
-        st.caption("A prioridade clínica não foi avaliada. Documento encaminhado para revisão humana.")
+        st.caption("A prioridade clínica não foi avaliada.")
     else:
         renderizar_resumo_clinico(doc.get("dados_extraidos", {}), doc.get("classificacao", {}))
-    decisao = doc.get("decisao_roteamento", {})
+    exibir_encaminhamento(doc)
+
+
+def exibir_encaminhamento(doc):
+    armazenamento = doc.get("armazenamento_oci") or {}
+    backup = armazenamento.get("status_backup")
+    if doc.get("acompanhamento_fluxo_confirmado") is False:
+        st.warning("O resultado foi recebido, mas o acompanhamento não foi confirmado. Consulte Filas de processamento antes de reenviar.")
+    decisao = doc.get("decisao_roteamento") or {}
     with st.container(border=True):
         st.subheader("Encaminhamento", icon=":material/route:")
-        st.write("**Destino:**", nome_destino(decisao.get("destino_principal")))
+        rotulo = "Destino definido" if backup == "sucesso" else "Destino indicado pela triagem"
+        st.write(f"**{rotulo}:**", nome_destino(decisao.get("destino_principal")))
         mensagem = decisao.get("justificativa_roteamento") or "Sem justificativa informada."
         if decisao.get("requer_auditoria_humana"):
             st.warning(mensagem)
-            st.page_link("app_pages/auditoria.py", label="Abrir revisão humana", icon=":material/fact_check:")
+            if backup == "sucesso":
+                st.page_link("app_pages/auditoria.py", label="Abrir revisão humana", icon=":material/fact_check:")
         elif doc.get("classificacao", {}).get("nivel_prioridade") == "Urgente":
-            st.error(mensagem)
+            st.warning(mensagem)
         else:
             st.info(mensagem)
-        armazenamento = doc.get("armazenamento_oci", {})
-        if armazenamento.get("status_backup") == "falha":
-            st.error("Falha ao salvar o resultado da triagem.")
-        elif armazenamento.get("status_backup") == "sucesso":
-            st.caption("Armazenamento confirmado pelo serviço de triagem.")
+        if backup == "falha":
+            st.error("O relatório não foi salvo. Consulte Filas de processamento pelo ID antes de reenviar.")
+        elif backup == "sucesso":
+            st.success("Relatório salvo para revisão humana." if decisao.get("requer_auditoria_humana") else "Relatório salvo.")
+        else:
+            st.info("Armazenamento do relatório não confirmado.")
+        if backup != "sucesso" or doc.get("acompanhamento_fluxo_confirmado") is False:
+            st.page_link("app_pages/filas.py", label="Consultar filas de processamento", icon=":material/view_kanban:")
         if decisao.get("notificacao_gerada"):
             st.caption("Alerta gerado. A entrega externa não é comprovada por este registro.")
     with st.expander("Dados estruturados e armazenamento", icon=":material/data_object:"):
