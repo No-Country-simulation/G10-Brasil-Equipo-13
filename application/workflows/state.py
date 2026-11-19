@@ -20,4 +20,4 @@ class WorkflowTriagemState(TypedDict, total=False):
     justificativa_roteamento: str
     notificacao_gerada: Optional[Dict[str, str]]
     notificacoes_adicionais: List[Dict[str, str]]
-    caminho_oci_sugerido: str
+    pasta_oci_sugerida: str
