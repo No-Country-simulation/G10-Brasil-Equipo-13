@@ -17,7 +17,13 @@ sem configuração, usa um arquivo no diretório temporário local, adequado
 somente a testes. Na OCI real o índice SQLite não é usado.
 
 Se a tentativa falhar antes de guardar o original, a API libera sua reserva
-depois de confirmar que o original está ausente. O reenvio disputa novamente
+depois de confirmar que o original está ausente. A liberação confere
+`primeira_execucao_id`: uma execução nunca libera a reserva de outra. Na OCI,
+a exclusão exige `if_match` do ETag lido; alterações concorrentes (412), falta
+de ETag ou falhas de consulta conservam a reserva. No emulador, uma transação
+SQLite serializa a liberação com novas reservas entre processos.
+A tentativa interrompida é arquivada em `tentativas_interrompidas/` antes da
+liberação; falha ao arquivar mantém a reserva. O reenvio disputa novamente
 a criação atômica. Se o original existir ou a verificação falhar, a reserva
 permanece para proteger os dados e a API tenta registrar a interrupção para
 reprocessamento. Não remover marcadores manualmente para repetir um cadastro.
@@ -100,3 +106,26 @@ Esses testes usam buckets com nome aleatório, dados sintéticos e limpeza final
   A entrega à QA na nuvem depende dessas condições e das evidências funcionais.
 
 Referência do SDK: https://docs.oracle.com/en-us/iaas/tools/python/latest/api/object_storage/client/oci.object_storage.ObjectStorageClient.html#oci.object_storage.ObjectStorageClient.put_object
+
+## Decisão de contrato: categoria e falha de classificação
+
+O schema de saída válida da IA aceita somente as sete categorias oficiais,
+compatíveis com a correção #38. O DTO público mantém `tipo_documento: str`
+para leitura dos registros legados. Não há oitava categoria clínica.
+Falhas da OpenAI passam por `FalhaExtracaoIA`, assim como as falhas do Gemini,
+e geram estado de erro e encaminhamento à revisão humana. A descrição
+`Documento Clínico Não Identificado` permanece na resposta e na interface
+por compatibilidade, como apresentação da ausência de classificação, nunca
+como categoria válida da IA. Não se inventa uma categoria para completar o
+contrato. A restrição futura do DTO público exige contrato explícito para
+resultados não classificados e migração compatível dos registros antigos.
+
+### Validação local das decisões — 19/11/2026
+
+- Suíte unitária: 161 aprovados, 15 cenários de emulador omitidos nessa rodada.
+- Rodada separada com `RUN_OCI_EMULATOR_TESTS=1`: 34 aprovados em
+  `test_issue31.py` e `test_oci_emulator.py`, com buckets sintéticos locais.
+- Onze regressões novas cobrem propriedade da reserva, concorrência, ETag,
+  falha na consulta/arquivo de auditoria e classificação não identificada.
+- Ruff 0.15.8 (E9,F63,F7,F82) e `git diff --check`: aprovados.
+- Não houve validação com escrita na OCI real nem nova homologação visual.

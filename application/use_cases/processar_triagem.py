@@ -136,9 +136,17 @@ class ProcessarTriagemUseCase:
                 sem_original = False
             if sem_original:
                 documento_id = registro["documento_id"]
+                # Fora de fluxo/: mantém auditoria sem confundir a busca de legados.
+                tentativa = dict(registro)
+                tentativa["chave_persistida"] = (
+                    f"tentativas_interrompidas/{caminho_execucao(documento_id, registro['execucao_id'])}.json"
+                )
+                registrar_etapa(self.storage, self.bucket_name, tentativa, "falha",
+                               mensagem="Original ausente; tentativa encerrada para permitir novo cadastro.")
                 self.storage.cancelar_cadastro(
                     self.bucket_name, chave_cadastro(documento_id),
                     chave_fluxo(documento_id, registro["execucao_id"]),
+                    registro["execucao_id"],
                 )
                 return
         registrar_etapa(self.storage, self.bucket_name, registro, "falha",

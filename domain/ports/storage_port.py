@@ -9,8 +9,8 @@ class StoragePort(ABC):
         """Cria atomicamente; False somente se já existe. Nunca sobrescreve."""
         raise NotImplementedError("O armazenamento precisa suportar criação atômica.")
 
-    def cancelar_cadastro(self, bucket_name: str, cadastro: str, fluxo: str) -> None:
-        """Libera uma reserva própria sem original, removendo primeiro seu acompanhamento."""
+    def cancelar_cadastro(self, bucket_name: str, cadastro: str, fluxo: str, execucao_id: str) -> bool:
+        """Libera somente a reserva da execução informada; False se ela mudou."""
         raise NotImplementedError
 
     def obter_arquivo(self, bucket_name: str, object_name: str) -> bytes | None:

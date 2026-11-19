@@ -92,7 +92,7 @@ def test_binario_enviado_com_mime_correto(tipo, conteudo, mime):
 
 @pytest.mark.parametrize("dados,destino,prefixo", [
     (extracao(), "Farmacia_Hospitalar", "processados/rotina/"),
-    (extracao(tipo_documento="Laudo", nivel_prioridade="Urgente", achado_critico=True), "Fila_Emergencia_Medica", "processados/urgentes/"),
+    (extracao(tipo_documento="Laudo de Exame de Imagem", nivel_prioridade="Urgente", achado_critico=True), "Fila_Emergencia_Medica", "processados/urgentes/"),
     (extracao(score_confianca=.4, paciente={"nome": None, "idade": None}), "Fila_Revisao_Humana", "auditoria_humana/"),
 ])
 def test_cenarios_completos_com_extracao_simulada(dados, destino, prefixo):

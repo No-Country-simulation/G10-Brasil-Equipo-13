@@ -16,6 +16,8 @@ class NivelPrioridadeEnum(str, Enum):
 
 
 class ClassificacaoDTO(BaseModel):
+    # Contrato público compatível com legados e resultados sem classificação.
+    # As sete categorias são exigidas no schema de saída válida da IA.
     tipo_documento: str = Field(
         ..., 
         description="Categoria identificada do documento",
