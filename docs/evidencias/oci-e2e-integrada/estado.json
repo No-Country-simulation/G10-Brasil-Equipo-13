@@ -1,0 +1,360 @@
+{
+  "run": "E2E-OCI-20261119T142542Z-c977fcfc",
+  "baseline": {
+    "c8e23d8788e73a693ba3b5633df72319b7cfbff312238144f26fde7817bc5cd5": "a2c274ad-870a-4e0e-9dfc-a9dc1dadd833",
+    "89fd71848c450ed69f8060fd3aeb33219ad62eaa0eeb4d42bdcbd23ade0b7f83": "6d7f4474-1711-414b-a07f-3f194c70ee2e",
+    "0b4af25ee60f7969e534fb1d7e9458166dcb309f5310d88aed5a0f466a5a0fab": "459fb50f-fb18-48f1-93c0-e499d26a2d95",
+    "2010136c71bfc18feeff07e40f02584b990ab337dcc9065c936b795c14e8c7e7": "79a4604e-b1dd-4676-9fd4-b6620faea472",
+    "7c2861c8096164e1235e16333affdaf6bfead01e2e64a07a6c3317e50dc0d0c6": "d9f57df2-e5f0-4d90-ac0d-03b7bf9437a3",
+    "890903d5cc438e076a75a63157824e79abe341f05a36987bf3f3470432170efb": "e748bc43-bf4b-445d-a426-5c32f69c6e47",
+    "ca8536214ab318fcd66700e1e8475bdc68c627947d784a6e3bcc38f6e9ee9f0b": "17df7bd7-919c-4d44-afab-661338015b1c",
+    "3c0dbed71e89bc0ad77e62312e706d112a21221c317d0dec6db4607893153766": "383e087c-f315-4cb2-ab2f-d1f5760b97b0",
+    "174e58cd396712288dddac6d33e9cb424bc69ebac30e005ffee3742809e5996e": "93d0e024-e8a7-4642-8a7d-d46e9428dd0c",
+    "4603eef7e27cccf805fb378ece449541282ac1fdb064b17e2a225b73397d2070": "f02036d5-7991-4e29-946c-efa2894d2e7e",
+    "0a9e075fa4b3bb269fb098cbcab3a477f02a098908b5992022da20733fabac76": "11085cf8-f0ab-4ff9-8de5-d9818174bf23",
+    "f6b762e7ece2c5e6ebbe50510df504e4fb16cabeeefeaa91ba3fd73cd30d8235": "585de1a2-124f-41df-be57-dcecd62805d0",
+    "60c84d2318b7472d4b55496fd6e1e797977620ef94b401fa15d37ad344963426": "f3d33768-65ba-4e1f-9bb5-c8d97b88a449",
+    "5586d359e1df905274cebef65d9a996adb700065b0fb4f7ea56f7b2436dad0c3": "242e0995-7a34-4047-8e3c-55761c50bf2c",
+    "f8cdb854f5b6777dfa47472984a7e65161293e98cc612f88a0b1537efd997582": "1b008992-381d-45b7-8fb6-19b0e9f960f6",
+    "4738140a224183b9de6996cc5e5153005f0f286f2c5424aa84734fe97e01c4f5": "6d70b0b0-ce63-4fec-b89c-b3d019612dec",
+    "aeb903f35642a74e97108fae51ffd22c0a9f7e817214c08e799f92835b3811aa": "ea5c4cdf-dbc7-427f-a587-7066d8d8679f"
+  },
+  "documentos": [
+    {
+      "cenario": "cadastro_txt",
+      "doc": {
+        "status": "processado",
+        "documento_id": "E2E-OCI-20261119T142542Z-c977fcfc-TXT",
+        "canal_origem": "Ambulatorio",
+        "execucao_id": "ce314e9d37ac44f9b189c4b49114c364",
+        "tipo_arquivo": "TEXTO",
+        "criado_em": "2026-11-19T14:25:44.952466+00:00",
+        "reprocessamento_de": null,
+        "execucao_anterior_id": null,
+        "acompanhamento_fluxo_confirmado": true,
+        "erro_extracao": null,
+        "classificacao": {
+          "tipo_documento": "Receituário Médico",
+          "especialidade": "Cardiologia / Clínica Geral",
+          "nivel_prioridade": "Rotina",
+          "score_confianca_classificacao": 0.95
+        },
+        "dados_extraidos": {
+          "paciente": {
+            "nome": "Pessoa Ficticia Rotina",
+            "idade": 54
+          },
+          "medico_solicitante": {
+            "nome": "Dra. Exemplo",
+            "crm": "000001-SP"
+          },
+          "exame_realizado": null,
+          "diagnostico_principal": "Hipertensao em acompanhamento de rotina",
+          "cid_sugerido": null,
+          "medicamentos": [
+            "Losartana 50 mg, 1 comprimido ao dia"
+          ]
+        },
+        "decisao_roteamento": {
+          "destino_principal": "Farmacia_Hospitalar",
+          "requer_auditoria_humana": false,
+          "justificativa_roteamento": "Documento classificado como Receituário Médico validado com alta confiabilidade.",
+          "notificacao_gerada": null,
+          "notificacoes_adicionais": []
+        },
+        "armazenamento_oci": {
+          "bucket": "mediflow-testes",
+          "caminho_objeto": "processados/rotina/8dfdea5d79e80d0656a61df83957ae0e759cb55e73378f39a08c840fd2d60576/ce314e9d37ac44f9b189c4b49114c364.json",
+          "caminho_documento_bruto": "recebidos/8dfdea5d79e80d0656a61df83957ae0e759cb55e73378f39a08c840fd2d60576/ce314e9d37ac44f9b189c4b49114c364.txt",
+          "status_backup": "sucesso"
+        }
+      },
+      "hashes": {
+        "original": "48c23014d8f662197c02331f1c70f31e1db6a7d8847e541746535a65268e2d40",
+        "relatorio": "a97230612fdab9c9c5a06d3b519368bf8c5d5f0ade7b0ff874dcdbca5d4cd42b"
+      }
+    },
+    {
+      "cenario": "upload_json_bom",
+      "doc": {
+        "status": "processado",
+        "documento_id": "E2E-OCI-20261119T142542Z-c977fcfc-JSON",
+        "canal_origem": "Recepcao",
+        "execucao_id": "d4825e11d06348ef9aae587b10504615",
+        "tipo_arquivo": "JSON",
+        "criado_em": "2026-11-19T14:25:54.106777+00:00",
+        "reprocessamento_de": null,
+        "execucao_anterior_id": null,
+        "acompanhamento_fluxo_confirmado": true,
+        "erro_extracao": null,
+        "classificacao": {
+          "tipo_documento": "Receituário Médico",
+          "especialidade": "Cardiologia",
+          "nivel_prioridade": "Rotina",
+          "score_confianca_classificacao": 0.95
+        },
+        "dados_extraidos": {
+          "paciente": {
+            "nome": "Pessoa Ficticia Rotina",
+            "idade": 54
+          },
+          "medico_solicitante": {
+            "nome": "Dra. Exemplo",
+            "crm": "000001-SP"
+          },
+          "exame_realizado": null,
+          "diagnostico_principal": "Hipertensao em acompanhamento de rotina",
+          "cid_sugerido": null,
+          "medicamentos": [
+            "Losartana 50 mg, 1 comprimido ao dia"
+          ]
+        },
+        "decisao_roteamento": {
+          "destino_principal": "Farmacia_Hospitalar",
+          "requer_auditoria_humana": false,
+          "justificativa_roteamento": "Documento classificado como Receituário Médico validado com alta confiabilidade.",
+          "notificacao_gerada": null,
+          "notificacoes_adicionais": []
+        },
+        "armazenamento_oci": {
+          "bucket": "mediflow-testes",
+          "caminho_objeto": "processados/rotina/20b6de150ca84e3f943e22aa71889edc6705c9fba5ec27f873a433b63d16d10d/d4825e11d06348ef9aae587b10504615.json",
+          "caminho_documento_bruto": "recebidos/20b6de150ca84e3f943e22aa71889edc6705c9fba5ec27f873a433b63d16d10d/d4825e11d06348ef9aae587b10504615.json",
+          "status_backup": "sucesso"
+        }
+      },
+      "hashes": {
+        "original": "5cddde57bfe13d6ae6a1bbc5c725a8c49eace593868912583ec1a8d23af3e526",
+        "relatorio": "0cf34514e57424d48ddc6a185375f26126213d54f0c3ce598e1991d185581ef1"
+      }
+    },
+    {
+      "cenario": "urgencia",
+      "doc": {
+        "status": "processado",
+        "documento_id": "E2E-OCI-20261119T142542Z-c977fcfc-URGENCIA",
+        "canal_origem": "Pronto_Socorro",
+        "execucao_id": "feac7f1d8dc94879a1220b6cc1adc4ac",
+        "tipo_arquivo": "TEXTO",
+        "criado_em": "2026-11-19T14:26:03.877817+00:00",
+        "reprocessamento_de": null,
+        "execucao_anterior_id": null,
+        "acompanhamento_fluxo_confirmado": true,
+        "erro_extracao": null,
+        "classificacao": {
+          "tipo_documento": "Laudo de Exame de Imagem",
+          "especialidade": "Radiologia / Pneumologia",
+          "nivel_prioridade": "Urgente",
+          "score_confianca_classificacao": 0.95
+        },
+        "dados_extraidos": {
+          "paciente": {
+            "nome": "Pessoa Ficticia Urgencia",
+            "idade": 67
+          },
+          "medico_solicitante": {
+            "nome": "Dr. Exemplo",
+            "crm": "000002-SP"
+          },
+          "exame_realizado": "Tomografia",
+          "diagnostico_principal": "Tromboembolismo pulmonar agudo",
+          "cid_sugerido": null,
+          "medicamentos": []
+        },
+        "decisao_roteamento": {
+          "destino_principal": "Fila_Emergencia_Medica",
+          "requer_auditoria_humana": false,
+          "justificativa_roteamento": "Achado crítico de alta gravidade (Tromboembolismo pulmonar agudo) detectado.",
+          "notificacao_gerada": {
+            "canal": "Alerta_Plantao_Medico",
+            "mensagem": "ALERTA URGENTE: Diagnóstico crítico de Tromboembolismo pulmonar agudo para paciente Pessoa Ficticia Urgencia."
+          },
+          "notificacoes_adicionais": []
+        },
+        "armazenamento_oci": {
+          "bucket": "mediflow-testes",
+          "caminho_objeto": "processados/urgentes/920f0dd1aee376baf2f3a4d847804348d59f2c553c26ac30688b57a521acbe50/feac7f1d8dc94879a1220b6cc1adc4ac.json",
+          "caminho_documento_bruto": "recebidos/920f0dd1aee376baf2f3a4d847804348d59f2c553c26ac30688b57a521acbe50/feac7f1d8dc94879a1220b6cc1adc4ac.txt",
+          "status_backup": "sucesso"
+        }
+      },
+      "hashes": {
+        "original": "0aa43abf3e8346f1bb806f99ea09c6d82939697f03c72714af254458008e9f16",
+        "relatorio": "14f58065089ef4436fde9128188af7ebacede3b7f9d76afefa0f3260cb380f59"
+      }
+    },
+    {
+      "cenario": "revisao",
+      "doc": {
+        "status": "processado",
+        "documento_id": "E2E-OCI-20261119T142542Z-c977fcfc-REVISAO",
+        "canal_origem": "Pronto_Socorro",
+        "execucao_id": "2b019f2a748e41d389f373cd7401b024",
+        "tipo_arquivo": "TEXTO",
+        "criado_em": "2026-11-19T14:26:20.526507+00:00",
+        "reprocessamento_de": null,
+        "execucao_anterior_id": null,
+        "acompanhamento_fluxo_confirmado": true,
+        "erro_extracao": null,
+        "classificacao": {
+          "tipo_documento": "Receituário Médico",
+          "especialidade": "Clínica Geral",
+          "nivel_prioridade": "Rotina",
+          "score_confianca_classificacao": 0.3
+        },
+        "dados_extraidos": {
+          "paciente": {
+            "nome": null,
+            "idade": null
+          },
+          "medico_solicitante": {
+            "nome": null,
+            "crm": null
+          },
+          "exame_realizado": null,
+          "diagnostico_principal": null,
+          "cid_sugerido": null,
+          "medicamentos": []
+        },
+        "decisao_roteamento": {
+          "destino_principal": "Fila_Revisao_Humana",
+          "requer_auditoria_humana": true,
+          "justificativa_roteamento": "Documento retido para auditoria humana: Score de confiança insuficiente (0.30); Ausência de identificação do paciente; Registro CRM ausente ou ilegível; Receituário sem posologias/fármacos detectados.",
+          "notificacao_gerada": {
+            "canal": "Email_Auditoria",
+            "mensagem": "DOCUMENTO PENDENTE: Documento E2E-OCI-20261119T142542Z-c977fcfc-REVISAO retido. Motivo: Score de confiança insuficiente (0.30); Ausência de identificação do paciente; Registro CRM ausente ou ilegível; Receituário sem posologias/fármacos detectados."
+          },
+          "notificacoes_adicionais": []
+        },
+        "armazenamento_oci": {
+          "bucket": "mediflow-testes",
+          "caminho_objeto": "auditoria_humana/152630887f80c947b850a61c3cc5ce4b6a4a0f93603344b15e758cb6e2190aff/2b019f2a748e41d389f373cd7401b024.json",
+          "caminho_documento_bruto": "recebidos/152630887f80c947b850a61c3cc5ce4b6a4a0f93603344b15e758cb6e2190aff/2b019f2a748e41d389f373cd7401b024.txt",
+          "status_backup": "sucesso"
+        }
+      },
+      "hashes": {
+        "original": "cd4d1bcf1a5b28c7193b1c3ea28d17b6736f23ed572f9ed4cf6b98a7e502538b",
+        "relatorio": "556077546759417c5e20f1bc52a2a21806fa557ed715cff07a856853b88d3bc4"
+      }
+    },
+    {
+      "cenario": "concorrencia_http",
+      "doc": {
+        "status": "processado",
+        "documento_id": "E2E-OCI-20261119T142542Z-c977fcfc-CORRIDA",
+        "canal_origem": "Ambulatorio",
+        "execucao_id": "9908c2fa2eb4478abb8b47672ee1a730",
+        "tipo_arquivo": "TEXTO",
+        "criado_em": "2026-11-19T14:26:37.310829+00:00",
+        "reprocessamento_de": null,
+        "execucao_anterior_id": null,
+        "acompanhamento_fluxo_confirmado": true,
+        "erro_extracao": null,
+        "classificacao": {
+          "tipo_documento": "Receituário Médico",
+          "especialidade": "Cardiologia / Clínica Geral",
+          "nivel_prioridade": "Rotina",
+          "score_confianca_classificacao": 0.95
+        },
+        "dados_extraidos": {
+          "paciente": {
+            "nome": "Pessoa Ficticia Rotina",
+            "idade": 54
+          },
+          "medico_solicitante": {
+            "nome": "Dra. Exemplo",
+            "crm": "000001-SP"
+          },
+          "exame_realizado": null,
+          "diagnostico_principal": "Hipertensao em acompanhamento de rotina",
+          "cid_sugerido": null,
+          "medicamentos": [
+            "Losartana 50 mg, 1 comprimido ao dia"
+          ]
+        },
+        "decisao_roteamento": {
+          "destino_principal": "Farmacia_Hospitalar",
+          "requer_auditoria_humana": false,
+          "justificativa_roteamento": "Documento classificado como Receituário Médico validado com alta confiabilidade.",
+          "notificacao_gerada": null,
+          "notificacoes_adicionais": []
+        },
+        "armazenamento_oci": {
+          "bucket": "mediflow-testes",
+          "caminho_objeto": "processados/rotina/320969a7112b69834391bc94b2c261978db0eb59fad4cecfcbdb056b256efb13/9908c2fa2eb4478abb8b47672ee1a730.json",
+          "caminho_documento_bruto": "recebidos/320969a7112b69834391bc94b2c261978db0eb59fad4cecfcbdb056b256efb13/9908c2fa2eb4478abb8b47672ee1a730.txt",
+          "status_backup": "sucesso"
+        }
+      },
+      "hashes": {
+        "original": "48c23014d8f662197c02331f1c70f31e1db6a7d8847e541746535a65268e2d40",
+        "relatorio": "ea75f83b6df45d1c44334ea61f4e0eba54aab22e8cc73f2096f30c93843d913f"
+      }
+    },
+    {
+      "cenario": "reprocessamento",
+      "doc": {
+        "status": "processado",
+        "documento_id": "E2E-OCI-20261119T142542Z-c977fcfc-TXT",
+        "canal_origem": "Recepcao",
+        "execucao_id": "6470886794e847eda4c7feef85bab88c",
+        "tipo_arquivo": "TEXTO",
+        "criado_em": "2026-11-19T14:26:47.394495+00:00",
+        "reprocessamento_de": "processados/rotina/8dfdea5d79e80d0656a61df83957ae0e759cb55e73378f39a08c840fd2d60576/ce314e9d37ac44f9b189c4b49114c364.json",
+        "execucao_anterior_id": "ce314e9d37ac44f9b189c4b49114c364",
+        "acompanhamento_fluxo_confirmado": true,
+        "erro_extracao": null,
+        "classificacao": {
+          "tipo_documento": "Receituário Médico",
+          "especialidade": "Cardiologia",
+          "nivel_prioridade": "Rotina",
+          "score_confianca_classificacao": 0.95
+        },
+        "dados_extraidos": {
+          "paciente": {
+            "nome": "Pessoa Ficticia Rotina",
+            "idade": 54
+          },
+          "medico_solicitante": {
+            "nome": "Dra. Exemplo",
+            "crm": "000001-SP"
+          },
+          "exame_realizado": null,
+          "diagnostico_principal": "Hipertensao em acompanhamento de rotina",
+          "cid_sugerido": null,
+          "medicamentos": [
+            "Losartana 50 mg, 1 comprimido ao dia"
+          ]
+        },
+        "decisao_roteamento": {
+          "destino_principal": "Farmacia_Hospitalar",
+          "requer_auditoria_humana": false,
+          "justificativa_roteamento": "Documento classificado como Receituário Médico validado com alta confiabilidade.",
+          "notificacao_gerada": null,
+          "notificacoes_adicionais": []
+        },
+        "armazenamento_oci": {
+          "bucket": "mediflow-testes",
+          "caminho_objeto": "processados/rotina/8dfdea5d79e80d0656a61df83957ae0e759cb55e73378f39a08c840fd2d60576/6470886794e847eda4c7feef85bab88c.json",
+          "caminho_documento_bruto": "recebidos/8dfdea5d79e80d0656a61df83957ae0e759cb55e73378f39a08c840fd2d60576/6470886794e847eda4c7feef85bab88c.txt",
+          "status_backup": "sucesso"
+        }
+      },
+      "hashes": {
+        "original": "48c23014d8f662197c02331f1c70f31e1db6a7d8847e541746535a65268e2d40",
+        "relatorio": "ff7bbc2117b14eeaae39d16434895e4a1edc3291b53a9607938897bc83a8620b"
+      }
+    }
+  ],
+  "checks": [
+    "duplicado_409_original_preservado",
+    "json_invalido_422",
+    "concorrencia_uma_criacao_um_409",
+    "reprocessamento_nova_execucao_original_preservado",
+    "objetos_anteriores_preservados",
+    "reinicio_409_historico_e_hashes_preservados"
+  ],
+  "aguardando_reinicio": false,
+  "concluido_em": "2026-11-19T14:28:25.162512+00:00"
+}

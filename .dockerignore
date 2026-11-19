@@ -11,3 +11,6 @@ __pycache__
 *.py[cod]
 .pytest_cache
 .streamlit/secrets.toml
+
+compose.oci-e2e.local.yaml
+docs/evidencias/oci-e2e-integrada

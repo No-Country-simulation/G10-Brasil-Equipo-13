@@ -1,0 +1,9 @@
+{
+  "bucket": "mediflow-testes",
+  "objeto": "homologacao/E2E-SDK-9d5cae14c0434c428836e552e82f74d8/reserva.json",
+  "status": [
+    412,
+    200
+  ],
+  "resultado": "uma criacao e um HTTP 412"
+}

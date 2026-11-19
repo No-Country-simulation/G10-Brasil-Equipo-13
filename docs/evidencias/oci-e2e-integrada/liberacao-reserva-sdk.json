@@ -1,0 +1,7 @@
+{
+  "bucket": "mediflow-testes",
+  "prefixo": "homologacao/E2E-RESERVA-d1119ff5e549477c93b8651d608ee66d",
+  "outra_execucao_bloqueada": true,
+  "reserva_propria_liberada_com_etag": true,
+  "tentativa_preservada": true
+}

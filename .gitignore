@@ -62,3 +62,5 @@ htmlcov/
 
 # Docker logs
 *.log
+# Configuração privada da homologação local
+compose.oci-e2e.local.yaml

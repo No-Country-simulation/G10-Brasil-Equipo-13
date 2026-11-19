@@ -1,0 +1,57 @@
+{
+  "em": "2026-11-19T14:27:36.201588+00:00",
+  "documento": {
+    "status": "processado",
+    "documento_id": "E2E-UI-e4e0caf499084392",
+    "canal_origem": "Pronto_Socorro",
+    "execucao_id": "f4a139369f264c0cafa53d473de2bf0d",
+    "tipo_arquivo": "JSON",
+    "criado_em": "2026-11-19T14:27:13.618555+00:00",
+    "reprocessamento_de": null,
+    "execucao_anterior_id": null,
+    "acompanhamento_fluxo_confirmado": true,
+    "erro_extracao": null,
+    "classificacao": {
+      "tipo_documento": "Receituário Médico",
+      "especialidade": "Cardiologia",
+      "nivel_prioridade": "Rotina",
+      "score_confianca_classificacao": 0.95
+    },
+    "dados_extraidos": {
+      "paciente": {
+        "nome": "Pessoa Ficticia Rotina",
+        "idade": 54
+      },
+      "medico_solicitante": {
+        "nome": "Dra. Exemplo",
+        "crm": "000001-SP"
+      },
+      "exame_realizado": null,
+      "diagnostico_principal": "Hipertensao",
+      "cid_sugerido": null,
+      "medicamentos": [
+        "Losartana 50 mg, 1 comprimido ao dia"
+      ]
+    },
+    "decisao_roteamento": {
+      "destino_principal": "Farmacia_Hospitalar",
+      "requer_auditoria_humana": false,
+      "justificativa_roteamento": "Documento classificado como Receituário Médico validado com alta confiabilidade.",
+      "notificacao_gerada": null,
+      "notificacoes_adicionais": []
+    },
+    "armazenamento_oci": {
+      "bucket": "mediflow-testes",
+      "caminho_objeto": "processados/rotina/d4f767133778023d03f90903ef6a466fdda1098ccc0acd329e1ee01c4e900e33/f4a139369f264c0cafa53d473de2bf0d.json",
+      "caminho_documento_bruto": "recebidos/d4f767133778023d03f90903ef6a466fdda1098ccc0acd329e1ee01c4e900e33/f4a139369f264c0cafa53d473de2bf0d.json",
+      "status_backup": "sucesso"
+    }
+  },
+  "verificacoes": [
+    "upload_json_bom_interface",
+    "resultado_real",
+    "navegacao_quatro_secoes",
+    "duplicado_409_interface"
+  ],
+  "limite": "AppTest com seletor de arquivo injetado; QA visual de navegador não realizada."
+}

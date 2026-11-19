@@ -1,0 +1,52 @@
+[
+  {
+    "status": "erro",
+    "documento_id": "E2E-OCI-20261119T140324Z-1b75cc4e-TXT",
+    "canal_origem": "Ambulatorio",
+    "execucao_id": "d1e500fb5d804641a4e5ed56e24e3797",
+    "tipo_arquivo": "TEXTO",
+    "criado_em": "2026-11-19T14:03:24.113568+00:00",
+    "reprocessamento_de": null,
+    "execucao_anterior_id": null,
+    "acompanhamento_fluxo_confirmado": true,
+    "erro_extracao": {
+      "codigo": "servico_indisponivel",
+      "mensagem": "Não foi possível acessar a IA após as tentativas limitadas."
+    },
+    "classificacao": {
+      "tipo_documento": "Documento Clínico Não Identificado",
+      "especialidade": "Clínica Geral",
+      "nivel_prioridade": "Rotina",
+      "score_confianca_classificacao": 0.0
+    },
+    "dados_extraidos": {
+      "paciente": {
+        "nome": null,
+        "idade": null
+      },
+      "medico_solicitante": {
+        "nome": null,
+        "crm": null
+      },
+      "exame_realizado": null,
+      "diagnostico_principal": null,
+      "cid_sugerido": null,
+      "medicamentos": []
+    },
+    "decisao_roteamento": {
+      "destino_principal": "Fila_Revisao_Humana",
+      "requer_auditoria_humana": true,
+      "justificativa_roteamento": "Extração não realizada: Não foi possível acessar a IA após as tentativas limitadas. Documento retido para revisão humana.",
+      "notificacao_gerada": null,
+      "notificacoes_adicionais": []
+    },
+    "armazenamento_oci": {
+      "bucket": "mediflow-testes",
+      "caminho_objeto": "auditoria_humana/107c442d9b67df2bea399b84caa826a0db4006519cde638722899b36cdb2ed9c/d1e500fb5d804641a4e5ed56e24e3797.json",
+      "caminho_documento_bruto": "recebidos/107c442d9b67df2bea399b84caa826a0db4006519cde638722899b36cdb2ed9c/d1e500fb5d804641a4e5ed56e24e3797.txt",
+      "status_backup": "sucesso"
+    },
+    "registro_id": "auditoria_humana/107c442d9b67df2bea399b84caa826a0db4006519cde638722899b36cdb2ed9c/d1e500fb5d804641a4e5ed56e24e3797.json",
+    "legado": false
+  }
+]

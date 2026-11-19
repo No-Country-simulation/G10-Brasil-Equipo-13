@@ -1,0 +1,68 @@
+{
+  "name": "mediflow-oci-e2e",
+  "services": {
+    "api": {
+      "build": ".",
+      "image": "mediflow-oci-e2e:local",
+      "command": "uvicorn presentation.api.main:app --host 0.0.0.0 --port 8000",
+      "ports": [
+        "127.0.0.1:8004:8000"
+      ],
+      "env_file": [
+        {
+          "path": ".env.oci-e2e.local",
+          "format": "raw"
+        }
+      ],
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "${OCI_KEY_HOST_FILE:?Informe OCI_KEY_HOST_FILE}",
+          "target": "/run/oci/api_key.pem",
+          "read_only": true,
+          "bind": {
+            "create_host_path": false
+          }
+        },
+        {
+          "type": "bind",
+          "source": "${OCI_CONFIG_HOST_FILE:?Informe OCI_CONFIG_HOST_FILE}",
+          "target": "/run/oci/config",
+          "read_only": true,
+          "bind": {
+            "create_host_path": false
+          }
+        },
+        {
+          "type": "bind",
+          "source": "./docs/evidencias/oci-e2e-integrada",
+          "target": "/evidencias"
+        }
+      ],
+      "restart": "no"
+    },
+    "ui": {
+      "image": "mediflow-oci-e2e:local",
+      "command": "streamlit run presentation/web/app.py --server.port 8501 --server.address 0.0.0.0",
+      "ports": [
+        "127.0.0.1:8504:8501"
+      ],
+      "environment": {
+        "APP_ENV": "local",
+        "API_URL": "http://api:8000/triagem",
+        "AUTH_ENABLED": "false"
+      },
+      "depends_on": [
+        "api"
+      ],
+      "restart": "no",
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "./docs/evidencias/oci-e2e-integrada",
+          "target": "/evidencias"
+        }
+      ]
+    }
+  }
+}
