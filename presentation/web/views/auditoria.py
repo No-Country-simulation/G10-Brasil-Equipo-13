@@ -6,6 +6,7 @@ import streamlit as st
 from presentation.web import api_client
 from presentation.web.components.pdf_viewer import renderizar_visualizador_documento
 from presentation.web.components.layout import cabecalho, indicadores, estado_vazio
+from presentation.web.components.documentos import chave_documento, rotulo_documento
 
 DESTINOS = {
     "Prontuario_Eletronico_Paciente": "Prontuário eletrônico",
@@ -33,15 +34,18 @@ def renderizar_painel_auditoria():
     with st.container(border=True):
         st.subheader("Selecionar pendência", icon=":material/fact_check:")
         preferido = st.session_state.pop("documento_em_revisao", None)
-        ids = [doc["documento_id"] for doc in fila]
+        registros = {chave_documento(doc): doc for doc in fila}
+        rotulos = {chave: rotulo_documento(doc) for chave, doc in registros.items()}
+        ids = list(registros)
+        preferido = next((chave_documento(d) for d in fila if chave_documento(d) == preferido or d["documento_id"] == preferido), preferido)
         if preferido in ids:
             st.session_state.auditoria_documento_id = preferido
         elif preferido:
             st.info("O documento selecionado já não está pendente. Consulte os registros documentais.")
         if st.session_state.get("auditoria_documento_id") not in ids:
             st.session_state.auditoria_documento_id = ids[0]
-        selecionado = st.selectbox("Documento para revisão", ids, key="auditoria_documento_id")
-    doc = next(doc for doc in fila if doc["documento_id"] == selecionado)
+        selecionado = st.selectbox("Documento para revisão", ids, key="auditoria_documento_id", format_func=rotulos.get)
+    doc = registros[selecionado]
     pendente = st.session_state.get("confirmacao_auditoria")
     if pendente and pendente["original"] != doc:
         del st.session_state.confirmacao_auditoria
@@ -73,7 +77,7 @@ def renderizar_painel_auditoria():
     with direita, st.container(border=True):
         st.subheader("Validação profissional", icon=":material/edit_note:")
         st.caption("Preencha os campos e escolha a decisão. Você revisará um resumo antes de confirmar o envio.")
-        with st.form(f"auditoria_{doc['documento_id']}_{doc.get('execucao_id', '')}"):
+        with st.form(f"auditoria_{selecionado}"):
             paciente = st.text_input("Nome do paciente", value=(dados.get("paciente") or {}).get("nome") or "")
             crm = st.text_input("CRM / UF", value=(dados.get("medico_solicitante") or {}).get("crm") or "", placeholder="123456-SP")
             diagnostico = st.text_input("Diagnóstico principal", value=dados.get("diagnostico_principal") or "")

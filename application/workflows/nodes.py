@@ -45,7 +45,7 @@ class TriagemNodes:
             },
             # A pendência também avisa a auditoria, sem substituir o alerta ao plantão.
             "notificacoes_adicionais": [pendencia["notificacao_gerada"]] if pendencia and pendencia.get("notificacao_gerada") else [],
-            "caminho_oci_sugerido": pendencia["caminho_oci_sugerido"] if pendencia else f"processados/urgentes/{state['documento_id']}.json"
+            "pasta_oci_sugerida": pendencia["pasta_oci_sugerida"] if pendencia else "processados/urgentes"
         }
 
     def no_rotear_padrao(self, state: WorkflowTriagemState) -> WorkflowTriagemState:
@@ -67,7 +67,7 @@ class TriagemNodes:
             "destino_principal": destino,
             "justificativa_roteamento": f"Documento classificado como {tipo_doc} validado com alta confiabilidade.",
             "notificacao_gerada": None,
-            "caminho_oci_sugerido": f"processados/{prioridade.lower()}/{state['documento_id']}.json"
+            "pasta_oci_sugerida": f"processados/{prioridade.lower()}"
         }
 
 
@@ -79,7 +79,7 @@ class TriagemNodes:
                 "destino_principal": "Fila_Revisao_Humana",
                 "justificativa_roteamento": "Extração não realizada: " + state["erro_extracao"]["mensagem"] + " Documento retido para revisão humana.",
                 "notificacao_gerada": None,
-                "caminho_oci_sugerido": f"auditoria_humana/{state['documento_id']}.json",
+                "pasta_oci_sugerida": "auditoria_humana",
             }
         score = state.get("score_confianca", 0.0)
         dados = state.get("dados_llm") or {}
@@ -116,5 +116,5 @@ class TriagemNodes:
                 "canal": "Email_Auditoria",
                 "mensagem": f"DOCUMENTO PENDENTE: Documento {state['documento_id']} retido. Motivo: {'; '.join(motivos)}."
             },
-            "caminho_oci_sugerido": f"auditoria_humana/{state['documento_id']}.json"
+            "pasta_oci_sugerida": "auditoria_humana"
         }

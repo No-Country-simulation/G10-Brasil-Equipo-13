@@ -3,6 +3,11 @@ import streamlit as st
 
 
 def renderizar_resumo_clinico(dados_extraidos, classificacao):
+    renderizar_classificacao(classificacao)
+    renderizar_dados_extraidos(dados_extraidos)
+
+
+def renderizar_classificacao(classificacao):
     prioridade = classificacao.get("nivel_prioridade", "Não informada")
     with st.container(horizontal=True):
         st.badge(prioridade, color="red" if prioridade == "Urgente" else "orange" if prioridade == "Prioritário" else "green")
@@ -11,6 +16,9 @@ def renderizar_resumo_clinico(dados_extraidos, classificacao):
             st.badge(f"Confiança: {score:.1%}", color="gray", icon=":material/verified:")
     st.subheader(classificacao.get("tipo_documento", "Documento clínico"))
     st.caption(classificacao.get("especialidade", "Especialidade não informada"))
+
+
+def renderizar_dados_extraidos(dados_extraidos):
     paciente = dados_extraidos.get("paciente") or {}
     medico = dados_extraidos.get("medico_solicitante") or {}
     esquerda, direita = st.columns(2)

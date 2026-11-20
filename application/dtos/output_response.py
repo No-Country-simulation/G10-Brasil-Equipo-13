@@ -16,6 +16,8 @@ class NivelPrioridadeEnum(str, Enum):
 
 
 class ClassificacaoDTO(BaseModel):
+    # Contrato público compatível com legados e resultados sem classificação.
+    # As sete categorias são exigidas no schema de saída válida da IA.
     tipo_documento: str = Field(
         ..., 
         description="Categoria identificada do documento",
@@ -116,6 +118,10 @@ class TriagemResponseDTO(BaseModel):
         description="Canal de origem informado no recebimento; ausente em registros antigos",
     )
     execucao_id: Optional[str] = None
+    tipo_arquivo: Optional[str] = None
+    criado_em: Optional[str] = None
+    reprocessamento_de: Optional[str] = None
+    execucao_anterior_id: Optional[str] = None
     acompanhamento_fluxo_confirmado: bool = True
     erro_extracao: Optional[ErroExtracaoDTO] = None
     classificacao: ClassificacaoDTO
