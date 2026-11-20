@@ -156,7 +156,11 @@ def test_falha_antes_do_original_permite_novo_cadastro(contexto, prefixo):
     ):
         assert client.post("/triagem", json=payload()).status_code == 500
 
-    assert snapshot(caso) == {}
+    tentativas = snapshot(caso)
+    assert len(tentativas) == 1
+    assert next(iter(tentativas)).startswith("tentativas_interrompidas/")
+    tentativa = caso.storage.obter_json(caso.bucket_name, next(iter(tentativas)))
+    assert tentativa["etapa"] == "falha"
     llm.processar_documento.assert_not_called()
     notifier.enviar_alerta_urgencia.assert_not_called()
     assert client.post("/triagem", json=payload()).status_code == 200

@@ -53,7 +53,11 @@ class ReprocessamentoDTO(BaseModel):
     canal_origem: str = Field(..., min_length=1)
 
 
-@router.post("/reprocessar", response_model=TriagemResponseDTO)
+@router.post(
+    "/reprocessar",
+    response_model=TriagemResponseDTO,
+    responses={409: {"description": "Original indisponível ou sem referência válida; o reprocessamento não foi iniciado."}},
+)
 def reprocessar_documento(payload: ReprocessamentoDTO, use_case=Depends(get_triagem_use_case)):
     caminho = payload.origem_oci_path
     if not caminho.startswith(("processados/", "auditoria_humana/", "fluxo/")) or ".." in caminho.split("/"):
@@ -91,7 +95,8 @@ def reprocessar_documento(payload: ReprocessamentoDTO, use_case=Depends(get_tria
     response_model=TriagemResponseDTO,
     status_code=status.HTTP_200_OK,
     summary="Processar e triar documento clínico via JSON",
-    description="Recebe carga estruturada (JSON/Base64), executa o grafo condicional e persiste no OCI."
+    description="Recebe carga estruturada (JSON/Base64), executa o grafo condicional e persiste no OCI.",
+    responses={409: {"description": "documento_id já cadastrado; nenhum original, inferência ou alerta é gravado."}},
 )
 def processar_documento_json(
     request: TriagemRequestDTO,
@@ -120,7 +125,8 @@ def processar_documento_json(
     response_model=TriagemResponseDTO,
     status_code=status.HTTP_200_OK,
     summary="Upload direto de arquivo (PDF / Imagem / TXT / JSON)",
-    description="Recebe arquivo binário via multipart/form-data e executa a triagem multimodal."
+    description="Recebe arquivo binário via multipart/form-data e executa a triagem multimodal.",
+    responses={409: {"description": "documento_id já cadastrado; nenhum original, inferência ou alerta é gravado."}},
 )
 async def processar_documento_upload(
     documento_id: str = Form(..., description="ID do documento (ex: DOC-CLIN-2026-8942)"),

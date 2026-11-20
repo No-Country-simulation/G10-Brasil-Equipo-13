@@ -26,3 +26,15 @@ class SqliteReservas:
                 "DELETE FROM reservas WHERE namespace = ? AND bucket = ? AND objeto = ?",
                 (namespace, bucket, objeto),
             )
+
+    def cancelar_se(self, namespace, bucket, objeto, cancelar):
+        """Serializa a liberação remota com novas reservas entre processos."""
+        with sqlite3.connect(self.caminho, timeout=30) as conexao:
+            conexao.execute("BEGIN IMMEDIATE")
+            if not cancelar():
+                return False
+            conexao.execute(
+                "DELETE FROM reservas WHERE namespace = ? AND bucket = ? AND objeto = ?",
+                (namespace, bucket, objeto),
+            )
+            return True

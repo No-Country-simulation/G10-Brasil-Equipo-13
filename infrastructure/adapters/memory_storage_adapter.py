@@ -21,10 +21,14 @@ class MemoryStorageAdapter(StoragePort):
                 raise RuntimeError("Não foi possível reservar o cadastro.")
             return True
 
-    def cancelar_cadastro(self, bucket_name, cadastro, fluxo):
+    def cancelar_cadastro(self, bucket_name, cadastro, fluxo, execucao_id):
         with self._lock:
-            self.objetos.pop((bucket_name, fluxo), None)
+            reserva = self.obter_json(bucket_name, cadastro)
+            if not reserva or reserva.get("primeira_execucao_id") != execucao_id:
+                return False
             self.objetos.pop((bucket_name, cadastro), None)
+            self.objetos.pop((bucket_name, fluxo), None)
+            return True
 
     def salvar_arquivo(self, bucket_name, object_name, data, content_type="application/octet-stream"):
         self.objetos[(bucket_name, object_name)] = bytes(data)

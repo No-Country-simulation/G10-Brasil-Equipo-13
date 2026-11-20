@@ -72,15 +72,31 @@ class OCIStorageAdapter(StoragePort):
             raise
         return True
 
-    def cancelar_cadastro(self, bucket_name, cadastro, fluxo):
-        for chave in (fluxo, cadastro):
+    def cancelar_cadastro(self, bucket_name, cadastro, fluxo, execucao_id):
+        def cancelar():
             try:
-                self.client.delete_object(self.namespace, bucket_name, chave)
+                resposta = self.client.get_object(self.namespace, bucket_name, cadastro)
+                reserva = json.loads(resposta.data.content)
+                etag = resposta.headers.get("etag")
+                if reserva.get("primeira_execucao_id") != execucao_id or not etag:
+                    return False
+                # A versão lida deve continuar atual no instante da exclusão.
+                self.client.delete_object(self.namespace, bucket_name, cadastro, if_match=etag)
+            except oci.exceptions.ServiceError as exc:
+                if exc.status in (404, 412):
+                    return False
+                raise
+            # O histórico de falha já está arquivado; nunca apagar outro fluxo.
+            try:
+                self.client.delete_object(self.namespace, bucket_name, fluxo)
             except oci.exceptions.ServiceError as exc:
                 if exc.status != 404:
                     raise
+            return True
+
         if self.reservas:
-            self.reservas.remover(self.namespace, bucket_name, cadastro)
+            return self.reservas.cancelar_se(self.namespace, bucket_name, cadastro, cancelar)
+        return cancelar()
 
     def obter_arquivo(self, bucket_name, object_name):
         try:
