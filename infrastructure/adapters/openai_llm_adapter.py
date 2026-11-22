@@ -11,6 +11,7 @@ from typing import Any, Dict, List
 from openai import OpenAI
 
 from domain.ports.llm_port import LLMPort
+from domain.exceptions import FalhaExtracaoIA
 from infrastructure.adapters.schemas_llm import ExtracaoClinicaLLMSchema
 
 logger = logging.getLogger("MediFlowOpenAIAdapter")
@@ -112,17 +113,6 @@ class OpenAILLMAdapter(LLMPort):
 
         except Exception as exc:
             logger.error("Falha na chamada ao modelo OpenAI (%s): %s", self.model_name, exc)
-            # Contingência defensiva com score 0.0 para desvio para auditoria humana no LangGraph
-            return {
-                "tipo_documento": "Documento Clínico Não Identificado",
-                "especialidade": "Clínica Geral",
-                "nivel_prioridade": "Rotina",
-                "score_confianca": 0.0,
-                "paciente": {"nome": None, "idade": None},
-                "medico_solicitante": {"nome": None, "crm": None},
-                "exame_realizado": None,
-                "diagnostico_principal": None,
-                "cid_sugerido": None,
-                "medicamentos": [],
-                "achado_critico": False,
-            }
+            raise FalhaExtracaoIA(
+                "resposta_invalida", "Não foi possível obter uma classificação válida do documento."
+            ) from exc

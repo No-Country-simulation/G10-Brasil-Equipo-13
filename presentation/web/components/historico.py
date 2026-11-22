@@ -31,8 +31,11 @@ def horario_evento(valor):
 
 
 def registro_do_documento(registros, documento):
+    if documento.get("registro_id"):
+        return next((r for r in registros if r.get("registro_id") == documento["registro_id"]), None)
     return next((r for r in registros if r.get("documento_id") == documento.get("documento_id")
-                 and r.get("execucao_id") == documento.get("execucao_id")), None)
+                 and r.get("execucao_id") == documento.get("execucao_id")
+                 and (documento.get("execucao_id") or r.get("registro_id") == documento.get("registro_id"))), None)
 
 
 def exibir_historico(documento):

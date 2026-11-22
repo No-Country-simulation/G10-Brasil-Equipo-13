@@ -20,9 +20,10 @@ class WebhookNotifierAdapter(NotifierPort):
     Mantém fallback resiliente para logs estruturados em caso de ausência de URL ou falha de rede.
     """
 
-    def __init__(self, webhook_url: Optional[str] = None, timeout_segundos: int = 5):
+    def __init__(self, webhook_url: Optional[str] = None, timeout_segundos: int = 5, webhook_token: str = ""):
         self.webhook_url = webhook_url.strip() if webhook_url and webhook_url.strip() else None
         self.timeout = timeout_segundos
+        self.webhook_token = webhook_token
 
     def enviar_alerta_urgencia(self, canal: str, mensagem: str) -> bool:
         """
@@ -46,10 +47,13 @@ class WebhookNotifierAdapter(NotifierPort):
         }
 
         try:
+            headers = {"Content-Type": "application/json"}
+            if self.webhook_token:
+                headers["Authorization"] = "Bearer " + self.webhook_token
             resposta = requests.post(
                 self.webhook_url,
                 data=json.dumps(payload),
-                headers={"Content-Type": "application/json"},
+                headers=headers,
                 timeout=self.timeout
             )
 

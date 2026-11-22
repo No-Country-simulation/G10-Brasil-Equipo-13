@@ -31,7 +31,7 @@ def preparar(app, decisao="Aprovar e encaminhar"):
 
 def test_aprovacao_so_envia_apos_confirmacao_com_resumo_das_alteracoes():
     fila = [deepcopy(DOCUMENTO)]
-    with patch("presentation.web.api_client.consultar", side_effect=lambda caminho: fila), patch("presentation.web.api_client.enviar") as enviar:
+    with patch("presentation.web.api_client.consultar", side_effect=lambda caminho: fila if caminho == "filas/auditoria" else []), patch("presentation.web.api_client.enviar") as enviar:
         app = iniciar()
         preparar(app)
         enviar.assert_not_called()
@@ -49,7 +49,7 @@ def test_aprovacao_so_envia_apos_confirmacao_com_resumo_das_alteracoes():
 
 
 def test_cancelar_rejeicao_nao_envia_e_preserva_edicao():
-    with patch("presentation.web.api_client.consultar", return_value=[DOCUMENTO]), patch("presentation.web.api_client.enviar") as enviar:
+    with patch("presentation.web.api_client.consultar", side_effect=lambda caminho: [DOCUMENTO] if caminho == "filas/auditoria" else []), patch("presentation.web.api_client.enviar") as enviar:
         app = iniciar()
         preparar(app, "Rejeitar documento")
         botao(app, "Cancelar confirmação").click().run()
@@ -61,7 +61,7 @@ def test_cancelar_rejeicao_nao_envia_e_preserva_edicao():
 
 def test_atualizacao_da_pendencia_invalida_confirmacao():
     fila = [deepcopy(DOCUMENTO)]
-    with patch("presentation.web.api_client.consultar", side_effect=lambda caminho: fila), patch("presentation.web.api_client.enviar") as enviar:
+    with patch("presentation.web.api_client.consultar", side_effect=lambda caminho: fila if caminho == "filas/auditoria" else []), patch("presentation.web.api_client.enviar") as enviar:
         app = iniciar()
         preparar(app)
         fila[0]["execucao_id"] = "exec-2"
@@ -69,3 +69,26 @@ def test_atualizacao_da_pendencia_invalida_confirmacao():
         assert not app.exception
         assert not any(b.label == "Confirmar e salvar decisão" for b in app.button)
         enviar.assert_not_called()
+
+
+def test_retomada_de_homologacao_na_interface():
+    pendentes = [{
+        "documento_id": DOCUMENTO["documento_id"],
+        "origem_oci_path": DOCUMENTO["armazenamento_oci"]["caminho_objeto"],
+    }]
+    payload = deepcopy(pendentes[0])
+
+    def retomar(*args):
+        pendentes.clear()
+        return {"status": "sucesso"}
+
+    with (
+        patch("presentation.web.api_client.consultar", side_effect=lambda caminho: pendentes if caminho == "homologacoes/pendentes" else []),
+        patch("presentation.web.api_client.enviar", side_effect=retomar) as enviar,
+    ):
+        app = iniciar()
+        assert not app.exception
+        botao(app, "Retomar homologação").click().run()
+        assert not app.exception
+        enviar.assert_called_once_with("homologacoes/retomar", payload)
+        assert not any(b.label == "Retomar homologação" for b in app.button)

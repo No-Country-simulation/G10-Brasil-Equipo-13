@@ -25,7 +25,10 @@ def get_triagem_use_case() -> ProcessarTriagemUseCase:
             timeout_ms=settings.GEMINI_TIMEOUT_MS, max_attempts=settings.GEMINI_MAX_ATTEMPTS,
         )
     storage_adapter = get_storage_adapter()
-    notifier_adapter = WebhookNotifierAdapter(webhook_url="" if settings.APP_MODE == "presentation" else getattr(settings, "WEBHOOK_URL", ""))
+    notifier_adapter = WebhookNotifierAdapter(
+        webhook_url="" if settings.APP_MODE == "presentation" else settings.WEBHOOK_URL,
+        webhook_token=settings.WEBHOOK_TOKEN.get_secret_value(),
+    )
 
     return ProcessarTriagemUseCase(
         llm=llm_adapter,

@@ -6,6 +6,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from application.use_cases.processar_triagem import ProcessarTriagemUseCase
+from application.workflows.rules import validar_formato_crm
 from infrastructure.adapters.memory_storage_adapter import MemoryStorageAdapter
 from infrastructure.adapters.presentation_llm_adapter import resultado_exemplo
 from infrastructure.oci_client.client_factory import get_triagem_use_case
@@ -25,12 +26,14 @@ def contexto():
         app.dependency_overrides.clear()
 
 
-@pytest.mark.parametrize("pendencia", ["crm", "paciente", "score", "conflito", None])
+@pytest.mark.parametrize("pendencia", ["crm", "crm_uf_invalida", "paciente", "score", "conflito", None])
 def test_urgencia_preserva_alerta_e_pendencias(contexto, pendencia):
     client, caso, llm, notifier = contexto
     dados = llm.processar_documento.return_value
     if pendencia == "crm":
         dados["medico_solicitante"]["crm"] = None
+    elif pendencia == "crm_uf_invalida":
+        dados["medico_solicitante"]["crm"] = "55718-XX"
     elif pendencia == "paciente":
         dados["paciente"]["nome"] = None
     elif pendencia == "score":
@@ -66,11 +69,57 @@ def test_upload_txt_entrega_texto_legivel_e_preserva_original(contexto, bom):
     resp = client.post("/triagem/upload", data={"documento_id": "TXT", "canal_origem": "Teste"}, files={"arquivo": ("caso.txt", bruto, "text/plain")})
     assert resp.status_code == 200
     llm.processar_documento.assert_called_once_with(conteudo=texto, tipo_arquivo="TEXTO")
-    assert caso.storage.obter_arquivo("teste", "recebidos/TXT.txt") == bruto
+    assert caso.storage.obter_arquivo("teste", resp.json()["armazenamento_oci"]["caminho_documento_bruto"]) == bruto
+
+
+@pytest.mark.parametrize("via", ["multipart", "interface"])
+def test_upload_json_valida_preserva_original_e_reprocessa(contexto, via):
+    client, caso, llm, _ = contexto
+    texto = '{"paciente": "João"}'
+    bruto = b"\xef\xbb\xbf" + texto.encode("utf-8")
+    dados = {"documento_id": "CASO-JSON", "canal_origem": "Teste"}
+    if via == "multipart":
+        resp = client.post("/triagem/upload", data=dados, files={
+            "arquivo": ("caso.json", bruto, "application/octet-stream"),
+        })
+    else:
+        resp = client.post("/triagem", json={
+            **dados, "tipo_arquivo": "JSON", "arquivo_base64": base64.b64encode(bruto).decode("ascii"),
+        })
+
+    assert resp.status_code == 200
+    doc = resp.json()
+    assert doc["tipo_arquivo"] == "JSON"
+    llm.processar_documento.assert_called_once_with(conteudo=texto, tipo_arquivo="JSON")
+    original = doc["armazenamento_oci"]["caminho_documento_bruto"]
+    assert original.endswith(".json")
+    assert caso.storage.obter_arquivo("teste", original) == bruto
+
+    resp = client.post("/triagem/reprocessar", json={
+        **dados, "origem_oci_path": doc["armazenamento_oci"]["caminho_objeto"],
+    })
+    assert resp.status_code == 200
+    assert resp.json()["execucao_id"] != doc["execucao_id"]
+    llm.processar_documento.assert_called_with(conteudo=texto, tipo_arquivo="JSON")
+
+
+def test_json_invalido_via_interface_nao_reserva_id(contexto):
+    client, caso, llm, notifier = contexto
+    resp = client.post("/triagem", json={
+        "documento_id": "INVALIDO", "canal_origem": "Teste", "tipo_arquivo": "JSON",
+        "arquivo_base64": base64.b64encode(b'{"valor": NaN}').decode("ascii"),
+    })
+    assert resp.status_code == 422
+    assert caso.storage.listar_objetos_por_prefixo("teste", "") == []
+    llm.processar_documento.assert_not_called()
+    notifier.enviar_alerta_urgencia.assert_not_called()
 
 
 @pytest.mark.parametrize("nome,mime,bruto,status", [
     ("caso.zip", "application/zip", b"PK123", 415),
+    ("caso.json", "application/json", b'{"paciente":', 422),
+    ("caso.json", "application/json", b"\xff", 422),
+    ("caso.json", "application/json", b"", 400),
     ("caso.txt", "text/plain", b"\xff", 422),
     ("caso.txt", "text/plain", b"abc\x00def", 422),
     ("caso.txt", "text/plain", b"   ", 422),
@@ -120,3 +169,23 @@ def test_base64_invalido_e_texto_direto_literal(contexto):
     resp = client.post("/triagem", json={**payload, "documento_texto": texto})
     assert resp.status_code == 200
     llm.processar_documento.assert_called_once_with(conteudo=texto, tipo_arquivo="TEXTO")
+
+
+@pytest.mark.parametrize("crm", [
+    "55718-XX",  # DOC-AUT-2026-0006
+    "53292-XX",  # DOC-AUT-2026-0009
+    "88215-XX",  # DOC-GUIA-2026-0011
+    "76535-XX",  # DOC-GUIA-2026-0013
+    "58148-XX",  # DOC-GUIA-2026-0019
+    "57749-XX",  # DOC-IMG-2026-0020
+    "51033-XX",  # DOC-LAB-2026-0018
+    "70305-XX",  # DOC-LAB-2026-0019
+    "22015-XX",  # DOC-CLIN-2026-0015
+    "85718-XX",  # DOC-ALTA-2026-0019
+])
+def test_crm_uf_invalida_med11(crm):
+    assert validar_formato_crm(crm) is False
+
+
+def test_crm_uf_valida():
+    assert validar_formato_crm("123456-SP") is True

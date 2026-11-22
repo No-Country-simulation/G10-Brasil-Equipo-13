@@ -5,6 +5,14 @@ from typing import Any, Union, Dict, List
 class StoragePort(ABC):
     """Contrato de armazenamento de documentos, independente do provedor."""
 
+    def criar_json_exclusivo(self, bucket_name: str, object_name: str, json_data: dict) -> bool:
+        """Cria atomicamente; False somente se já existe. Nunca sobrescreve."""
+        raise NotImplementedError("O armazenamento precisa suportar criação atômica.")
+
+    def cancelar_cadastro(self, bucket_name: str, cadastro: str, fluxo: str, execucao_id: str) -> bool:
+        """Libera somente a reserva da execução informada; False se ela mudou."""
+        raise NotImplementedError
+
     def obter_arquivo(self, bucket_name: str, object_name: str) -> bytes | None:
         """Recupera o original quando suportado pelo adaptador."""
         raise NotImplementedError

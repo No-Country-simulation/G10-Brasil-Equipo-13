@@ -1,0 +1,20 @@
+# OCI real: docker compose -f docker-compose.yml -f docker-compose.oci-cloud.yml up --build -d
+# Os caminhos HOST apontam para arquivos privados fora do repositorio.
+services:
+  mediflow-api:
+    environment:
+      STORAGE_MODE: oci
+      OCI_CONFIG_FILE: /run/oci/config
+    volumes:
+      - type: bind
+        source: ${OCI_CONFIG_HOST_FILE:?Defina OCI_CONFIG_HOST_FILE com o caminho absoluto do config.docker}
+        target: /run/oci/config
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${OCI_KEY_HOST_FILE:?Defina OCI_KEY_HOST_FILE com o caminho absoluto da chave privada PEM}
+        target: /run/oci/mediflow_api_key.pem
+        read_only: true
+        bind:
+          create_host_path: false

@@ -6,6 +6,7 @@ import streamlit as st
 from presentation.web import api_client
 from presentation.web.components.pdf_viewer import renderizar_visualizador_documento
 from presentation.web.components.layout import cabecalho, indicadores, estado_vazio
+from presentation.web.components.documentos import chave_documento, rotulo_documento
 
 DESTINOS = {
     "Prontuario_Eletronico_Paciente": "Prontuário eletrônico",
@@ -13,6 +14,30 @@ DESTINOS = {
     "Auditoria_de_Autorizacoes": "Auditoria de autorizações",
     "Fila_Emergencia_Medica": "Emergência médica",
 }
+
+
+def exibir_homologacoes_pendentes():
+    try:
+        pendentes = api_client.consultar("homologacoes/pendentes")
+    except (requests.RequestException, ValueError):
+        st.warning("Não foi possível consultar homologações em finalização.")
+        return
+    if not pendentes:
+        return
+    with st.expander("Homologações em finalização", expanded=True):
+        for pendente in pendentes:
+            st.write(pendente["documento_id"])
+            if st.button("Retomar homologação", key="retomar_" + pendente["origem_oci_path"]):
+                try:
+                    resposta = api_client.enviar("homologacoes/retomar", pendente)
+                except (requests.RequestException, ValueError):
+                    st.error("Não foi possível retomar a homologação. Tente novamente.")
+                    return
+                if resposta["status"] == "pendente":
+                    st.warning("A decisão está registrada. A finalização continua pendente.")
+                    return
+                st.session_state.aviso_auditoria = "Homologação concluída."
+                st.rerun()
 
 
 def renderizar_painel_auditoria():
@@ -26,6 +51,7 @@ def renderizar_painel_auditoria():
         return
     indicadores([("Documentos pendentes", len(fila)), ("Falhas de extração", sum(bool(d.get("erro_extracao")) for d in fila))])
     st.caption("Revisão solicitada por dados incompletos, ambiguidade, falha de extração ou confiança inferior a 85%.")
+    exibir_homologacoes_pendentes()
     if not fila:
         st.session_state.pop("confirmacao_auditoria", None)
         estado_vazio("Nenhum documento pendente", "As triagens que exigirem conferência aparecerão aqui.", ":material/fact_check:")
@@ -33,15 +59,18 @@ def renderizar_painel_auditoria():
     with st.container(border=True):
         st.subheader("Selecionar pendência", icon=":material/fact_check:")
         preferido = st.session_state.pop("documento_em_revisao", None)
-        ids = [doc["documento_id"] for doc in fila]
+        registros = {chave_documento(doc): doc for doc in fila}
+        rotulos = {chave: rotulo_documento(doc) for chave, doc in registros.items()}
+        ids = list(registros)
+        preferido = next((chave_documento(d) for d in fila if chave_documento(d) == preferido or d["documento_id"] == preferido), preferido)
         if preferido in ids:
             st.session_state.auditoria_documento_id = preferido
         elif preferido:
             st.info("O documento selecionado já não está pendente. Consulte os registros documentais.")
         if st.session_state.get("auditoria_documento_id") not in ids:
             st.session_state.auditoria_documento_id = ids[0]
-        selecionado = st.selectbox("Documento para revisão", ids, key="auditoria_documento_id")
-    doc = next(doc for doc in fila if doc["documento_id"] == selecionado)
+        selecionado = st.selectbox("Documento para revisão", ids, key="auditoria_documento_id", format_func=rotulos.get)
+    doc = registros[selecionado]
     pendente = st.session_state.get("confirmacao_auditoria")
     if pendente and pendente["original"] != doc:
         del st.session_state.confirmacao_auditoria
@@ -73,7 +102,7 @@ def renderizar_painel_auditoria():
     with direita, st.container(border=True):
         st.subheader("Validação profissional", icon=":material/edit_note:")
         st.caption("Preencha os campos e escolha a decisão. Você revisará um resumo antes de confirmar o envio.")
-        with st.form(f"auditoria_{doc['documento_id']}_{doc.get('execucao_id', '')}"):
+        with st.form(f"auditoria_{selecionado}"):
             paciente = st.text_input("Nome do paciente", value=(dados.get("paciente") or {}).get("nome") or "")
             crm = st.text_input("CRM / UF", value=(dados.get("medico_solicitante") or {}).get("crm") or "", placeholder="123456-SP")
             diagnostico = st.text_input("Diagnóstico principal", value=dados.get("diagnostico_principal") or "")
@@ -128,7 +157,8 @@ def renderizar_painel_auditoria():
                 return
             mensagem = f"Decisão salva em {resposta['caminho_novo_oci']}."
             if resposta.get("acompanhamento_fluxo_confirmado") is False:
-                mensagem += " A atualização do quadro não foi confirmada; consulte as filas antes de reenviar."
+                st.session_state.pop("confirmacao_auditoria", None)
+                st.rerun()
             if resposta.get("notificacao_enviada") is False:
                 mensagem += " O envio do alerta falhou."
             elif resposta.get("notificacao_enviada"):

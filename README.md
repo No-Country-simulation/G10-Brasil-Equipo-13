@@ -55,6 +55,7 @@ mediflow/
 ├── Dockerfile
 ├── docker-compose.yml               # API FastAPI e interface Streamlit
 ├── docker-compose.oci-local.yml     # Complemento com emulador OCI
+├── docker-compose.oci-cloud.yml     # Complemento para Object Storage OCI real
 ├── docker-compose.test.yml          # API isolada com extração simulada
 ├── config/
 │   └── settings.py                  # Configurações e seleção de ambiente
@@ -138,11 +139,9 @@ proteção estão em [`docs/fluxo-de-trabalho-git.md`](docs/fluxo-de-trabalho-gi
 ### 1. Clonar o Repositório e Configurar Variáveis
 
 ```bash
-git clone https://github.com/HilarioGouveia/mediflow.git
-cd mediflow
+git clone https://github.com/No-Country-simulation/G10-Brasil-Equipo-13.git
+cd G10-Brasil-Equipo-13
 cp .env.example .env
-
-
 ```
 
 Edite o arquivo `.env` com as configurações necessárias. Se ele já existe,
@@ -272,6 +271,78 @@ python tests/demonstracao_cenarios.py
 
 ## ☁️ Oracle Cloud Infrastructure (OCI Always Free)
 
+Para preparar uma conta do zero, consulte o [guia de configuração da OCI](docs/preparar-oci.md):
+compartimento, bucket privado, domínio, usuário sem administração, políticas,
+chave de API, execução local com Docker e validação da persistência.
+
+### Executar e testar com OCI real
+
+Este complemento conecta a aplicação ao Object Storage real; a API e a interface
+continuam rodando no computador onde o Docker foi iniciado. O bucket deve existir.
+
+1. Prepare os recursos e a chave do usuário restrito conforme o guia acima.
+2. Fora do repositório, mantenha a chave privada e um arquivo `config.docker`
+   copiado do exemplo da OCI, com `key_file=/run/oci/mediflow_api_key.pem`.
+3. No `.env`, preserve suas demais configurações e preencha:
+
+```dotenv
+APP_ENV="local"
+APP_MODE="operational"
+STORAGE_MODE="oci"
+OCI_NAMESPACE="<NAMESPACE_REAL_DO_BUCKET>"
+OCI_BUCKET_NAME="mediflow-documentos-clinicos"
+OCI_CONFIG_PROFILE="DEFAULT"
+OCI_CONFIG_HOST_FILE="C:/Users/SEU_USUARIO/.oci/config.docker"
+OCI_KEY_HOST_FILE="C:/Users/SEU_USUARIO/.oci/mediflow_api_key.pem"
+GEMINI_API_KEY="<CHAVE_GEMINI_VALIDA>"
+```
+
+Os caminhos `HOST` são absolutos no computador e devem apontar para arquivos
+existentes. O Compose monta ambos somente na API, como leitura, e define
+`OCI_CONFIG_FILE=/run/oci/config` dentro do container. Não coloque as credenciais
+no projeto ou na imagem. Em Linux/macOS, adapte os caminhos do host.
+
+4. Na raiz do repositório, execute:
+
+```powershell
+docker compose -f docker-compose.yml -f docker-compose.oci-cloud.yml config --quiet
+docker compose -f docker-compose.yml -f docker-compose.oci-cloud.yml up --build -d
+```
+
+Interface: [localhost:8501](http://localhost:8501).
+API: [localhost:8000/docs](http://localhost:8000/docs).
+Não combine esse complemento com `docker-compose.oci-local.yml`, que força o
+emulador. Confira nomes e portas antes de iniciar se outra cópia já estiver rodando.
+
+5. Em **Armazenamento e integrações**, verifique as conexões. O armazenamento
+   deve indicar `oci`, com consulta ao bucket concluída. Também é possível consultar:
+
+```powershell
+Invoke-RestMethod 'http://localhost:8000/health/ready'
+Invoke-RestMethod 'http://localhost:8000/triagem/diagnostico?conexoes=true'
+```
+
+Com autenticação ativa, envie o token de serviço nas rotas protegidas, conforme
+[Autenticação OIDC](docs/autenticacao.md). A consulta ao bucket comprova leitura.
+
+6. Envie um documento sintético em **Nova triagem**, usando um ID novo. Confirme
+   ausência de erro de extração, `status_backup="sucesso"` e recuperação do original
+   pelo histórico. No console OCI, confira `recebidos/`, o relatório em
+   `processados/` ou `auditoria_humana/` e o acompanhamento em `fluxo/`.
+7. Recrie a API e confira que o documento continua acessível:
+
+```powershell
+docker compose -f docker-compose.yml -f docker-compose.oci-cloud.yml up -d --force-recreate --no-deps mediflow-api
+```
+
+Use esse mesmo comando após alterar o `.env` ou as credenciais. Alterações de
+código exigem reconstrução com `--build`. As triagens operacionais usam Gemini;
+um teste de conexão OCI não valida a chave Gemini nem sua cota.
+
+Para incluir o envio de alertas por e-mail, configure o
+[notificador](docs/webhook-email.md) e acrescente `-f docker-compose.email.yml`
+aos comandos. O webhook é opcional e não faz parte da autenticação OCI.
+
 A persistência do MediFlow está alinhada às restrições de custo zero do programa ONE:
 
 * **OCI Object Storage**: Organização lógica de buckets por status (`/recebidos`, `/processados`, `/auditoria_humana`).
@@ -310,10 +381,16 @@ O armazenamento agora e escolhido explicitamente por `STORAGE_MODE`: `memory`,
 persistencia em nuvem. Com `oci` ou `emulator`, erros nao ativam memoria
 silenciosamente. Para OCI real no Docker, as credenciais OCI e a
 chave privada precisam ser disponibilizadas por montagem de volume, com caminhos
-validos dentro do container; o Compose atual nao configura essa montagem.
+validos dentro do container. O complemento `docker-compose.oci-cloud.yml`
+configura essa montagem; veja o roteiro de OCI real acima.
 
-A conexao real com Gemini terminou em `ConnectError` nas verificacoes. OCI real e
-webhook externo permanecem sem validacao. Os tres cenarios em
+Na verificacao historica de 17/10, a conexao Gemini terminou em `ConnectError`,
+e OCI real e webhook externo ainda nao tinham sido validados. Em 22/10/2026,
+foram validados acesso OCI real, gravacao/leitura/listagem/exclusao de objeto
+sintetico e tres triagens com originais e relatorios persistidos. O webhook local
+tambem enviou um e-mail de teste pelo Gmail, com recebimento confirmado.
+Essas evidencias se referem ao ambiente configurado e devem ser repetidas em
+outras instalacoes. Os tres cenarios em
 `tests/demonstracao_cenarios.py` exigem a API ativa na porta 8000 e configuracao de IA;
 execute-os separadamente dos testes unitarios.
 
@@ -327,7 +404,7 @@ documentos únicos. Falhas são estados do processamento e não uma pasta fictí
 Nome, extensão e caminho vêm das chaves listadas; data, tamanho e integridade
 não são verificados. Falha na consulta aparece como indisponibilidade, não como zero.
 
-Em **Nova triagem**, escolha **Enviar arquivo** (PDF, JPG, PNG ou TXT) ou
+Em **Nova triagem**, escolha **Enviar arquivo** (PDF, JPG, JPEG, PNG, TXT ou JSON) ou
 **Fotografar documento**. A câmera captura uma página por vez, pede permissão
 ao navegador e depende de câmera disponível e contexto seguro (localhost ou HTTPS).
 Capture uma imagem legível e clique em **Executar triagem** para iniciar a análise.
@@ -422,7 +499,7 @@ armazenados, busca e encaminhamento para revisao. Nao ha chave de demonstracao o
 metricas ficticias. A navegacao lateral agrupa Central, Nova triagem, Documentos
 clinicos, Urgencias e Revisao humana em Triagem, e Armazenamento e integracoes em
 Plataforma. O tema usa verde-petroleo na sidebar, que pode ser recolhida pelo controle
-nativo do Streamlit. A triagem aceita PDF, JPG/PNG, TXT, JSON ou texto colado e preserva o
+nativo do Streamlit. A triagem aceita PDF, JPG/PNG, TXT, JSON ou uma foto e preserva o
 ultimo resultado na sessao. A auditoria permite conferir o original ao lado dos
 campos editaveis. O historico consulta documentos armazenados, com busca por ID ou
 paciente e exportacao JSON; nao representa um log imutavel de eventos.
