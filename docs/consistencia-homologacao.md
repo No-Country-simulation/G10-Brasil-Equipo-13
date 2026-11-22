@@ -14,3 +14,15 @@ A revisão do [PR #47](https://github.com/No-Country-simulation/G10-Brasil-Equip
 - Simular falha na remoção da origem após gravar o relatório final. Verificar as filas e concluir a movimentação por nova tentativa.
 - Simular falha entre etapas do acompanhamento. Repetir a operação e verificar que o painel converge para a decisão registrada, com cada etapa registrada uma única vez.
 - Rodar as regressões de homologação e validar os cenários com o emulador OCI.
+
+## Retomar uma decisão já registrada
+
+Se a API devolver HTTP 202, a decisão está salva e a finalização segue
+pendente. Em **Revisão humana**, abra **Homologações em finalização** e
+selecione **Retomar homologação**. A API reaplica a decisão armazenada,
+remove a pendência original e grava as etapas finais do fluxo juntas.
+Durante a finalização, o caso fica indisponível para uma nova decisão.
+
+O alerta urgente tem uma reserva de envio separada. Se o envio ficar
+inconclusivo, a retomada não repete a entrega. Consulte o notificador
+para confirmar o resultado antes de enviar novamente por outro canal.

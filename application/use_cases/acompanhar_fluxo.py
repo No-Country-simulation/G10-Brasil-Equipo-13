@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from hashlib import sha256
 from uuid import uuid4
 from application.use_cases.identidade_documento import identificar_relatorio
+from application.use_cases.homologacao import chave_decisao
 
 
 def chave_fluxo(documento_id, execucao_id=None):
@@ -44,11 +45,16 @@ def concluir_homologacao(storage, bucket, documento, aprovado, *, origem):
                 registro = {**legado, "chave_persistida": chave_legada, "execucao_id": documento["execucao_id"]}
     if not isinstance(registro, dict) or registro.get("versao") != 1:
         registro = novo_registro(documento["documento_id"], documento.get("execucao_id"))
-    if aprovado:
-        registrar_etapa(storage, bucket, registro, "processados", documento)
-        registrar_etapa(storage, bucket, registro, "encaminhados", documento)
-    else:
-        registrar_etapa(storage, bucket, registro, "rejeitados", documento)
+    etapas = ("processados", "encaminhados") if aprovado else ("rejeitados",)
+    if registro.get("etapa") == etapas[-1]:
+        return
+    agora = documento["homologado_em"]
+    if registro.get("etapa") == etapas[0]:
+        etapas = etapas[1:]
+    registro["eventos"].extend({"etapa": etapa, "em": agora} for etapa in etapas)
+    registro.update(etapa=etapas[-1], atualizado_em=agora, documento=documento)
+    if not storage.salvar_json(bucket, registro.get("chave_persistida") or chave, registro):
+        raise RuntimeError("Não foi possível concluir o acompanhamento da homologação.")
 
 
 def etapa_do_documento(doc, caminho):
@@ -78,6 +84,8 @@ def consultar_fluxo(storage, bucket):
     for prefixo in ("processados/", "auditoria_humana/"):
         for chave in storage.listar_objetos_por_prefixo(bucket, prefixo):
             if not chave.endswith(".json"):
+                continue
+            if prefixo == "auditoria_humana/" and storage.obter_json(bucket, chave_decisao(chave)):
                 continue
             doc = storage.obter_json(bucket, chave)
             if not doc or not doc.get("documento_id"):

@@ -5,16 +5,21 @@ Gerencia a ingestão documental, listagem das filas do OCI e homologação Human
 
 import base64
 import logging
+from datetime import datetime, timezone
 from typing import Any, Dict, List
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from pydantic import BaseModel, Field
+from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
 
 from application.dtos.input_request import TipoArquivoEnum, TriagemRequestDTO
 from application.dtos.output_response import TriagemResponseDTO
 from application.use_cases.processar_triagem import ProcessarTriagemUseCase
 from application.use_cases.acompanhar_fluxo import concluir_homologacao
-from application.use_cases.identidade_documento import identificar_relatorio, caminho_execucao, identidade_execucao
+from application.use_cases.identidade_documento import identificar_relatorio, caminho_execucao, identidade_execucao, identidade
+from application.use_cases.homologacao import (
+    PREFIXO_DECISOES, PREFIXO_CONCLUIDAS, chave_conclusao, chave_decisao,
+)
 from domain.exceptions import DocumentoJaExiste
 from infrastructure.oci_client.client_factory import get_triagem_use_case
 
@@ -206,7 +211,7 @@ def listar_fila_urgencias(
                 casos.append(identificar_relatorio(doc, chave))
     # Um urgente com pendências mantém um único registro na auditoria.
     for chave in use_case.storage.listar_objetos_por_prefixo(use_case.bucket_name, "auditoria_humana/"):
-        if chave.endswith(".json"):
+        if chave.endswith(".json") and not use_case.storage.obter_json(use_case.bucket_name, chave_decisao(chave)):
             doc = use_case.storage.obter_json(use_case.bucket_name, chave)
             if doc and doc.get("decisao_roteamento", {}).get("destino_principal") == "Fila_Emergencia_Medica":
                 casos.append(identificar_relatorio(doc, chave))
@@ -228,7 +233,7 @@ def listar_fila_auditoria(
     pendencias: List[Dict[str, Any]] = []
 
     for chave in chaves:
-        if chave.endswith(".json"):
+        if chave.endswith(".json") and not use_case.storage.obter_json(use_case.bucket_name, chave_decisao(chave)):
             doc = use_case.storage.obter_json(use_case.bucket_name, chave)
             if doc:
                 pendencias.append(identificar_relatorio(doc, chave))
@@ -243,6 +248,8 @@ def listar_fila_auditoria(
     "/homologar",
     status_code=status.HTTP_200_OK,
     summary="Homologar decisão de auditoria humana",
+    responses={202: {"description": "Decisão registrada com finalização pendente."},
+               409: {"description": "A pendência já possui uma decisão ou relatório final."}},
     description="Retifica dados, destrava a contingência e move o registro no OCI conforme a criticidade."
 )
 def homologar_documento_auditoria(
@@ -257,16 +264,40 @@ def homologar_documento_auditoria(
     """
     if not payload.origem_oci_path.startswith("auditoria_humana/") or ".." in payload.origem_oci_path.split("/"):
         raise HTTPException(422, "A origem deve ser uma pendência de auditoria humana.")
-    doc_antigo = use_case.storage.obter_json(use_case.bucket_name, payload.origem_oci_path)
-    if not doc_antigo:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Documento pendente '{payload.origem_oci_path}' não foi localizado no OCI."
-        )
+    storage, bucket = use_case.storage, use_case.bucket_name
+    origem = payload.origem_oci_path
+    chave = chave_decisao(origem)
+    decisao = storage.obter_json(bucket, chave)
+    if decisao is None:
+        documento = storage.obter_json(bucket, origem)
+        if documento is None:
+            # A origem pode ter sido removida logo após outra requisição decidir.
+            decisao = storage.obter_json(bucket, chave)
+            if decisao is None:
+                raise HTTPException(404, "Pendência de auditoria não localizada.")
+        else:
+            if documento.get("documento_id") != payload.documento_id:
+                raise HTTPException(422, "O identificador não corresponde ao documento em revisão.")
+            proposta = _preparar_homologacao(payload, documento)
+            caminho = caminho_execucao(payload.documento_id, proposta["documento"]["execucao_id"])
+            ja_processado = any(
+                storage.obter_json(bucket, f"processados/{pasta}/{caminho}.json") is not None
+                for pasta in ("rotina", "urgentes", "rejeitados")
+            )
+            if not ja_processado and storage.criar_json_exclusivo(bucket, chave, proposta):
+                decisao = proposta
+            else:
+                decisao = storage.obter_json(bucket, chave)
+                if decisao is None:
+                    if ja_processado:
+                        raise HTTPException(409, "A execução já tem um relatório final. Verifique a pendência anterior.")
+                    raise HTTPException(409, "Outra solicitação está registrando a decisão desta pendência.")
+    if decisao["solicitacao"] != payload.model_dump():
+        raise HTTPException(409, "Já existe uma decisão registrada para esta pendência.")
+    return _finalizar_homologacao(use_case, decisao)
 
-    if doc_antigo.get("documento_id") != payload.documento_id:
-        raise HTTPException(422, "O identificador não corresponde ao documento em revisão.")
 
+def _preparar_homologacao(payload, doc_antigo):
     if payload.decisao == "aprovar":
         doc_antigo["status"] = "processado"
         # A falha original continua auditável; a revisão humana resolveu a pendência.
@@ -326,47 +357,89 @@ def homologar_documento_auditoria(
     doc_antigo["armazenamento_oci"]["caminho_objeto"] = novo_caminho
     doc_antigo["armazenamento_oci"]["status_backup"] = "sucesso"
 
-    sucesso = use_case.storage.mover_objeto(
-        bucket_name=use_case.bucket_name,
-        origem=payload.origem_oci_path,
-        destino=novo_caminho,
-        novos_dados=doc_antigo,
-    )
+    doc_antigo["homologado_em"] = datetime.now(timezone.utc).isoformat()
+    return {"solicitacao": payload.model_dump(), "documento": doc_antigo, "destino": novo_caminho}
 
-    if not sucesso:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Falha ao movimentar e persistir o registro no OCI Object Storage."
-        )
 
-    acompanhamento_confirmado = True
-    try:
-        concluir_homologacao(
-            use_case.storage, use_case.bucket_name, doc_antigo, payload.decisao == "aprovar",
-            origem=payload.origem_oci_path,
-        )
-    except Exception:
-        acompanhamento_confirmado = False
-        logger.error("Decisão persistida, mas acompanhamento não confirmado para %s", payload.documento_id)
-
-    notificacao_enviada = None
-    if payload.decisao == "aprovar" and payload.destino_aprovado == "Fila_Emergencia_Medica":
-        alerta = doc_antigo["decisao_roteamento"]["notificacao_gerada"]
-        try:
-            notificacao_enviada = bool(use_case.notifier.enviar_alerta_urgencia(
-                canal=alerta["canal"], mensagem=alerta["mensagem"]
-            ))
-        except Exception:
-            notificacao_enviada = False
-            logger.exception("Falha ao notificar homologação urgente de %s", payload.documento_id)
-        if not notificacao_enviada:
-            logger.error("Homologação de %s persistida, mas o notificador falhou", payload.documento_id)
-
-    return {
+def _finalizar_homologacao(use_case, decisao):
+    storage, bucket = use_case.storage, use_case.bucket_name
+    solicitacao = decisao["solicitacao"]
+    documento = decisao["documento"]
+    origem = solicitacao["origem_oci_path"]
+    destino = decisao["destino"]
+    aprovado = solicitacao["decisao"] == "aprovar"
+    resposta = {
         "status": "sucesso",
-        "documento_id": payload.documento_id,
-        "destino_aprovado": payload.destino_aprovado if payload.decisao == "aprovar" else "Rejeitado",
-        "caminho_novo_oci": novo_caminho,
-        "notificacao_enviada": notificacao_enviada,
-        "acompanhamento_fluxo_confirmado": acompanhamento_confirmado,
+        "documento_id": solicitacao["documento_id"],
+        "destino_aprovado": solicitacao["destino_aprovado"] if aprovado else "Rejeitado",
+        "caminho_novo_oci": destino,
+        "notificacao_enviada": None,
+        "acompanhamento_fluxo_confirmado": True,
     }
+    try:
+        conclusao = storage.obter_json(bucket, chave_conclusao(origem))
+        if conclusao is None:
+            if not storage.mover_objeto(bucket, origem, destino, documento):
+                raise RuntimeError("Falha ao movimentar o relatório.")
+            concluir_homologacao(storage, bucket, documento, aprovado, origem=origem)
+            if not storage.salvar_json(bucket, chave_conclusao(origem), {"concluida": True}):
+                raise RuntimeError("Falha ao confirmar a homologação.")
+    except Exception:
+        logger.exception("Homologação registrada, com finalização pendente para %s", resposta["documento_id"])
+        resposta.update(status="pendente", acompanhamento_fluxo_confirmado=False)
+        return JSONResponse(status_code=202, content=resposta)
+    if aprovado and solicitacao["destino_aprovado"] == "Fila_Emergencia_Medica":
+        alerta = documento["decisao_roteamento"]["notificacao_gerada"]
+        resposta["notificacao_enviada"] = _notificar_homologacao(use_case, origem, alerta)
+    return resposta
+
+
+def _notificar_homologacao(use_case, origem, alerta):
+    storage, bucket = use_case.storage, use_case.bucket_name
+    chave = f"homologacoes/alertas/{identidade(origem)}.json"
+    # A reserva impede reenvio inclusive quando a entrega anterior é inconclusiva.
+    try:
+        if not storage.criar_json_exclusivo(bucket, chave, {"enviada": None}):
+            registro = storage.obter_json(bucket, chave) or {}
+            return registro.get("enviada")
+        try:
+            enviada = bool(use_case.notifier.enviar_alerta_urgencia(**alerta))
+        except Exception:
+            logger.exception("Falha ao enviar alerta de homologação.")
+            enviada = False
+        if not storage.salvar_json(bucket, chave, {"enviada": enviada}):
+            logger.error("Não foi possível confirmar o resultado do alerta de homologação.")
+        return enviada
+    except Exception:
+        logger.exception("Não foi possível confirmar o alerta de homologação.")
+        return None
+
+
+class RetomadaHomologacaoDTO(BaseModel):
+    documento_id: str
+    origem_oci_path: str
+
+
+@router.get("/homologacoes/pendentes")
+def listar_homologacoes_pendentes(use_case=Depends(get_triagem_use_case)):
+    storage, bucket = use_case.storage, use_case.bucket_name
+    concluidas = {
+        chave.removeprefix(PREFIXO_CONCLUIDAS)
+        for chave in storage.listar_objetos_por_prefixo(bucket, PREFIXO_CONCLUIDAS)
+    }
+    pendentes = []
+    for chave in storage.listar_objetos_por_prefixo(bucket, PREFIXO_DECISOES):
+        if chave.removeprefix(PREFIXO_DECISOES) not in concluidas:
+            decisao = storage.obter_json(bucket, chave)
+            if decisao:
+                solicitacao = decisao["solicitacao"]
+                pendentes.append({campo: solicitacao[campo] for campo in ("documento_id", "origem_oci_path")})
+    return pendentes
+
+
+@router.post("/homologacoes/retomar")
+def retomar_homologacao(payload: RetomadaHomologacaoDTO, use_case=Depends(get_triagem_use_case)):
+    decisao = use_case.storage.obter_json(use_case.bucket_name, chave_decisao(payload.origem_oci_path))
+    if not decisao or decisao["solicitacao"]["documento_id"] != payload.documento_id:
+        raise HTTPException(404, "Decisão registrada não localizada.")
+    return _finalizar_homologacao(use_case, decisao)

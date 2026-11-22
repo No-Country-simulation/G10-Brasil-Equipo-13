@@ -330,7 +330,7 @@ def test_seletores_abrem_cada_legado_individualmente():
         "canal_origem": f"Origem {i}", "dados_extraidos": {"paciente": {"nome": f"Paciente {i}"}},
         "armazenamento_oci": {"caminho_objeto": f"auditoria_humana/{i}/001.json"}} for i in range(3)]
     raiz = Path(__file__).resolve().parents[2]
-    with patch("presentation.web.api_client.consultar", side_effect=lambda caminho: {} if caminho == "integracoes" else docs):
+    with patch("presentation.web.api_client.consultar", side_effect=lambda caminho: {"integracoes": {}, "homologacoes/pendentes": []}.get(caminho, docs)):
         painel = AppTest.from_file(raiz / "presentation/web/app.py", default_timeout=30).run()
         painel.switch_page("app_pages/documentos.py").run()
         assert not painel.exception
@@ -345,3 +345,123 @@ def test_seletores_abrem_cada_legado_individualmente():
             seletor.set_value(doc["registro_id"]).run()
             assert not painel.exception
             assert painel.text_input[0].value == f"Paciente {i}"
+
+
+def preparar_homologacao(contexto):
+    client, caso, _, _ = contexto
+    origem = "auditoria_humana/PENDENCIA.json"
+    assert caso.storage.salvar_json(caso.bucket_name, origem, {
+        "documento_id": "PENDENCIA",
+        "decisao_roteamento": {
+            "destino_principal": "Fila_Emergencia_Medica",
+            "requer_auditoria_humana": True,
+        },
+    })
+    return client, caso, {
+        "documento_id": "PENDENCIA",
+        "origem_oci_path": origem,
+        "paciente_nome": "Paciente fictício",
+        "crm_retificado": "123456-SP",
+        "diagnostico": "Teste",
+        "cid_homologado": "Z00",
+        "destino_aprovado": "Fila_Emergencia_Medica",
+        "parecer_auditor": "Conferência sintética",
+        "decisao": "aprovar",
+    }
+
+
+def test_homologacoes_concorrentes_registram_uma_decisao(contexto, monkeypatch):
+    client, caso, proposta = preparar_homologacao(contexto)
+    barreira = Barrier(2, timeout=10)
+    criar = caso.storage.criar_json_exclusivo
+
+    def disputar(bucket, chave, dados):
+        if chave.startswith("homologacoes/decisoes/"):
+            barreira.wait()
+        return criar(bucket, chave, dados)
+
+    monkeypatch.setattr(caso.storage, "criar_json_exclusivo", disputar)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        respostas = list(pool.map(
+            lambda decisao: client.post("/triagem/homologar", json={**proposta, "decisao": decisao}),
+            ("aprovar", "rejeitar"),
+        ))
+    assert sorted(r.status_code for r in respostas) == [200, 409]
+    origem = proposta["origem_oci_path"]
+    assert caso.storage.obter_json(caso.bucket_name, origem) is None
+    destinos = caso.storage.listar_objetos_por_prefixo(caso.bucket_name, "processados/")
+    assert len(destinos) == 1
+    vencedor = respostas[0].status_code == 200
+    historico = consultar_fluxo(caso.storage, caso.bucket_name)
+    assert [r["etapa"] for r in historico] == ["encaminhados" if vencedor else "rejeitados"]
+    assert caso.notifier.enviar_alerta_urgencia.call_count == int(vencedor)
+
+
+def test_homologacao_retomavel_apos_destino_gravado(contexto, monkeypatch):
+    client, caso, proposta = preparar_homologacao(contexto)
+    mover = caso.storage.mover_objeto
+
+    def falhar_apos_gravar(bucket, origem, destino, documento):
+        assert caso.storage.salvar_json(bucket, destino, documento)
+        raise TimeoutError("Remoção da origem interrompida")
+
+    monkeypatch.setattr(caso.storage, "mover_objeto", falhar_apos_gravar)
+    resposta = client.post("/triagem/homologar", json=proposta)
+    assert resposta.status_code == 202
+    assert resposta.json()["status"] == "pendente"
+    origem = proposta["origem_oci_path"]
+    assert caso.storage.obter_json(caso.bucket_name, origem)
+    assert client.get("/triagem/filas/auditoria").json() == []
+    assert len(client.get("/triagem/filas/urgencias").json()) == 1
+    assert len(client.get("/triagem/historico").json()) == 1
+    assert client.post("/triagem/homologar", json={**proposta, "decisao": "rejeitar"}).status_code == 409
+    caso.notifier.enviar_alerta_urgencia.assert_not_called()
+
+    pendentes = client.get("/triagem/homologacoes/pendentes").json()
+    assert len(pendentes) == 1
+    monkeypatch.setattr(caso.storage, "mover_objeto", mover)
+    assert client.post("/triagem/homologacoes/retomar", json=pendentes[0]).status_code == 200
+    assert client.get("/triagem/homologacoes/pendentes").json() == []
+    assert caso.storage.obter_json(caso.bucket_name, origem) is None
+    caso.notifier.enviar_alerta_urgencia.assert_called_once()
+
+
+@pytest.mark.parametrize("gravacao_confirmada", [False, True])
+def test_homologacao_reconcilia_fluxo_sem_duplicar_eventos(contexto, monkeypatch, gravacao_confirmada):
+    client, caso, proposta = preparar_homologacao(contexto)
+    salvar = caso.storage.salvar_json
+
+    def interromper_fluxo(bucket, chave, dados):
+        if chave.startswith("fluxo/"):
+            if gravacao_confirmada:
+                salvar(bucket, chave, dados)
+            raise TimeoutError("Gravação do acompanhamento inconclusiva")
+        return salvar(bucket, chave, dados)
+
+    monkeypatch.setattr(caso.storage, "salvar_json", interromper_fluxo)
+    assert client.post("/triagem/homologar", json=proposta).status_code == 202
+    assert caso.storage.obter_json(caso.bucket_name, proposta["origem_oci_path"]) is None
+    caso.notifier.enviar_alerta_urgencia.assert_not_called()
+    monkeypatch.setattr(caso.storage, "salvar_json", salvar)
+    for _ in range(2):
+        assert client.post("/triagem/homologar", json=proposta).status_code == 200
+    chaves = caso.storage.listar_objetos_por_prefixo(caso.bucket_name, "fluxo/")
+    assert len(chaves) == 1
+    registro = caso.storage.obter_json(caso.bucket_name, chaves[0])
+    assert [evento["etapa"] for evento in registro["eventos"]] == ["processados", "encaminhados"]
+    caso.notifier.enviar_alerta_urgencia.assert_called_once()
+
+
+def test_homologacao_preserva_relatorio_de_movimentacao_anterior(contexto):
+    from application.use_cases.identidade_documento import caminho_execucao, identidade_execucao
+
+    client, caso, proposta = preparar_homologacao(contexto)
+    origem = proposta["origem_oci_path"]
+    pendencia = caso.storage.obter_json(caso.bucket_name, origem)
+    execucao = identidade_execucao(pendencia, origem)
+    destino = f"processados/rotina/{caminho_execucao(proposta['documento_id'], execucao)}.json"
+    anterior = {"documento_id": proposta["documento_id"], "execucao_id": execucao}
+    assert caso.storage.salvar_json(caso.bucket_name, destino, anterior)
+    assert client.post("/triagem/homologar", json=proposta).status_code == 409
+    assert caso.storage.obter_json(caso.bucket_name, destino) == anterior
+    caso.notifier.enviar_alerta_urgencia.assert_not_called()

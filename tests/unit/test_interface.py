@@ -162,7 +162,7 @@ def test_filtros_documentais_combinam_prioridade_e_revisao():
 
 
 def test_revisao_preenchida_preserva_validacao_antes_do_envio():
-    with patch("presentation.web.api_client.consultar", side_effect=lambda caminho: INTEGRACOES if caminho == "integracoes" else [DOCUMENTO]), patch("presentation.web.api_client.enviar") as enviar:
+    with patch("presentation.web.api_client.consultar", side_effect=lambda caminho: {"integracoes": INTEGRACOES, "homologacoes/pendentes": []}.get(caminho, [DOCUMENTO])), patch("presentation.web.api_client.enviar") as enviar:
         app = AppTest.from_file(Path(__file__).resolve().parents[2] / "presentation/web/app.py", default_timeout=30).run()
         app.switch_page("app_pages/auditoria.py").run()
         assert not app.exception
@@ -178,7 +178,7 @@ def test_kanban_abre_pendencia_correta_e_mantem_selecao_ao_editar():
     itens = [{"documento_id": d["documento_id"], "etapa": "revisao_humana", "documento": d} for d in (doc_a, doc_b)]
 
     def consulta(caminho):
-        return INTEGRACOES if caminho == "integracoes" else itens if caminho == "filas/processamento" else [doc_a, doc_b]
+        return {"integracoes": INTEGRACOES, "filas/processamento": itens, "homologacoes/pendentes": []}.get(caminho, [doc_a, doc_b])
 
     with patch("presentation.web.api_client.consultar", side_effect=consulta):
         app = AppTest.from_file(Path(__file__).resolve().parents[2] / "presentation/web/app.py", default_timeout=30).run()
