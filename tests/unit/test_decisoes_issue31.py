@@ -99,3 +99,62 @@ def test_falha_ao_arquivar_tentativa_nao_libera_reserva():
     with pytest.raises(RuntimeError):
         caso._tratar_interrupcao(registro, True)
     storage.cancelar_cadastro.assert_not_called()
+
+
+@pytest.mark.parametrize("remoto_existe", [False, True])
+def test_falha_oci_so_libera_reserva_sqlite_quando_objeto_ausente(tmp_path, remoto_existe):
+    storage = object.__new__(OCIStorageAdapter)
+    storage.namespace = "n"
+    storage.reservas = SqliteReservas(tmp_path / "reservas.db")
+    storage.client = Mock()
+    storage.client.put_object.side_effect = oci.exceptions.ServiceError(500, "erro", {}, "falha")
+    storage.obter_arquivo = Mock(return_value=b"{}" if remoto_existe else None)
+
+    with pytest.raises(oci.exceptions.ServiceError):
+        storage.criar_json_exclusivo("b", "cadastro", {})
+
+    storage.client.put_object.side_effect = None
+    assert storage.criar_json_exclusivo("b", "cadastro", {}) is (not remoto_existe)
+
+
+@pytest.mark.parametrize("original_existe", [False, True])
+def test_recuperacao_de_reserva_interrompida(original_existe):
+    from application.use_cases.identidade_documento import caminho_execucao, chave_cadastro, reservar_cadastro
+    from scripts.recuperar_reserva_interrompida import recuperar
+
+    storage = MemoryStorageAdapter()
+    cadastro = chave_cadastro("doc")
+    assert storage.criar_json_exclusivo("b", cadastro, {"primeira_execucao_id": "e"})
+    if original_existe:
+        caminho = caminho_execucao("doc", "e")
+        storage.salvar_arquivo("b", f"recebidos/{caminho}.txt", b"original")
+
+    assert recuperar(storage, "b", "doc", "outra") is False
+    assert recuperar(storage, "b", "doc", "e") is (not original_existe)
+    if not original_existe:
+        reservar_cadastro(storage, "b", {"documento_id": "doc", "execucao_id": "nova", "criado_em": "agora"})
+        assert storage.obter_json("b", cadastro)["primeira_execucao_id"] == "nova"
+
+
+def test_timeout_preserva_indice_ate_recuperacao_em_manutencao(tmp_path):
+    from application.use_cases.identidade_documento import chave_cadastro
+    from scripts.recuperar_reserva_interrompida import recuperar
+
+    storage = object.__new__(OCIStorageAdapter)
+    storage.namespace = "n"
+    banco = tmp_path / "reservas.db"
+    storage.reservas = SqliteReservas(banco)
+    storage.client = Mock()
+    storage.client.put_object.side_effect = TimeoutError
+    cadastro = chave_cadastro("doc")
+
+    with pytest.raises(TimeoutError):
+        storage.criar_json_exclusivo("b", cadastro, {})
+
+    storage.reservas = SqliteReservas(banco)
+    storage.client.put_object.side_effect = None
+    assert not storage.criar_json_exclusivo("b", cadastro, {})
+    storage.obter_arquivo = Mock(return_value=None)
+    storage.listar_objetos_por_prefixo = Mock(return_value=[])
+    assert recuperar(storage, "b", "doc", "e")
+    assert storage.criar_json_exclusivo("b", cadastro, {})

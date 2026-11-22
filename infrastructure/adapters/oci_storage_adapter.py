@@ -69,6 +69,11 @@ class OCIStorageAdapter(StoragePort):
         except oci.exceptions.ServiceError as exc:
             if exc.status == 412:
                 return False
+            if self.reservas and exc.status >= 500:
+                self.reservas.cancelar_se(
+                    self.namespace, bucket_name, object_name,
+                    lambda: self.obter_arquivo(bucket_name, object_name) is None,
+                )
             raise
         return True
 
