@@ -44,7 +44,7 @@ class ExtracaoClinicaLLMSchema(BaseModel):
     medico_solicitante: MedicoSolicitanteLLMSchema
     exame_realizado: Optional[str] = Field(None, description="Nome do exame, procedimento ou consulta")
     diagnostico_principal: Optional[str] = Field(None, description="Diagnóstico principal ou achado clínico crítico")
-    cid_sugerido: Optional[str] = Field(None, description="Código CID-10 identificado ou sugerido (ex: I26.9)")
+    cid_sugerido: Optional[str] = Field(None, description="Código CID-10 explícito no documento (ex: I26.9). Use null quando ausente ou ilegível.")
     medicamentos: List[str] = Field(default_factory=list, description="Lista de fármacos e dosagens prescritos")
     achado_critico: bool = Field(
         ..., 

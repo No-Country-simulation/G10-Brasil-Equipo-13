@@ -129,3 +129,19 @@ resultados não classificados e migração compatível dos registros antigos.
   falha na consulta/arquivo de auditoria e classificação não identificada.
 - Ruff 0.15.8 (E9,F63,F7,F82) e `git diff --check`: aprovados.
 - Não houve validação com escrita na OCI real nem nova homologação visual.
+
+### Recuperar uma reserva após interrupção abrupta
+
+Pare todas as instâncias que escrevem no bucket e aguarde o término de
+requisições de armazenamento em andamento. Com a configuração do mesmo
+bucket e, no emulador, o mesmo volume SQLite, execute:
+
+```powershell
+python scripts/recuperar_reserva_interrompida.py DOC-ID EXECUCAO-ID --triagem-parada
+```
+
+A recuperação verifica o proprietário da reserva, os relatórios, a etapa
+do fluxo e a ausência do original. O registro interrompido é arquivado
+antes da liberação condicional. No emulador, também é possível limpar o
+índice órfão se não houver cadastro remoto nem documento associado ao ID.
+Depois da confirmação, reinicie a API e reenvie o documento.
