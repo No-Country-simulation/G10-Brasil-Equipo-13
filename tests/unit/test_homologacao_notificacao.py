@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
 import pytest
-from fastapi import HTTPException
+from infrastructure.adapters.memory_storage_adapter import MemoryStorageAdapter
 
 from presentation.api.routers.triagem_router import (
     HomologacaoAuditoriaDTO,
@@ -22,8 +22,11 @@ from presentation.api.routers.triagem_router import (
 )
 def test_notificacao_apos_homologacao(destino, decisao, persistido, retorno, excecao, esperado):
     use_case = Mock(bucket_name="teste")
-    use_case.storage.obter_json.return_value = {"documento_id": "TESTE"}
-    use_case.storage.mover_objeto.return_value = persistido
+    storage = MemoryStorageAdapter()
+    storage.salvar_json("teste", "auditoria_humana/TESTE.json", {"documento_id": "TESTE"})
+    mover = Mock(wraps=storage.mover_objeto) if persistido else Mock(return_value=False)
+    storage.mover_objeto = mover
+    use_case.attach_mock(Mock(wraps=storage), "storage")
     use_case.notifier.enviar_alerta_urgencia.return_value = retorno
     if excecao:
         use_case.notifier.enviar_alerta_urgencia.side_effect = RuntimeError("falha simulada")
@@ -34,12 +37,13 @@ def test_notificacao_apos_homologacao(destino, decisao, persistido, retorno, exc
         parecer_auditor="Teste sintetico", decisao=decisao,
     )
     if not persistido:
-        with pytest.raises(HTTPException) as error:
-            homologar_documento_auditoria(payload, use_case)
-        assert error.value.status_code == 500
+        assert homologar_documento_auditoria(payload, use_case).status_code == 202
         use_case.notifier.enviar_alerta_urgencia.assert_not_called()
         return
     result = homologar_documento_auditoria(payload, use_case)
+    repetido = homologar_documento_auditoria(payload, use_case)
+    assert repetido == result
+    mover.assert_called_once()
     assert result["notificacao_enviada"] is esperado
     if esperado is None:
         use_case.notifier.enviar_alerta_urgencia.assert_not_called()

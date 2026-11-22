@@ -53,7 +53,8 @@ class MemoryStorageAdapter(StoragePort):
         dados = novos_dados if novos_dados is not None else self.obter_json(bucket_name, origem)
         if dados is None:
             return False
-        self.salvar_json(bucket_name, destino, dados)
+        if not self.salvar_json(bucket_name, destino, dados):
+            return False
         if origem != destino:
             self.objetos.pop((bucket_name, origem), None)
         return True

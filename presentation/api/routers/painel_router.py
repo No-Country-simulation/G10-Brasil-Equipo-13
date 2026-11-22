@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 
 from infrastructure.oci_client.client_factory import get_triagem_use_case
 from config.settings import settings
+from application.use_cases.homologacao import chave_decisao
 from application.use_cases.acompanhar_fluxo import consultar_fluxo
 from application.use_cases.identidade_documento import identificar_relatorio
 
@@ -63,6 +64,8 @@ def listar_historico(use_case=Depends(get_triagem_use_case)):
     for prefixo in ("processados/", "auditoria_humana/"):
         for chave in use_case.storage.listar_objetos_por_prefixo(use_case.bucket_name, prefixo):
             if chave.endswith(".json"):
+                if prefixo == "auditoria_humana/" and use_case.storage.obter_json(use_case.bucket_name, chave_decisao(chave)):
+                    continue
                 doc = use_case.storage.obter_json(use_case.bucket_name, chave)
                 if doc:
                     documentos.append(identificar_relatorio(doc, chave))

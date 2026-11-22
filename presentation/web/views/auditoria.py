@@ -16,6 +16,30 @@ DESTINOS = {
 }
 
 
+def exibir_homologacoes_pendentes():
+    try:
+        pendentes = api_client.consultar("homologacoes/pendentes")
+    except (requests.RequestException, ValueError):
+        st.warning("Não foi possível consultar homologações em finalização.")
+        return
+    if not pendentes:
+        return
+    with st.expander("Homologações em finalização", expanded=True):
+        for pendente in pendentes:
+            st.write(pendente["documento_id"])
+            if st.button("Retomar homologação", key="retomar_" + pendente["origem_oci_path"]):
+                try:
+                    resposta = api_client.enviar("homologacoes/retomar", pendente)
+                except (requests.RequestException, ValueError):
+                    st.error("Não foi possível retomar a homologação. Tente novamente.")
+                    return
+                if resposta["status"] == "pendente":
+                    st.warning("A decisão está registrada. A finalização continua pendente.")
+                    return
+                st.session_state.aviso_auditoria = "Homologação concluída."
+                st.rerun()
+
+
 def renderizar_painel_auditoria():
     cabecalho("Revisão humana", "Compare o documento original com os dados extraídos e registre sua decisão.")
     if "aviso_auditoria" in st.session_state:
@@ -27,6 +51,7 @@ def renderizar_painel_auditoria():
         return
     indicadores([("Documentos pendentes", len(fila)), ("Falhas de extração", sum(bool(d.get("erro_extracao")) for d in fila))])
     st.caption("Revisão solicitada por dados incompletos, ambiguidade, falha de extração ou confiança inferior a 85%.")
+    exibir_homologacoes_pendentes()
     if not fila:
         st.session_state.pop("confirmacao_auditoria", None)
         estado_vazio("Nenhum documento pendente", "As triagens que exigirem conferência aparecerão aqui.", ":material/fact_check:")
@@ -132,7 +157,8 @@ def renderizar_painel_auditoria():
                 return
             mensagem = f"Decisão salva em {resposta['caminho_novo_oci']}."
             if resposta.get("acompanhamento_fluxo_confirmado") is False:
-                mensagem += " A atualização do quadro não foi confirmada; consulte as filas antes de reenviar."
+                st.session_state.pop("confirmacao_auditoria", None)
+                st.rerun()
             if resposta.get("notificacao_enviada") is False:
                 mensagem += " O envio do alerta falhou."
             elif resposta.get("notificacao_enviada"):

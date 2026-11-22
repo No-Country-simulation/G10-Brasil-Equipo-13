@@ -135,7 +135,12 @@ class OCIStorageAdapter(StoragePort):
         dados = novos_dados if novos_dados is not None else self.obter_json(bucket_name, origem)
         if dados is None:
             return False
-        self.salvar_json(bucket_name, destino, dados)
+        if not self.salvar_json(bucket_name, destino, dados):
+            return False
         if origem != destino:
-            self.client.delete_object(namespace_name=self.namespace, bucket_name=bucket_name, object_name=origem)
+            try:
+                self.client.delete_object(namespace_name=self.namespace, bucket_name=bucket_name, object_name=origem)
+            except oci.exceptions.ServiceError as exc:
+                if exc.status != 404:
+                    raise
         return True
