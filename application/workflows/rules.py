@@ -5,7 +5,7 @@ from application.workflows.state import WorkflowTriagemState
 
 def validar_formato_crm(crm: str) -> bool:
     """
-    Valida se o CRM possui dígitos seguidos de hífen e UF (ex: '145892-SP' ou '145892/SP').
+    Valida se o CRM possui dígitos seguidos de hífen e UF brasileira válida (ex: '145892-SP' ou '145892/SP').
     Permite tolerância a variações sem hífen se contiver números e estado válido.
     """
     if not crm or not isinstance(crm, str):
@@ -13,8 +13,17 @@ def validar_formato_crm(crm: str) -> bool:
 
     crm_limpo = crm.strip().upper()
     # Padrão: 4 a 8 dígitos numéricos, separador opcional (- ou /) e sigla da UF (2 letras)
-    padrao = re.compile(r"^\d{4,8}[-/]?[A-Z]{2}$")
-    return bool(padrao.match(crm_limpo))
+    padrao = re.compile(r"^(\d{4,8})[-/]?([A-Z]{2})$")
+
+    correspondencia = padrao.fullmatch(crm_limpo)
+    if not correspondencia:
+        return False
+
+    ufs_validas = {
+        "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
+    }
+
+    return correspondencia.group(2) in ufs_validas
 
 
 def requer_auditoria(state: WorkflowTriagemState) -> bool:

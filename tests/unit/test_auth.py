@@ -38,7 +38,7 @@ def test_api_protege_consultas_upload_homologacao_e_documentacao(monkeypatch):
     client = TestClient(app)
     for rota in ("/triagem/historico", "/triagem/original?caminho=recebidos/teste.txt", "/triagem/filas/processamento", "/triagem/integracoes", "/docs", "/openapi.json", "/health/ready"):
         assert client.get(rota).status_code == 401
-    for rota in ("/triagem", "/triagem/upload", "/triagem/homologar"):
+    for rota in ("/triagem", "/triagem/upload", "/triagem/homologar", "/triagem/reprocessar"):
         assert client.post(rota, json={}).status_code == 401
     assert client.get("/health").status_code == 200
     assert client.get("/triagem/historico", headers={"Authorization": "Bearer invalido"}).status_code == 401
