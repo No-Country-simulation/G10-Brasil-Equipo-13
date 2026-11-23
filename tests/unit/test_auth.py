@@ -56,9 +56,20 @@ def test_api_falha_fechada_sem_credencial(monkeypatch):
     assert TestClient(app).get("/triagem/historico").status_code == 503
 
 
+def test_abertura_publica_mostra_acesso_sem_consultar_api(ambiente_auth):
+    with patch("streamlit.user", Usuario(False)), patch("presentation.web.api_client.consultar") as consultar:
+        abertura = AppTest.from_file(ENTRADA, default_timeout=30).run()
+        assert not abertura.exception and not abertura.metric
+        assert not abertura.button
+        html = abertura.get("html")[0].proto.body
+        assert html.count('href="/central">Acessar a Plataforma</a>') == 2
+        consultar.assert_not_called()
+
+
 def test_login_nativo_antes_de_consultar_documentos(ambiente_auth):
     with patch("streamlit.user", Usuario(False)), patch("streamlit.secrets", SECRETS), patch("streamlit.login") as login, patch("presentation.web.api_client.consultar") as consultar:
         painel = AppTest.from_file(ENTRADA, default_timeout=30).run()
+        painel.switch_page("app_pages/central.py").run()
         assert not painel.exception and not painel.metric
         consultar.assert_not_called()
         next(b for b in painel.button if b.label == "Continuar com Google").click().run()
@@ -88,6 +99,7 @@ def test_usuario_autorizado_acessa_e_sai_limpando_sessao(ambiente_auth):
 def test_auth_incompleta_nao_volta_para_acesso_anonimo(ambiente_auth):
     with patch("streamlit.user", Usuario(False)), patch("streamlit.secrets", {}), patch("presentation.web.api_client.consultar") as consultar:
         painel = AppTest.from_file(ENTRADA, default_timeout=30).run()
+        painel.switch_page("app_pages/central.py").run()
         assert not painel.exception and painel.error
         assert not any(b.label == "Continuar com Google" for b in painel.button)
         consultar.assert_not_called()
