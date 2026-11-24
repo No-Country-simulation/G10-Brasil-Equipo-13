@@ -28,6 +28,7 @@ def test_central_exibe_registros_sem_contar_falha_como_urgencia():
 
     with patch("presentation.web.api_client.consultar", side_effect=consultar):
         app = AppTest.from_file(Path(__file__).resolve().parents[2] / "presentation/web/app.py", default_timeout=30).run()
+        app.switch_page("app_pages/central.py").run()
         assert not app.exception
         assert [m.value for m in app.metric] == ["1", "1", "0", "1"]
         assert app.dataframe[0].value.iloc[0]["Prioridade"] == "Não avaliada"
@@ -39,6 +40,7 @@ def test_central_exibe_registros_sem_contar_falha_como_urgencia():
 def test_vazio_e_indisponibilidade_sao_estados_diferentes():
     with patch("presentation.web.api_client.consultar", side_effect=lambda caminho: INTEGRACOES if caminho == "integracoes" else []):
         app = AppTest.from_file(Path(__file__).resolve().parents[2] / "presentation/web/app.py", default_timeout=30).run()
+        app.switch_page("app_pages/central.py").run()
         assert not app.exception
         assert any("primeira triagem" in s.value for s in app.subheader)
         with patch("presentation.web.api_client.consultar", side_effect=requests.ConnectionError):

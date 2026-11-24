@@ -12,7 +12,33 @@ from presentation.web.api_client import consultar
 from presentation.web.auth import exigir_login
 from presentation.web.components.diagnostico import carregar_diagnostico
 
-st.set_page_config(page_title="MediFlow | Central de triagem", page_icon=":material/health_and_safety:", layout="wide")
+st.set_page_config(page_title="MediFlow", page_icon=":material/health_and_safety:", layout="wide")
+abertura = st.Page("app_pages/abertura.py", title="MediFlow | Abertura", default=True, visibility="hidden")
+central = st.Page("app_pages/central.py", title="Central de triagem", icon=":material/dashboard:")
+paginas_operacionais = {
+    "Triagem": [
+        central,
+        st.Page("app_pages/documentos.py", title="Documentos clínicos", icon=":material/description:"),
+        st.Page("app_pages/nova_triagem.py", title="Nova triagem", icon=":material/upload_file:"),
+        st.Page("app_pages/filas.py", title="Filas de processamento", icon=":material/view_kanban:"),
+        st.Page("app_pages/urgencias.py", title="Urgências", icon=":material/emergency:"),
+        st.Page("app_pages/auditoria.py", title="Revisão humana", icon=":material/fact_check:"),
+    ],
+    "Plataforma": [st.Page("app_pages/integracoes.py", title="Armazenamento e integrações", icon=":material/cloud:")],
+}
+pagina = st.navigation(
+    [abertura, *(destino for grupo in paginas_operacionais.values() for destino in grupo)],
+    position="hidden",
+)
+
+if pagina == abertura:
+    # O retorno do login OIDC chega à raiz em uma nova sessão.
+    if getattr(st.user, "is_logged_in", False):
+        st.switch_page(central)
+    abertura.run()
+    st.stop()
+
+st.set_page_config(page_title="MediFlow | Central de triagem")
 autenticado = exigir_login()
 if "diagnostico" not in st.session_state:
     carregar_diagnostico()
@@ -21,18 +47,6 @@ for chave, valor in {"resultado_triagem": None, "original_triagem": None, "rodad
 
 assets = Path(__file__).parent / "assets"
 st.logo(str(assets / "mediflow.svg"), icon_image=str(assets / "icone.svg"), size="large")
-
-pagina = st.navigation({
-    "Triagem": [
-        st.Page("app_pages/central.py", title="Central de triagem", icon=":material/dashboard:", default=True),
-        st.Page("app_pages/documentos.py", title="Documentos clínicos", icon=":material/description:"),
-        st.Page("app_pages/nova_triagem.py", title="Nova triagem", icon=":material/upload_file:"),
-        st.Page("app_pages/filas.py", title="Filas de processamento", icon=":material/view_kanban:"),
-        st.Page("app_pages/urgencias.py", title="Urgências", icon=":material/emergency:"),
-        st.Page("app_pages/auditoria.py", title="Revisão humana", icon=":material/fact_check:"),
-    ],
-    "Plataforma": [st.Page("app_pages/integracoes.py", title="Armazenamento e integrações", icon=":material/cloud:")],
-}, position="sidebar")
 
 try:
     integracoes = consultar("integracoes")
@@ -44,6 +58,10 @@ if apresentacao.get("ativa"):
     analise = "análise real com Gemini" if apresentacao.get("llm_real") else "análise simulada · sem chamadas à LLM"
     st.warning(f"🟡 MODO APRESENTAÇÃO · {analise}. Use somente documentos fictícios. Dados em memória, perdidos ao reiniciar a API. Alertas externos desabilitados.")
 with st.sidebar:
+    for secao, destinos in paginas_operacionais.items():
+        st.caption(secao)
+        for destino in destinos:
+            st.page_link(destino)
     ambiente = {"local": "Local", "cloud": "Cloud"}.get(os.getenv("APP_ENV", "local").strip().lower(), "Não reconhecido")
     st.caption(f"Ambiente: {ambiente}")
     st.caption("Modo: " + ("Apresentação" if apresentacao.get("ativa") else "Operacional" if integracoes else "Não confirmado"))
