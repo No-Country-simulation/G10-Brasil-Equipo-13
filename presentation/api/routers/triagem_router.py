@@ -7,6 +7,7 @@ import base64
 import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List
+from uuid import uuid4
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from pydantic import BaseModel, Field
 from fastapi.responses import JSONResponse
@@ -24,6 +25,16 @@ from domain.exceptions import DocumentoJaExiste
 from infrastructure.oci_client.client_factory import get_triagem_use_case
 
 logger = logging.getLogger("MediFlowAuditoria")
+
+
+def _erro_inesperado_triagem(operacao: str, exc: Exception) -> HTTPException:
+    """Padroniza erro HTTP 500 com identificador de correlação sem expor detalhes internos."""
+    referencia = uuid4().hex[:12]
+    logger.exception("Falha inesperada ao %s [ref=%s] (%s).", operacao, referencia, type(exc).__name__)
+    return HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail=f"Erro inesperado ao {operacao}. Informe a referência {referencia} para suporte.",
+    )
 
 router = APIRouter(
     prefix="/triagem",
@@ -88,7 +99,7 @@ def reprocessar_documento(payload: ReprocessamentoDTO, use_case=Depends(get_tria
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
     except Exception as exc:
-        raise HTTPException(500, "Falha ao reprocessar o documento. Consulte o acompanhamento da execução.") from exc
+        raise _erro_inesperado_triagem("reprocessar o documento", exc) from exc
 
 
 # -------------------------------------------------------------------------
@@ -119,10 +130,7 @@ def processar_documento_json(
             detail=f"Inconsistência cadastral ou clínica: {str(ve)}"
         )
     except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Falha na triagem do documento: {str(exc)}"
-        )
+        raise _erro_inesperado_triagem("processar a triagem", exc) from exc
 
 
 @router.post(
@@ -180,10 +188,7 @@ async def processar_documento_upload(
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
     except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Erro ao processar arquivo: {str(exc)}"
-        )
+        raise _erro_inesperado_triagem("processar o arquivo enviado", exc) from exc
 
 
 # -------------------------------------------------------------------------
