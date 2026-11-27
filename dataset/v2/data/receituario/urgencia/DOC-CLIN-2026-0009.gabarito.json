@@ -1,0 +1,44 @@
+{
+  "documento_id": "DOC-CLIN-2026-0009",
+  "cenario": "urgencia",
+  "tipo_documento": "Receituário Médico",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Isaac da Luz Vasconcelos",
+      "idade": 27,
+      "cpf": "473.928.105-88"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Brayan Machado",
+      "crm": "911922-RS"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Acidente Vascular Cerebral Isquêmico",
+    "cid_sugerido": "I63.9",
+    "medicamentos": [
+      {
+        "nome": "AAS",
+        "dosagem": "300 mg",
+        "via": "VO",
+        "frequencia": "dose única",
+        "duracao": "1 dia"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

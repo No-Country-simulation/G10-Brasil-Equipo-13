@@ -1,0 +1,37 @@
+{
+  "documento_id": "DOC-LAB-2026-0020",
+  "cenario": "urgencia_ambigua",
+  "tipo_documento": "Laudo de Exame Laboratorial",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Valentina Carvalho Rezende",
+      "idade": 73,
+      "cpf": "512.436.870-53"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Agatha Sá",
+      "crm": "466839-RS"
+    },
+    "exame_realizado": "Dosagem de Troponina",
+    "diagnostico_principal": "Infarto Agudo do Miocárdio",
+    "cid_sugerido": "I21.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Achados do exame ausentes",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica",
+    "revisao_humana_paralela"
+  ]
+}

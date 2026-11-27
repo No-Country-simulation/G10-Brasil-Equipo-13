@@ -1,0 +1,38 @@
+{
+  "documento_id": "DOC-AUT-2026-0007",
+  "cenario": "ambiguo",
+  "tipo_documento": "Autorização Administrativa",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "[ilegível]",
+      "idade": 87,
+      "cpf": null
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Arthur Vasconcelos",
+      "crm": "868130-BA"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hipertensão Essencial",
+    "cid_sugerido": "I10",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Creatinina"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": "GUIA-461899",
+    "convenio": "Vida Plena Planos",
+    "status_autorizacao": "negada",
+    "pendencias": [
+      "Documentação incompleta"
+    ]
+  },
+  "motivo_ambiguidade": "Nome do paciente ilegível",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

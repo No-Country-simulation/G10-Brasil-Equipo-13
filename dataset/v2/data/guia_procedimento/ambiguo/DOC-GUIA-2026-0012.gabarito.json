@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-GUIA-2026-0012",
+  "cenario": "ambiguo",
+  "tipo_documento": "Guia de Solicitação de Procedimento",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Melissa Cassiano Ferreira",
+      "idade": 74,
+      "cpf": "071.239.465-61"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Luiz Fernando das Neves",
+      "crm": "315420-MG"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infecção Aguda de Vias Aéreas Superiores",
+    "cid_sugerido": "J06.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [
+      "Hemograma Completo"
+    ],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": "Saúde Alvorada",
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "Número da guia ausente",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

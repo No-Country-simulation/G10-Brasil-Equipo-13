@@ -1,0 +1,36 @@
+{
+  "documento_id": "DOC-LAB-2026-0006",
+  "cenario": "urgencia",
+  "tipo_documento": "Laudo de Exame Laboratorial",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Isabela Ferreira Vargas",
+      "idade": 29,
+      "cpf": "240.957.613-34"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Pietra Cunha",
+      "crm": "896438-SC"
+    },
+    "exame_realizado": "Hemocultura",
+    "diagnostico_principal": "Sepse não especificada",
+    "cid_sugerido": "A41.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Crescimento de bactéria Gram-negativa em 2 de 2 frascos. Resultado crítico.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

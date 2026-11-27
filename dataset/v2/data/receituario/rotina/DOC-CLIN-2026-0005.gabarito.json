@@ -1,0 +1,44 @@
+{
+  "documento_id": "DOC-CLIN-2026-0005",
+  "cenario": "rotina",
+  "tipo_documento": "Receituário Médico",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Farmacia_Hospitalar",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Lorena Pereira Cirino",
+      "idade": 37,
+      "cpf": "845.062.913-60"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Mariane Cavalcante",
+      "crm": "646553-RS"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Fratura da Extremidade Distal do Rádio",
+    "cid_sugerido": "S52.5",
+    "medicamentos": [
+      {
+        "nome": "Tramadol",
+        "dosagem": "50 mg",
+        "via": "VO",
+        "frequencia": "6/6h se dor",
+        "duracao": "5 dias"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "medicamento_alto_risco"
+  ]
+}

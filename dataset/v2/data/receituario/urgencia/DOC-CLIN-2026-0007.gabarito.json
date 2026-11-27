@@ -1,0 +1,44 @@
+{
+  "documento_id": "DOC-CLIN-2026-0007",
+  "cenario": "urgencia",
+  "tipo_documento": "Receituário Médico",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Luna Andrade Cardoso",
+      "idade": 59,
+      "cpf": "135.284.067-71"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Milena Freitas",
+      "crm": "220548-MG"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infarto Agudo do Miocárdio",
+    "cid_sugerido": "I21.9",
+    "medicamentos": [
+      {
+        "nome": "Clopidogrel",
+        "dosagem": "300 mg",
+        "via": "VO",
+        "frequencia": "dose de ataque",
+        "duracao": "1 dia"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica"
+  ]
+}

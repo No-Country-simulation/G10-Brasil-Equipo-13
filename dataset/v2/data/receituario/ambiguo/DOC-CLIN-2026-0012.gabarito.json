@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-CLIN-2026-0012",
+  "cenario": "ambiguo",
+  "tipo_documento": "Receituário Médico",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Maria Luiza Moura Jesus",
+      "idade": 70,
+      "cpf": "612.750.389-21"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Davi Lucas Vasconcelos",
+      "crm": "49019-SP"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Sepse não especificada",
+    "cid_sugerido": "A41.9",
+    "medicamentos": [
+      {
+        "nome": "Atorvastatina",
+        "dosagem": "20 mg",
+        "via": "VO",
+        "frequencia": "1x ao dia à noite",
+        "duracao": "uso contínuo"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CID incompatível com o medicamento prescrito",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

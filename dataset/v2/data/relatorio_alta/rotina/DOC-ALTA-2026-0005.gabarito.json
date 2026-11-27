@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-ALTA-2026-0005",
+  "cenario": "rotina",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Prontuario_Eletronico",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Olívia Rocha Brito",
+      "idade": 35,
+      "cpf": "260.951.478-67"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Luna da Cruz",
+      "crm": "339657-BA"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hipertensão Essencial",
+    "cid_sugerido": "I10",
+    "medicamentos": [
+      {
+        "nome": "Losartana",
+        "dosagem": "50 mg",
+        "via": "VO",
+        "frequencia": "1x ao dia",
+        "duracao": "uso contínuo"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "alta",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}
