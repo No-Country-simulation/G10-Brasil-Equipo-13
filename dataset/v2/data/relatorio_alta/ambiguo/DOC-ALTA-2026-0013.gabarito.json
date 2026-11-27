@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-ALTA-2026-0013",
+  "cenario": "ambiguo",
+  "tipo_documento": "Relatório de Alta/Internação",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Fila_Revisao_Humana",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Paulo Pires Souza",
+      "idade": 20,
+      "cpf": "267.810.439-78"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Matheus Ferreira",
+      "crm": "93238"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Infecção Aguda de Vias Aéreas Superiores",
+    "cid_sugerido": "J06.9",
+    "medicamentos": [
+      {
+        "nome": "Dipirona",
+        "dosagem": "500 mg",
+        "via": "VO",
+        "frequencia": "6/6h se dor ou febre",
+        "duracao": "3 dias"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": "evolucao",
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

@@ -1,0 +1,37 @@
+{
+  "documento_id": "DOC-IMG-2026-0017",
+  "cenario": "urgencia_ambigua",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Luara Ramos Viana",
+      "idade": 47,
+      "cpf": "510.864.397-75"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Breno Rodrigues",
+      "crm": "980-SC"
+    },
+    "exame_realizado": "Ultrassonografia de Abdome Total",
+    "diagnostico_principal": "Apendicite Aguda",
+    "cid_sugerido": "K35.8",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Apêndice cecal não compressível, com 9 mm de diâmetro e alteração da gordura ao redor, compatível com apendicite aguda.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica",
+    "revisao_humana_paralela"
+  ]
+}

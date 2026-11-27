@@ -1,0 +1,42 @@
+{
+  "documento_id": "DOC-CLIN-2026-0002",
+  "cenario": "rotina",
+  "tipo_documento": "Receituário Médico",
+  "nivel_prioridade": "Rotina",
+  "destino_esperado": "Farmacia_Hospitalar",
+  "requer_auditoria_humana": false,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Luiz Fernando Vasconcelos Rodrigues",
+      "idade": 74,
+      "cpf": "792.610.345-43"
+    },
+    "medico_solicitante": {
+      "nome": "Dra. Gabriela Aparecida",
+      "crm": "323685-GO"
+    },
+    "exame_realizado": null,
+    "diagnostico_principal": "Hipotireoidismo não especificado",
+    "cid_sugerido": "E03.9",
+    "medicamentos": [
+      {
+        "nome": "Levotiroxina",
+        "dosagem": "50 mcg",
+        "via": "VO",
+        "frequencia": "1x ao dia em jejum",
+        "duracao": "uso contínuo"
+      }
+    ],
+    "procedimentos_solicitados": [],
+    "achados": null,
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": null,
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": []
+}

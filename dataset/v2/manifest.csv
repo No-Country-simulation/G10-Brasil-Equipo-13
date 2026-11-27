@@ -1,0 +1,116 @@
+﻿documento_id,tipo_documento,cenario,nivel_prioridade,destino_esperado,requer_auditoria_humana,motivo_ambiguidade,sinalizacoes,formato_arquivo,arquivo
+DOC-ATES-2026-0006,Atestado Médico,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,,TEXTO,atestado/ambiguo/DOC-ATES-2026-0006.json
+DOC-ATES-2026-0007,Atestado Médico,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,atestado/ambiguo/DOC-ATES-2026-0007.json
+DOC-ATES-2026-0008,Atestado Médico,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,atestado/ambiguo/DOC-ATES-2026-0008.json
+DOC-ATES-2026-0009,Atestado Médico,ambiguo,Rotina,Fila_Revisao_Humana,True,Dias de afastamento ausentes,,TEXTO,atestado/ambiguo/DOC-ATES-2026-0009.json
+DOC-ATES-2026-0010,Atestado Médico,ambiguo,Rotina,Fila_Revisao_Humana,True,Dias de afastamento ausentes,,TEXTO,atestado/ambiguo/DOC-ATES-2026-0010.json
+DOC-ATES-2026-0001,Atestado Médico,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,atestado/rotina/DOC-ATES-2026-0001.json
+DOC-ATES-2026-0002,Atestado Médico,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,atestado/rotina/DOC-ATES-2026-0002.json
+DOC-ATES-2026-0003,Atestado Médico,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,atestado/rotina/DOC-ATES-2026-0003.json
+DOC-ATES-2026-0004,Atestado Médico,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,atestado/rotina/DOC-ATES-2026-0004.json
+DOC-ATES-2026-0005,Atestado Médico,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,atestado/rotina/DOC-ATES-2026-0005.json
+DOC-AUT-2026-0006,Autorização Administrativa,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,,TEXTO,autorizacao/ambiguo/DOC-AUT-2026-0006.json
+DOC-AUT-2026-0007,Autorização Administrativa,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,autorizacao/ambiguo/DOC-AUT-2026-0007.json
+DOC-AUT-2026-0008,Autorização Administrativa,ambiguo,Rotina,Fila_Revisao_Humana,True,Status da autorização ausente,,TEXTO,autorizacao/ambiguo/DOC-AUT-2026-0008.json
+DOC-AUT-2026-0009,Autorização Administrativa,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,,TEXTO,autorizacao/ambiguo/DOC-AUT-2026-0009.json
+DOC-AUT-2026-0010,Autorização Administrativa,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,,TEXTO,autorizacao/ambiguo/DOC-AUT-2026-0010.json
+DOC-AUT-2026-0001,Autorização Administrativa,rotina,Rotina,Auditoria_Autorizacoes,False,,,TEXTO,autorizacao/rotina/DOC-AUT-2026-0001.json
+DOC-AUT-2026-0002,Autorização Administrativa,rotina,Rotina,Auditoria_Autorizacoes,False,,,TEXTO,autorizacao/rotina/DOC-AUT-2026-0002.json
+DOC-AUT-2026-0003,Autorização Administrativa,rotina,Rotina,Auditoria_Autorizacoes,False,,,TEXTO,autorizacao/rotina/DOC-AUT-2026-0003.json
+DOC-AUT-2026-0004,Autorização Administrativa,rotina,Rotina,Auditoria_Autorizacoes,False,,,TEXTO,autorizacao/rotina/DOC-AUT-2026-0004.json
+DOC-AUT-2026-0005,Autorização Administrativa,rotina,Rotina,Auditoria_Autorizacoes,False,,,TEXTO,autorizacao/rotina/DOC-AUT-2026-0005.json
+DOC-GUIA-2026-0011,Guia de Solicitação de Procedimento,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,,TEXTO,guia_procedimento/ambiguo/DOC-GUIA-2026-0011.json
+DOC-GUIA-2026-0012,Guia de Solicitação de Procedimento,ambiguo,Rotina,Fila_Revisao_Humana,True,Número da guia ausente,,TEXTO,guia_procedimento/ambiguo/DOC-GUIA-2026-0012.json
+DOC-GUIA-2026-0013,Guia de Solicitação de Procedimento,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,,TEXTO,guia_procedimento/ambiguo/DOC-GUIA-2026-0013.json
+DOC-GUIA-2026-0014,Guia de Solicitação de Procedimento,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,guia_procedimento/ambiguo/DOC-GUIA-2026-0014.json
+DOC-GUIA-2026-0015,Guia de Solicitação de Procedimento,ambiguo,Rotina,Fila_Revisao_Humana,True,Número da guia ausente,,TEXTO,guia_procedimento/ambiguo/DOC-GUIA-2026-0015.json
+DOC-GUIA-2026-0001,Guia de Solicitação de Procedimento,rotina,Rotina,Auditoria_Autorizacoes,False,,,TEXTO,guia_procedimento/rotina/DOC-GUIA-2026-0001.json
+DOC-GUIA-2026-0002,Guia de Solicitação de Procedimento,rotina,Rotina,Auditoria_Autorizacoes,False,,,TEXTO,guia_procedimento/rotina/DOC-GUIA-2026-0002.json
+DOC-GUIA-2026-0003,Guia de Solicitação de Procedimento,rotina,Rotina,Auditoria_Autorizacoes,False,,,TEXTO,guia_procedimento/rotina/DOC-GUIA-2026-0003.json
+DOC-GUIA-2026-0004,Guia de Solicitação de Procedimento,rotina,Rotina,Auditoria_Autorizacoes,False,,,TEXTO,guia_procedimento/rotina/DOC-GUIA-2026-0004.json
+DOC-GUIA-2026-0005,Guia de Solicitação de Procedimento,rotina,Rotina,Auditoria_Autorizacoes,False,,,TEXTO,guia_procedimento/rotina/DOC-GUIA-2026-0005.json
+DOC-GUIA-2026-0006,Guia de Solicitação de Procedimento,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,guia_procedimento/urgencia/DOC-GUIA-2026-0006.json
+DOC-GUIA-2026-0007,Guia de Solicitação de Procedimento,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,guia_procedimento/urgencia/DOC-GUIA-2026-0007.json
+DOC-GUIA-2026-0008,Guia de Solicitação de Procedimento,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,guia_procedimento/urgencia/DOC-GUIA-2026-0008.json
+DOC-GUIA-2026-0009,Guia de Solicitação de Procedimento,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,guia_procedimento/urgencia/DOC-GUIA-2026-0009.json
+DOC-GUIA-2026-0010,Guia de Solicitação de Procedimento,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,guia_procedimento/urgencia/DOC-GUIA-2026-0010.json
+DOC-GUIA-2026-0016,Guia de Solicitação de Procedimento,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,CRM com formato inválido,urgencia_medica;revisao_humana_paralela,TEXTO,guia_procedimento/urgencia_ambigua/DOC-GUIA-2026-0016.json
+DOC-GUIA-2026-0017,Guia de Solicitação de Procedimento,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,Nome do paciente ilegível,urgencia_medica;revisao_humana_paralela,TEXTO,guia_procedimento/urgencia_ambigua/DOC-GUIA-2026-0017.json
+DOC-GUIA-2026-0018,Guia de Solicitação de Procedimento,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,Nome do paciente ilegível,urgencia_medica;revisao_humana_paralela,TEXTO,guia_procedimento/urgencia_ambigua/DOC-GUIA-2026-0018.json
+DOC-GUIA-2026-0019,Guia de Solicitação de Procedimento,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,CRM com formato inválido,urgencia_medica;revisao_humana_paralela,TEXTO,guia_procedimento/urgencia_ambigua/DOC-GUIA-2026-0019.json
+DOC-GUIA-2026-0020,Guia de Solicitação de Procedimento,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,Nome do paciente ilegível,urgencia_medica;revisao_humana_paralela,TEXTO,guia_procedimento/urgencia_ambigua/DOC-GUIA-2026-0020.json
+DOC-IMG-2026-0011,Laudo de Exame de Imagem,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,,TEXTO,laudo_imagem/ambiguo/DOC-IMG-2026-0011.json
+DOC-IMG-2026-0012,Laudo de Exame de Imagem,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,laudo_imagem/ambiguo/DOC-IMG-2026-0012.json
+DOC-IMG-2026-0013,Laudo de Exame de Imagem,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,,TEXTO,laudo_imagem/ambiguo/DOC-IMG-2026-0013.json
+DOC-IMG-2026-0014,Laudo de Exame de Imagem,ambiguo,Rotina,Fila_Revisao_Humana,True,Achados do exame ausentes,,TEXTO,laudo_imagem/ambiguo/DOC-IMG-2026-0014.json
+DOC-IMG-2026-0015,Laudo de Exame de Imagem,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,laudo_imagem/ambiguo/DOC-IMG-2026-0015.json
+DOC-IMG-2026-0001,Laudo de Exame de Imagem,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,laudo_imagem/rotina/DOC-IMG-2026-0001.json
+DOC-IMG-2026-0002,Laudo de Exame de Imagem,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,laudo_imagem/rotina/DOC-IMG-2026-0002.json
+DOC-IMG-2026-0003,Laudo de Exame de Imagem,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,laudo_imagem/rotina/DOC-IMG-2026-0003.json
+DOC-IMG-2026-0004,Laudo de Exame de Imagem,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,laudo_imagem/rotina/DOC-IMG-2026-0004.json
+DOC-IMG-2026-0005,Laudo de Exame de Imagem,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,laudo_imagem/rotina/DOC-IMG-2026-0005.json
+DOC-IMG-2026-0006,Laudo de Exame de Imagem,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,laudo_imagem/urgencia/DOC-IMG-2026-0006.json
+DOC-IMG-2026-0007,Laudo de Exame de Imagem,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,laudo_imagem/urgencia/DOC-IMG-2026-0007.json
+DOC-IMG-2026-0008,Laudo de Exame de Imagem,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,laudo_imagem/urgencia/DOC-IMG-2026-0008.json
+DOC-IMG-2026-0009,Laudo de Exame de Imagem,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,laudo_imagem/urgencia/DOC-IMG-2026-0009.json
+DOC-IMG-2026-0010,Laudo de Exame de Imagem,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,laudo_imagem/urgencia/DOC-IMG-2026-0010.json
+DOC-IMG-2026-0016,Laudo de Exame de Imagem,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,Achados do exame ausentes,urgencia_medica;revisao_humana_paralela,TEXTO,laudo_imagem/urgencia_ambigua/DOC-IMG-2026-0016.json
+DOC-IMG-2026-0017,Laudo de Exame de Imagem,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,CRM com formato inválido,urgencia_medica;revisao_humana_paralela,TEXTO,laudo_imagem/urgencia_ambigua/DOC-IMG-2026-0017.json
+DOC-IMG-2026-0018,Laudo de Exame de Imagem,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,Achados do exame ausentes,urgencia_medica;revisao_humana_paralela,TEXTO,laudo_imagem/urgencia_ambigua/DOC-IMG-2026-0018.json
+DOC-IMG-2026-0019,Laudo de Exame de Imagem,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,Achados do exame ausentes,urgencia_medica;revisao_humana_paralela,TEXTO,laudo_imagem/urgencia_ambigua/DOC-IMG-2026-0019.json
+DOC-IMG-2026-0020,Laudo de Exame de Imagem,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,CRM com formato inválido,urgencia_medica;revisao_humana_paralela,TEXTO,laudo_imagem/urgencia_ambigua/DOC-IMG-2026-0020.json
+DOC-LAB-2026-0011,Laudo de Exame Laboratorial,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,laudo_laboratorial/ambiguo/DOC-LAB-2026-0011.json
+DOC-LAB-2026-0012,Laudo de Exame Laboratorial,ambiguo,Rotina,Fila_Revisao_Humana,True,Achados do exame ausentes,,TEXTO,laudo_laboratorial/ambiguo/DOC-LAB-2026-0012.json
+DOC-LAB-2026-0013,Laudo de Exame Laboratorial,ambiguo,Rotina,Fila_Revisao_Humana,True,Achados do exame ausentes,,TEXTO,laudo_laboratorial/ambiguo/DOC-LAB-2026-0013.json
+DOC-LAB-2026-0014,Laudo de Exame Laboratorial,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,laudo_laboratorial/ambiguo/DOC-LAB-2026-0014.json
+DOC-LAB-2026-0015,Laudo de Exame Laboratorial,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,laudo_laboratorial/ambiguo/DOC-LAB-2026-0015.json
+DOC-LAB-2026-0001,Laudo de Exame Laboratorial,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,laudo_laboratorial/rotina/DOC-LAB-2026-0001.json
+DOC-LAB-2026-0002,Laudo de Exame Laboratorial,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,laudo_laboratorial/rotina/DOC-LAB-2026-0002.json
+DOC-LAB-2026-0003,Laudo de Exame Laboratorial,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,laudo_laboratorial/rotina/DOC-LAB-2026-0003.json
+DOC-LAB-2026-0004,Laudo de Exame Laboratorial,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,laudo_laboratorial/rotina/DOC-LAB-2026-0004.json
+DOC-LAB-2026-0005,Laudo de Exame Laboratorial,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,laudo_laboratorial/rotina/DOC-LAB-2026-0005.json
+DOC-LAB-2026-0006,Laudo de Exame Laboratorial,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,laudo_laboratorial/urgencia/DOC-LAB-2026-0006.json
+DOC-LAB-2026-0007,Laudo de Exame Laboratorial,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,laudo_laboratorial/urgencia/DOC-LAB-2026-0007.json
+DOC-LAB-2026-0008,Laudo de Exame Laboratorial,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,laudo_laboratorial/urgencia/DOC-LAB-2026-0008.json
+DOC-LAB-2026-0009,Laudo de Exame Laboratorial,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,laudo_laboratorial/urgencia/DOC-LAB-2026-0009.json
+DOC-LAB-2026-0010,Laudo de Exame Laboratorial,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,laudo_laboratorial/urgencia/DOC-LAB-2026-0010.json
+DOC-LAB-2026-0016,Laudo de Exame Laboratorial,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,CRM com formato inválido,urgencia_medica;revisao_humana_paralela,TEXTO,laudo_laboratorial/urgencia_ambigua/DOC-LAB-2026-0016.json
+DOC-LAB-2026-0017,Laudo de Exame Laboratorial,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,Nome do paciente ilegível,urgencia_medica;revisao_humana_paralela,TEXTO,laudo_laboratorial/urgencia_ambigua/DOC-LAB-2026-0017.json
+DOC-LAB-2026-0018,Laudo de Exame Laboratorial,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,CRM com formato inválido,urgencia_medica;revisao_humana_paralela,TEXTO,laudo_laboratorial/urgencia_ambigua/DOC-LAB-2026-0018.json
+DOC-LAB-2026-0019,Laudo de Exame Laboratorial,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,CRM com formato inválido,urgencia_medica;revisao_humana_paralela,TEXTO,laudo_laboratorial/urgencia_ambigua/DOC-LAB-2026-0019.json
+DOC-LAB-2026-0020,Laudo de Exame Laboratorial,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,Achados do exame ausentes,urgencia_medica;revisao_humana_paralela,TEXTO,laudo_laboratorial/urgencia_ambigua/DOC-LAB-2026-0020.json
+DOC-CLIN-2026-0011,Receituário Médico,ambiguo,Rotina,Fila_Revisao_Humana,True,CID incompatível com o medicamento prescrito,,TEXTO,receituario/ambiguo/DOC-CLIN-2026-0011.json
+DOC-CLIN-2026-0012,Receituário Médico,ambiguo,Rotina,Fila_Revisao_Humana,True,CID incompatível com o medicamento prescrito,,TEXTO,receituario/ambiguo/DOC-CLIN-2026-0012.json
+DOC-CLIN-2026-0013,Receituário Médico,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,receituario/ambiguo/DOC-CLIN-2026-0013.json
+DOC-CLIN-2026-0014,Receituário Médico,ambiguo,Rotina,Fila_Revisao_Humana,True,CID incompatível com o medicamento prescrito,,TEXTO,receituario/ambiguo/DOC-CLIN-2026-0014.json
+DOC-CLIN-2026-0015,Receituário Médico,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,,TEXTO,receituario/ambiguo/DOC-CLIN-2026-0015.json
+DOC-CLIN-2026-0001,Receituário Médico,rotina,Rotina,Farmacia_Hospitalar,False,,,TEXTO,receituario/rotina/DOC-CLIN-2026-0001.json
+DOC-CLIN-2026-0002,Receituário Médico,rotina,Rotina,Farmacia_Hospitalar,False,,,TEXTO,receituario/rotina/DOC-CLIN-2026-0002.json
+DOC-CLIN-2026-0003,Receituário Médico,rotina,Rotina,Farmacia_Hospitalar,False,,,TEXTO,receituario/rotina/DOC-CLIN-2026-0003.json
+DOC-CLIN-2026-0004,Receituário Médico,rotina,Rotina,Farmacia_Hospitalar,True,,medicamento_alto_risco,TEXTO,receituario/rotina/DOC-CLIN-2026-0004.json
+DOC-CLIN-2026-0005,Receituário Médico,rotina,Rotina,Farmacia_Hospitalar,True,,medicamento_alto_risco,TEXTO,receituario/rotina/DOC-CLIN-2026-0005.json
+DOC-CLIN-2026-0006,Receituário Médico,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,receituario/urgencia/DOC-CLIN-2026-0006.json
+DOC-CLIN-2026-0007,Receituário Médico,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,receituario/urgencia/DOC-CLIN-2026-0007.json
+DOC-CLIN-2026-0008,Receituário Médico,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,receituario/urgencia/DOC-CLIN-2026-0008.json
+DOC-CLIN-2026-0009,Receituário Médico,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,receituario/urgencia/DOC-CLIN-2026-0009.json
+DOC-CLIN-2026-0010,Receituário Médico,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,receituario/urgencia/DOC-CLIN-2026-0010.json
+DOC-ALTA-2026-0011,Relatório de Alta/Internação,ambiguo,Rotina,Fila_Revisao_Humana,True,Diagnóstico principal ausente,,TEXTO,relatorio_alta/ambiguo/DOC-ALTA-2026-0011.json
+DOC-ALTA-2026-0012,Relatório de Alta/Internação,ambiguo,Rotina,Fila_Revisao_Humana,True,Diagnóstico principal ausente,,TEXTO,relatorio_alta/ambiguo/DOC-ALTA-2026-0012.json
+DOC-ALTA-2026-0013,Relatório de Alta/Internação,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,,TEXTO,relatorio_alta/ambiguo/DOC-ALTA-2026-0013.json
+DOC-ALTA-2026-0014,Relatório de Alta/Internação,ambiguo,Rotina,Fila_Revisao_Humana,True,Diagnóstico principal ausente,,TEXTO,relatorio_alta/ambiguo/DOC-ALTA-2026-0014.json
+DOC-ALTA-2026-0015,Relatório de Alta/Internação,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,,TEXTO,relatorio_alta/ambiguo/DOC-ALTA-2026-0015.json
+DOC-ALTA-2026-0016,Relatório de Alta/Internação,ambiguo,Rotina,Fila_Revisao_Humana,True,Diagnóstico principal ausente,evento_critico_historico,TEXTO,relatorio_alta/ambiguo/DOC-ALTA-2026-0016.json
+DOC-ALTA-2026-0018,Relatório de Alta/Internação,ambiguo,Rotina,Fila_Revisao_Humana,True,Nome do paciente ilegível,evento_critico_historico,TEXTO,relatorio_alta/ambiguo/DOC-ALTA-2026-0018.json
+DOC-ALTA-2026-0020,Relatório de Alta/Internação,ambiguo,Rotina,Fila_Revisao_Humana,True,CRM com formato inválido,evento_critico_historico,TEXTO,relatorio_alta/ambiguo/DOC-ALTA-2026-0020.json
+DOC-ALTA-2026-0001,Relatório de Alta/Internação,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,relatorio_alta/rotina/DOC-ALTA-2026-0001.json
+DOC-ALTA-2026-0002,Relatório de Alta/Internação,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,relatorio_alta/rotina/DOC-ALTA-2026-0002.json
+DOC-ALTA-2026-0003,Relatório de Alta/Internação,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,relatorio_alta/rotina/DOC-ALTA-2026-0003.json
+DOC-ALTA-2026-0004,Relatório de Alta/Internação,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,relatorio_alta/rotina/DOC-ALTA-2026-0004.json
+DOC-ALTA-2026-0005,Relatório de Alta/Internação,rotina,Rotina,Prontuario_Eletronico,False,,,TEXTO,relatorio_alta/rotina/DOC-ALTA-2026-0005.json
+DOC-ALTA-2026-0006,Relatório de Alta/Internação,rotina,Rotina,Prontuario_Eletronico,False,,evento_critico_historico,TEXTO,relatorio_alta/rotina/DOC-ALTA-2026-0006.json
+DOC-ALTA-2026-0007,Relatório de Alta/Internação,rotina,Rotina,Prontuario_Eletronico,False,,evento_critico_historico,TEXTO,relatorio_alta/rotina/DOC-ALTA-2026-0007.json
+DOC-ALTA-2026-0008,Relatório de Alta/Internação,rotina,Rotina,Prontuario_Eletronico,False,,evento_critico_historico,TEXTO,relatorio_alta/rotina/DOC-ALTA-2026-0008.json
+DOC-ALTA-2026-0010,Relatório de Alta/Internação,rotina,Rotina,Prontuario_Eletronico,False,,evento_critico_historico,TEXTO,relatorio_alta/rotina/DOC-ALTA-2026-0010.json
+DOC-ALTA-2026-0009,Relatório de Alta/Internação,urgencia,Urgente,Fila_Emergencia_Medica,False,,urgencia_medica,TEXTO,relatorio_alta/urgencia/DOC-ALTA-2026-0009.json
+DOC-ALTA-2026-0017,Relatório de Alta/Internação,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,Diagnóstico principal ausente,urgencia_medica;revisao_humana_paralela,TEXTO,relatorio_alta/urgencia_ambigua/DOC-ALTA-2026-0017.json
+DOC-ALTA-2026-0019,Relatório de Alta/Internação,urgencia_ambigua,Urgente,Fila_Emergencia_Medica,True,CRM com formato inválido,urgencia_medica;revisao_humana_paralela,TEXTO,relatorio_alta/urgencia_ambigua/DOC-ALTA-2026-0019.json

@@ -1,0 +1,460 @@
+{
+  "$defs": {
+    "ArmazenamentoOCI": {
+      "properties": {
+        "bucket": {
+          "title": "Bucket",
+          "type": "string"
+        },
+        "caminho_objeto": {
+          "title": "Caminho Objeto",
+          "type": "string"
+        },
+        "status_backup": {
+          "enum": [
+            "sucesso",
+            "falha",
+            "pendente"
+          ],
+          "title": "Status Backup",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bucket",
+        "caminho_objeto",
+        "status_backup"
+      ],
+      "title": "ArmazenamentoOCI",
+      "type": "object"
+    },
+    "Classificacao": {
+      "properties": {
+        "tipo_documento": {
+          "enum": [
+            "Receituário Médico",
+            "Laudo de Exame Laboratorial",
+            "Laudo de Exame de Imagem",
+            "Guia de Solicitação de Procedimento",
+            "Relatório de Alta/Internação",
+            "Atestado Médico",
+            "Autorização Administrativa"
+          ],
+          "title": "Tipo Documento",
+          "type": "string"
+        },
+        "especialidade": {
+          "title": "Especialidade",
+          "type": "string"
+        },
+        "nivel_prioridade": {
+          "enum": [
+            "Rotina",
+            "Urgente"
+          ],
+          "title": "Nivel Prioridade",
+          "type": "string"
+        },
+        "score_confianca_classificacao": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score Confianca Classificacao",
+          "type": "number"
+        }
+      },
+      "required": [
+        "tipo_documento",
+        "especialidade",
+        "nivel_prioridade",
+        "score_confianca_classificacao"
+      ],
+      "title": "Classificacao",
+      "type": "object"
+    },
+    "DadosExtraidos": {
+      "properties": {
+        "paciente": {
+          "$ref": "#/$defs/Paciente"
+        },
+        "medico_solicitante": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Medico"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "exame_realizado": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exame Realizado"
+        },
+        "diagnostico_principal": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Diagnostico Principal"
+        },
+        "cid_sugerido": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cid Sugerido"
+        },
+        "medicamentos": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Medicamento"
+          },
+          "title": "Medicamentos",
+          "type": "array"
+        },
+        "procedimentos_solicitados": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Procedimentos Solicitados",
+          "type": "array"
+        },
+        "achados": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Achados"
+        },
+        "subtipo_relatorio": {
+          "anyOf": [
+            {
+              "enum": [
+                "alta",
+                "evolucao"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Subtipo Relatorio"
+        },
+        "dias_afastamento": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dias Afastamento"
+        },
+        "numero_guia": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Numero Guia"
+        },
+        "convenio": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Convenio"
+        },
+        "status_autorizacao": {
+          "anyOf": [
+            {
+              "enum": [
+                "aprovada",
+                "negada",
+                "pendente"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status Autorizacao"
+        },
+        "pendencias": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Pendencias",
+          "type": "array"
+        }
+      },
+      "required": [
+        "paciente"
+      ],
+      "title": "DadosExtraidos",
+      "type": "object"
+    },
+    "DecisaoRoteamento": {
+      "properties": {
+        "destino_principal": {
+          "enum": [
+            "Fila_Emergencia_Medica",
+            "Auditoria_Autorizacoes",
+            "Farmacia_Hospitalar",
+            "Prontuario_Eletronico",
+            "Fila_Revisao_Humana"
+          ],
+          "title": "Destino Principal",
+          "type": "string"
+        },
+        "requer_auditoria_humana": {
+          "title": "Requer Auditoria Humana",
+          "type": "boolean"
+        },
+        "justificativa_roteamento": {
+          "title": "Justificativa Roteamento",
+          "type": "string"
+        },
+        "notificacao_gerada": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Notificacao"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "destino_principal",
+        "requer_auditoria_humana",
+        "justificativa_roteamento"
+      ],
+      "title": "DecisaoRoteamento",
+      "type": "object"
+    },
+    "Medicamento": {
+      "properties": {
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "dosagem": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dosagem"
+        },
+        "via": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Via"
+        },
+        "frequencia": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Frequencia"
+        },
+        "duracao": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duracao"
+        }
+      },
+      "required": [
+        "nome"
+      ],
+      "title": "Medicamento",
+      "type": "object"
+    },
+    "Medico": {
+      "properties": {
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "crm": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Crm"
+        }
+      },
+      "required": [
+        "nome"
+      ],
+      "title": "Medico",
+      "type": "object"
+    },
+    "Notificacao": {
+      "properties": {
+        "canal": {
+          "title": "Canal",
+          "type": "string"
+        },
+        "mensagem": {
+          "title": "Mensagem",
+          "type": "string"
+        }
+      },
+      "required": [
+        "canal",
+        "mensagem"
+      ],
+      "title": "Notificacao",
+      "type": "object"
+    },
+    "Paciente": {
+      "properties": {
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "idade": {
+          "anyOf": [
+            {
+              "maximum": 130,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Idade"
+        },
+        "cpf": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cpf"
+        }
+      },
+      "required": [
+        "nome"
+      ],
+      "title": "Paciente",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "status": {
+      "enum": [
+        "processado",
+        "erro"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "documento_id": {
+      "title": "Documento Id",
+      "type": "string"
+    },
+    "classificacao": {
+      "$ref": "#/$defs/Classificacao"
+    },
+    "dados_extraidos": {
+      "$ref": "#/$defs/DadosExtraidos"
+    },
+    "decisao_roteamento": {
+      "$ref": "#/$defs/DecisaoRoteamento"
+    },
+    "armazenamento_oci": {
+      "$ref": "#/$defs/ArmazenamentoOCI"
+    }
+  },
+  "required": [
+    "status",
+    "documento_id",
+    "classificacao",
+    "dados_extraidos",
+    "decisao_roteamento",
+    "armazenamento_oci"
+  ],
+  "title": "SaidaTriagem",
+  "type": "object"
+}

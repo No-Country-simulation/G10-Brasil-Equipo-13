@@ -1,0 +1,37 @@
+{
+  "documento_id": "DOC-IMG-2026-0020",
+  "cenario": "urgencia_ambigua",
+  "tipo_documento": "Laudo de Exame de Imagem",
+  "nivel_prioridade": "Urgente",
+  "destino_esperado": "Fila_Emergencia_Medica",
+  "requer_auditoria_humana": true,
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Dom Fernandes Pereira",
+      "idade": 38,
+      "cpf": "965.072.318-86"
+    },
+    "medico_solicitante": {
+      "nome": "Dr. Luiz Henrique Novaes",
+      "crm": "57749-XX"
+    },
+    "exame_realizado": "Tomografia de Tórax com contraste",
+    "diagnostico_principal": "Tromboembolismo Pulmonar Agudo (TEP)",
+    "cid_sugerido": "I26.9",
+    "medicamentos": [],
+    "procedimentos_solicitados": [],
+    "achados": "Falha de enchimento em artéria pulmonar principal direita, compatível com TEP agudo.",
+    "subtipo_relatorio": null,
+    "dias_afastamento": null,
+    "numero_guia": null,
+    "convenio": null,
+    "status_autorizacao": null,
+    "pendencias": []
+  },
+  "motivo_ambiguidade": "CRM com formato inválido",
+  "formato_arquivo": "TEXTO",
+  "sinalizacoes": [
+    "urgencia_medica",
+    "revisao_humana_paralela"
+  ]
+}
