@@ -7,6 +7,7 @@ import base64
 import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List
+from uuid import uuid4
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from pydantic import BaseModel, Field
 from fastapi.responses import JSONResponse
@@ -24,6 +25,16 @@ from domain.exceptions import DocumentoJaExiste
 from infrastructure.oci_client.client_factory import get_triagem_use_case
 
 logger = logging.getLogger("MediFlowAuditoria")
+
+
+def _erro_inesperado_triagem(operacao: str, exc: Exception) -> HTTPException:
+    """Padroniza erro HTTP 500 com identificador de correlação sem expor detalhes internos."""
+    referencia = uuid4().hex[:12]
+    logger.error("Falha inesperada ao %s [ref=%s] (%s).", operacao, referencia, type(exc).__name__)
+    return HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail=f"Erro inesperado ao {operacao}. Informe a referência {referencia} para suporte.",
+    )
 
 router = APIRouter(
     prefix="/triagem",
@@ -64,31 +75,37 @@ class ReprocessamentoDTO(BaseModel):
     responses={409: {"description": "Original indisponível ou sem referência válida; o reprocessamento não foi iniciado."}},
 )
 def reprocessar_documento(payload: ReprocessamentoDTO, use_case=Depends(get_triagem_use_case)):
-    caminho = payload.origem_oci_path
-    if not caminho.startswith(("processados/", "auditoria_humana/", "fluxo/")) or ".." in caminho.split("/"):
-        raise HTTPException(422, "Selecione um relatório ou acompanhamento existente.")
-    anterior = use_case.storage.obter_json(use_case.bucket_name, caminho)
-    if not anterior:
-        raise HTTPException(404, "Execução anterior não localizada.")
-    if anterior.get("documento_id") != payload.documento_id:
-        raise HTTPException(422, "O identificador não corresponde à execução selecionada.")
-    doc = anterior.get("documento") or anterior
-    bruto = doc.get("armazenamento_oci", {}).get("caminho_documento_bruto") or anterior.get("caminho_documento_bruto")
-    if not bruto or not bruto.startswith("recebidos/") or ".." in bruto.split("/"):
-        raise HTTPException(409, "Execução sem referência válida ao original; reprocessamento indisponível.")
-    conteudo = use_case.storage.obter_arquivo(use_case.bucket_name, bruto)
-    if not conteudo:
-        raise HTTPException(409, "Original indisponível; verifique versões ou cópias antes de reprocessar.")
-    tipo = doc.get("tipo_arquivo") or anterior.get("tipo_arquivo") or ("PDF" if bruto.endswith(".pdf") else "IMAGEM" if bruto.endswith((".jpg", ".jpeg", ".png")) else "TEXTO")
-    request = TriagemRequestDTO(documento_id=payload.documento_id, tipo_arquivo=tipo,
-        arquivo_base64=base64.b64encode(conteudo).decode("ascii"), canal_origem=payload.canal_origem)
+    try:
+        caminho = payload.origem_oci_path
+        if not caminho.startswith(("processados/", "auditoria_humana/", "fluxo/")) or ".." in caminho.split("/"):
+            raise HTTPException(422, "Selecione um relatório ou acompanhamento existente.")
+        anterior = use_case.storage.obter_json(use_case.bucket_name, caminho)
+        if not anterior:
+            raise HTTPException(404, "Execução anterior não localizada.")
+        if anterior.get("documento_id") != payload.documento_id:
+            raise HTTPException(422, "O identificador não corresponde à execução selecionada.")
+        doc = anterior.get("documento") or anterior
+        bruto = doc.get("armazenamento_oci", {}).get("caminho_documento_bruto") or anterior.get("caminho_documento_bruto")
+        if not bruto or not bruto.startswith("recebidos/") or ".." in bruto.split("/"):
+            raise HTTPException(409, "Execução sem referência válida ao original; reprocessamento indisponível.")
+        conteudo = use_case.storage.obter_arquivo(use_case.bucket_name, bruto)
+        if not conteudo:
+            raise HTTPException(409, "Original indisponível; verifique versões ou cópias antes de reprocessar.")
+        tipo = doc.get("tipo_arquivo") or anterior.get("tipo_arquivo") or ("PDF" if bruto.endswith(".pdf") else "IMAGEM" if bruto.endswith((".jpg", ".jpeg", ".png")) else "TEXTO")
+        request = TriagemRequestDTO(documento_id=payload.documento_id, tipo_arquivo=tipo,
+            arquivo_base64=base64.b64encode(conteudo).decode("ascii"), canal_origem=payload.canal_origem)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise _erro_inesperado_triagem("reprocessar o documento", exc) from exc
+
     try:
         execucao_anterior = identidade_execucao(anterior, caminho)
         return use_case.executar(request, reprocessamento_de=caminho, execucao_anterior_id=execucao_anterior)
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
     except Exception as exc:
-        raise HTTPException(500, "Falha ao reprocessar o documento. Consulte o acompanhamento da execução.") from exc
+        raise _erro_inesperado_triagem("reprocessar o documento", exc) from exc
 
 
 # -------------------------------------------------------------------------
@@ -119,10 +136,7 @@ def processar_documento_json(
             detail=f"Inconsistência cadastral ou clínica: {str(ve)}"
         )
     except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Falha na triagem do documento: {str(exc)}"
-        )
+        raise _erro_inesperado_triagem("processar a triagem", exc) from exc
 
 
 @router.post(
@@ -140,7 +154,10 @@ async def processar_documento_upload(
     use_case: ProcessarTriagemUseCase = Depends(get_triagem_use_case)
 ) -> TriagemResponseDTO:
     """Endpoint para upload de arquivos brutos via formulário multipart."""
-    conteudo_bytes = await arquivo.read()
+    try:
+        conteudo_bytes = await arquivo.read()
+    except Exception as exc:
+        raise _erro_inesperado_triagem("processar o arquivo enviado", exc) from exc
     if not conteudo_bytes:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -180,10 +197,7 @@ async def processar_documento_upload(
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
     except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Erro ao processar arquivo: {str(exc)}"
-        )
+        raise _erro_inesperado_triagem("processar o arquivo enviado", exc) from exc
 
 
 # -------------------------------------------------------------------------
