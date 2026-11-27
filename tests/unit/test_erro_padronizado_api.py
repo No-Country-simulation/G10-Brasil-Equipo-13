@@ -6,10 +6,22 @@ from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
+from starlette.datastructures import UploadFile
 
 from infrastructure.adapters.memory_storage_adapter import MemoryStorageAdapter
 from infrastructure.oci_client.client_factory import get_triagem_use_case
 from presentation.api.main import app
+
+
+MENSAGEM_SIGILOSA = "detalhe-interno-sigiloso dsn=secret paciente=DadosSensiveis"
+
+
+def falhar_leitura(*args, **kwargs):
+    raise RuntimeError(MENSAGEM_SIGILOSA)
+
+
+async def falhar_leitura_upload(*args, **kwargs):
+    falhar_leitura()
 
 
 @pytest.fixture
@@ -28,9 +40,7 @@ def client_com_falha_inesperada():
     use_case = Mock()
     use_case.bucket_name = "teste"
     use_case.storage = storage
-    use_case.executar.side_effect = RuntimeError(
-        "detalhe-interno-sigiloso dsn=secret paciente=DadosSensiveis"
-    )
+    use_case.executar.side_effect = RuntimeError(MENSAGEM_SIGILOSA)
     app.dependency_overrides[get_triagem_use_case] = lambda: use_case
     try:
         with TestClient(app) as client:
@@ -72,6 +82,10 @@ def test_erro_inesperado_retorna_mensagem_generica_e_referencia_no_log(
     caplog.set_level(logging.ERROR, logger="MediFlowAuditoria")
     resposta = metodo_chamada(client_com_falha_inesperada)
 
+    verificar_erro_correlacionado(resposta, caplog)
+
+
+def verificar_erro_correlacionado(resposta, caplog):
     assert resposta.status_code == 500
     detalhe = resposta.json()["detail"]
     assert "detalhe-interno-sigiloso" not in detalhe
@@ -87,3 +101,30 @@ def test_erro_inesperado_retorna_mensagem_generica_e_referencia_no_log(
     assert logs_auditoria
     assert any(referencia in r.getMessage() and "RuntimeError" in r.getMessage() for r in logs_auditoria)
     assert "sigiloso-payload" not in caplog.text
+    assert "detalhe-interno-sigiloso" not in caplog.text
+    assert "dsn=" not in caplog.text
+    assert "DadosSensiveis" not in caplog.text
+
+
+@pytest.mark.parametrize("metodo", ["obter_json", "obter_arquivo"])
+def test_falha_na_leitura_do_oci(client_com_falha_inesperada, caplog, monkeypatch, metodo):
+    monkeypatch.setattr(MemoryStorageAdapter, metodo, falhar_leitura)
+    resposta = client_com_falha_inesperada.post(
+        "/triagem/reprocessar",
+        json={
+            "documento_id": "DOC-33",
+            "origem_oci_path": "processados/rotina/DOC-33.json",
+            "canal_origem": "Teste",
+        },
+    )
+    verificar_erro_correlacionado(resposta, caplog)
+
+
+def test_falha_na_leitura_do_upload(client_com_falha_inesperada, caplog, monkeypatch):
+    monkeypatch.setattr(UploadFile, "read", falhar_leitura_upload)
+    resposta = client_com_falha_inesperada.post(
+        "/triagem/upload",
+        data={"documento_id": "DOC-33-UP", "canal_origem": "Teste"},
+        files={"arquivo": ("caso.txt", b"texto sintetico", "text/plain")},
+    )
+    verificar_erro_correlacionado(resposta, caplog)
